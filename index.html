@@ -90,10 +90,10 @@ body{background:var(--negro);color:var(--crema);font-family:"Lora",Georgia,serif
 .goal-ball-icon{font-size:1.05rem;line-height:1}
 .goal-min-lbl{font-family:"Oswald",sans-serif;font-size:.65rem;color:var(--gualda);white-space:nowrap;line-height:1}
 .goal-min-lbl.rival{color:var(--rojo-claro)}
-.gname{font-size:.82rem}.gname.cdcs{color:var(--crema);cursor:pointer}.gname.cdcs:hover{color:var(--gualda)}
+.gname{font-size:.82rem}.gname.cdcs{color:var(--verde-claro);cursor:pointer}.gname.cdcs:hover{color:var(--gualda)}
 .gname.rival-team{color:var(--rojo-claro);cursor:default}
 .ghow{font-size:.62rem;color:var(--gris-claro);font-style:italic}
-.gasist{font-size:.73rem;color:var(--verde-claro);cursor:pointer}.gasist:hover{color:var(--gualda-claro)}
+.gasist{font-size:.67rem;color:var(--crema);cursor:pointer}.gasist:hover{color:var(--gualda)}
 .goals-empty{color:var(--gris-claro);font-style:italic;font-size:.78rem;text-align:center;padding:14px}
 /* LINEUP */
 .col-header{display:grid;grid-template-columns:28px 1fr 60px 36px 36px 36px 36px;gap:6px;padding:5px 0;font-family:"Oswald",sans-serif;font-size:.58rem;letter-spacing:1.5px;color:var(--gris-claro);border-bottom:1px solid rgba(255,255,255,.08);text-transform:uppercase;text-align:center}
@@ -140,6 +140,10 @@ body{background:var(--negro);color:var(--crema);font-family:"Lora",Georgia,serif
 .search-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
 .search-input{flex:1;min-width:180px;background:var(--gris);border:1px solid rgba(255,255,255,.1);color:var(--crema);padding:7px 12px;border-radius:2px;font-family:"Lora",serif;font-size:.85rem;outline:none;transition:border-color .2s}
 .search-input:focus{border-color:var(--verde-claro)}.search-input::placeholder{color:var(--gris-claro)}
+  .search-wrap{position:relative;flex:1;min-width:180px;display:flex;align-items:center}
+  .search-wrap .search-input{width:100%;min-width:0;padding-right:28px}
+  .search-clear{position:absolute;right:7px;background:none;border:none;cursor:pointer;color:#e53935;font-size:1rem;line-height:1;padding:2px 4px;opacity:0;pointer-events:none;transition:opacity .15s;font-weight:700;}
+  .search-clear.visible{opacity:1;pointer-events:all}
 .sel-input{background:var(--gris);border:1px solid rgba(255,255,255,.1);color:var(--crema);padding:7px 10px;border-radius:2px;font-family:"Oswald",sans-serif;font-size:.75rem;outline:none;cursor:pointer}
 .results-count{font-family:"Oswald",sans-serif;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--gris-claro);margin-bottom:10px}
 /* DRILL-DOWN MODAL */
@@ -198,9 +202,9 @@ body{background:var(--negro);color:var(--crema);font-family:"Lora",Georgia,serif
 <div id="view-partidos" class="view"><div class="breadcrumb"><a onclick="navTo('temporadas')">Temporadas</a><span>&rsaquo;</span><span id="bc-temp"></span></div><div class="section-title" id="partidos-title"></div><div id="season-standings" style="display:none;margin:0 14px 12px;padding:14px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:4px;border-left:3px solid var(--gualda)"></div><div style="padding:0 14px 12px"><button class="season-tab-btn active" onclick="selectSeasonTab('partidos')" id="stab-partidos">Partidos</button><button class="season-tab-btn" onclick="selectSeasonTab('jugadores')" id="stab-jugadores">Jugadores</button><button class="season-tab-btn" onclick="selectSeasonTab('goles')" id="stab-goles">Aportación goles</button></div><div id="season-section-partidos"><div class="filter-bar" id="comp-filter"></div><div class="matches-list" id="matches-list"></div></div><div id="season-section-jugadores" style="display:none"><div class="filter-bar" id="season-jug-comp-filter"></div><div class="results-count" id="season-jug-count"></div><div class="table-wrapper"><table class="data-table" id="season-jug-table"><thead><tr><th class="left" onclick="sortSeasonJug('n')" style="cursor:pointer">Jugador</th><th onclick="sortSeasonJug('pj')" style="cursor:pointer">PJ</th><th onclick="sortSeasonJug('tit')" style="cursor:pointer">Tit</th><th onclick="sortSeasonJug('g')" style="cursor:pointer">G</th><th onclick="sortSeasonJug('a')" style="cursor:pointer">A</th><th onclick="sortSeasonJug('am')" style="cursor:pointer" title="Amarillas">🟨</th><th onclick="sortSeasonJug('ro')" style="cursor:pointer" title="Rojas">🟥</th><th onclick="sortSeasonJug('min')" style="cursor:pointer">Min</th></tr></thead><tbody id="season-jug-tbody"></tbody></table></div></div><div id="season-section-goles" style="display:none"><div class="results-count" id="season-gol-count"></div><div class="table-wrapper"><table class="data-table" id="season-gol-table"><thead><tr><th class="left" onclick="sortSeasonGol('n')" style="cursor:pointer">Jugador</th><th onclick="sortSeasonGol('g')" style="cursor:pointer">G</th><th onclick="sortSeasonGol('a')" style="cursor:pointer">A</th><th onclick="sortSeasonGol('ga')" style="cursor:pointer">G+A</th><th onclick="sortSeasonGol('min')" style="cursor:pointer">Min</th><th onclick="sortSeasonGol('p90')" style="cursor:pointer" title="Minutos por participación en gol">Min/GA</th></tr></thead><tbody id="season-gol-tbody"></tbody></table></div></div></div>
 <div id="view-partido" class="view"><div class="breadcrumb"><a onclick="navTo('temporadas')">Temporadas</a><span>&rsaquo;</span><a onclick="navTo('partidos')" id="bc-temp2"></a><span>&rsaquo;</span><span id="bc-partido">Partido</span></div><button id="btn-prev-partido" onclick="navPartido(-1)" title="Partido anterior" style="position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:100;display:none;width:44px;height:64px;background:rgba(20,20,20,.75);backdrop-filter:blur(6px);border:none;border-radius:0 6px 6px 0;color:rgba(240,234,216,.85);font-size:1.4rem;cursor:pointer;transition:background .2s,color .2s;padding:0;line-height:1" onmouseover="this.style.background='rgba(232,184,75,.25)';this.style.color='rgba(232,184,75,1)'" onmouseout="this.style.background='rgba(20,20,20,.75)';this.style.color='rgba(240,234,216,.85)'">&#8592;</button><button id="btn-next-partido" onclick="navPartido(1)" title="Partido siguiente" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:100;display:none;width:44px;height:64px;background:rgba(20,20,20,.75);backdrop-filter:blur(6px);border:none;border-radius:6px 0 0 6px;color:rgba(240,234,216,.85);font-size:1.4rem;cursor:pointer;transition:background .2s,color .2s;padding:0;line-height:1" onmouseover="this.style.background='rgba(232,184,75,.25)';this.style.color='rgba(232,184,75,1)'" onmouseout="this.style.background='rgba(20,20,20,.75)';this.style.color='rgba(240,234,216,.85)'">&#8594;</button><div id="partido-content"></div></div>
 <div id="view-jugador" class="view"><div class="breadcrumb" id="jugador-bc"></div><div id="jugador-content"></div></div>
-<div id="view-jugadores-view" class="view"><div class="section-title">Plantilla de Jugadores</div><div class="search-row"><input class="search-input" id="jug-search" placeholder="Buscar jugador…" oninput="filterJugadores()"><select class="sel-input" id="jug-temp" onchange="filterJugadores()"><option value="">Todas las temporadas</option></select><div class="filter-bar" id="jug-cat-filter" style="margin-bottom:0;flex-wrap:wrap"></div><div id="jug-sep-1" style="display:flex;align-items:center"></div><div class="filter-bar" id="jug-comp-filter" style="margin-bottom:0;flex-wrap:wrap"></div><div id="jug-sep-2" style="display:flex;align-items:center"></div><div class="filter-bar" id="jug-pos-filter" style="margin-bottom:0;flex-wrap:wrap"></div></div><div class="results-count" id="jug-count"></div><div class="table-wrapper"><table class="data-table" id="jug-table"><thead><tr><th class="left" onclick="sortJug('id')" id="th-id">Clave <span id="si-id">↕</span></th><th class="left" onclick="sortJug('nombre')" id="th-nombre">Nombre <span id="si-nombre">↕</span></th><th onclick="sortJug('posicion')" id="th-posicion">Pos <span id="si-posicion">↕</span></th><th onclick="sortJug('_pj')" id="th-_pj">PJ <span id="si-_pj">↕</span></th><th onclick="sortJug('_goles')" id="th-_goles">Goles <span id="si-_goles">↕</span></th><th onclick="sortJug('_asist')" id="th-_asist">Asist <span id="si-_asist">↕</span></th><th onclick="sortJug('_am')" id="th-_am">🟨 <span id="si-_am">↕</span></th><th onclick="sortJug('_ro')" id="th-_ro">🟥 <span id="si-_ro">↕</span></th><th onclick="sortJug('_min')" id="th-_min">Min <span id="si-_min">↕</span></th></tr></thead><tbody id="jug-tbody"></tbody></table></div></div>
-<div id="view-entrenadores" class="view"><div class="section-title">Entrenadores</div><div class="search-row"><input class="search-input" id="coach-search" placeholder="Buscar entrenador…" oninput="filterCoaches()"></div><div id="entrenadores-filter-row" style="display:flex;flex-wrap:wrap;gap:6px;padding:8px 14px 0;align-items:center"><div class="filter-bar" id="entrenadores-cat-filter" style="margin-bottom:0;flex-wrap:wrap"></div><div id="entrenadores-sep-1" style="display:flex;align-items:center"><span style="color:rgba(255,255,255,.2);padding:0 4px;font-size:.9rem">|</span></div><div class="filter-bar" id="entrenadores-comp-filter" style="margin-bottom:0;flex-wrap:wrap"></div></div><div class="results-count" id="coach-count"></div><div class="table-wrapper"><table class="data-table"><thead><tr><th class="left" onclick="sortCoaches('id')" id="sc-id-th">Clave <span id="sc-id">↕</span></th><th class="left" onclick="sortCoaches('nombre')">Entrenador <span id="sc-nombre">↕</span></th><th onclick="sortCoaches('pj')">PJ <span id="sc-pj">↕</span></th><th onclick="sortCoaches('pg')">G <span id="sc-pg">↕</span></th><th onclick="sortCoaches('pe')">E <span id="sc-pe">↕</span></th><th onclick="sortCoaches('pp')">P <span id="sc-pp">↕</span></th></tr></thead><tbody id="coach-tbody"></tbody></table></div></div>
-<div id="view-rivales" class="view"><div class="section-title">Buscar rival</div><div class="search-row"><input class="search-input" id="rival-search" placeholder="Nombre del equipo rival…" oninput="filterRivales()"><select class="sel-input" id="rival-cond" onchange="filterRivales()"><option value="">Todos</option><option value="local">Solo Local</option><option value="visitante">Solo Visitante</option><option value="otros">Otros</option></select></div><div id="rival-filter-row" style="display:flex;flex-wrap:wrap;gap:6px;padding:8px 14px 0;align-items:center"><div class="filter-bar" id="rival-cat-filter" style="margin-bottom:0;flex-wrap:wrap"></div><div style="display:flex;align-items:center"><span style="color:rgba(255,255,255,.2);padding:0 4px;font-size:.9rem">|</span></div><div class="filter-bar" id="rival-comp-filter-bar" style="margin-bottom:0;flex-wrap:wrap"></div></div><div class="results-count" id="rival-count"></div><div class="table-wrapper"><table class="data-table" id="rival-table"><thead><tr><th class="left" onclick="sortRivals('nombre')">Rival <span id="sr-nombre">↕</span></th><th onclick="sortRivals('pj')">PJ <span id="sr-pj">↕</span></th><th onclick="sortRivals('pg')">G <span id="sr-pg">↕</span></th><th onclick="sortRivals('pe')">E <span id="sr-pe">↕</span></th><th onclick="sortRivals('pp')">P <span id="sr-pp">↕</span></th></tr></thead><tbody id="rival-summary-tbody"></tbody></table></div></div><div id="rival-detail-section" style="display:none;margin-top:24px"><div class="section-title" id="rival-detail-title">Partidos</div><div class="filter-bar" id="rival-comp-filter"></div><div class="matches-list" id="rival-matches-list"></div></div></div></div>
+<div id="view-jugadores-view" class="view"><div class="section-title">Plantilla de Jugadores</div><div class="search-row"><div class="search-wrap"><input class="search-input" id="jug-search" placeholder="Buscar jugador…" oninput="filterJugadores();updateClear('jug-search')"><button class="search-clear" id="jug-search-clear" onclick="clearSearch('jug-search','filterJugadores')" title="Borrar">✕</button></div><select class="sel-input" id="jug-temp" onchange="filterJugadores()"><option value="">Todas las temporadas</option></select><div class="filter-bar" id="jug-cat-filter" style="margin-bottom:0;flex-wrap:wrap"></div><div id="jug-sep-1" style="display:flex;align-items:center"></div><div class="filter-bar" id="jug-comp-filter" style="margin-bottom:0;flex-wrap:wrap"></div><div id="jug-sep-2" style="display:flex;align-items:center"></div><div class="filter-bar" id="jug-pos-filter" style="margin-bottom:0;flex-wrap:wrap"></div></div><div class="results-count" id="jug-count"></div><div class="table-wrapper"><table class="data-table" id="jug-table"><thead><tr><th class="left" onclick="sortJug('id')" id="th-id">Clave <span id="si-id">↕</span></th><th class="left" onclick="sortJug('nombre')" id="th-nombre">Nombre <span id="si-nombre">↕</span></th><th onclick="sortJug('posicion')" id="th-posicion">Pos <span id="si-posicion">↕</span></th><th onclick="sortJug('_pj')" id="th-_pj">PJ <span id="si-_pj">↕</span></th><th onclick="sortJug('_goles')" id="th-_goles">Goles <span id="si-_goles">↕</span></th><th onclick="sortJug('_asist')" id="th-_asist">Asist <span id="si-_asist">↕</span></th><th onclick="sortJug('_am')" id="th-_am">🟨 <span id="si-_am">↕</span></th><th onclick="sortJug('_ro')" id="th-_ro">🟥 <span id="si-_ro">↕</span></th><th onclick="sortJug('_min')" id="th-_min">Min <span id="si-_min">↕</span></th></tr></thead><tbody id="jug-tbody"></tbody></table></div></div>
+<div id="view-entrenadores" class="view"><div class="section-title">Entrenadores</div><div class="search-row"><div class="search-wrap"><input class="search-input" id="coach-search" placeholder="Buscar entrenador…" oninput="filterCoaches();updateClear('coach-search')"><button class="search-clear" id="coach-search-clear" onclick="clearSearch('coach-search','filterCoaches')" title="Borrar">✕</button></div></div><div id="entrenadores-filter-row" style="display:flex;flex-wrap:wrap;gap:6px;padding:8px 14px 0;align-items:center"><div class="filter-bar" id="entrenadores-cat-filter" style="margin-bottom:0;flex-wrap:wrap"></div><div id="entrenadores-sep-1" style="display:flex;align-items:center"><span style="color:rgba(255,255,255,.2);padding:0 4px;font-size:.9rem">|</span></div><div class="filter-bar" id="entrenadores-comp-filter" style="margin-bottom:0;flex-wrap:wrap"></div></div><div class="results-count" id="coach-count"></div><div class="table-wrapper"><table class="data-table"><thead><tr><th class="left" onclick="sortCoaches('id')" id="sc-id-th">Clave <span id="sc-id">↕</span></th><th class="left" onclick="sortCoaches('nombre')">Entrenador <span id="sc-nombre">↕</span></th><th onclick="sortCoaches('pj')">PJ <span id="sc-pj">↕</span></th><th onclick="sortCoaches('pg')">G <span id="sc-pg">↕</span></th><th onclick="sortCoaches('pe')">E <span id="sc-pe">↕</span></th><th onclick="sortCoaches('pp')">P <span id="sc-pp">↕</span></th></tr></thead><tbody id="coach-tbody"></tbody></table></div></div>
+<div id="view-rivales" class="view"><div class="section-title">Buscar rival</div><div class="search-row"><div class="search-wrap"><input class="search-input" id="rival-search" placeholder="Nombre del equipo rival…" oninput="filterRivales();updateClear('rival-search')"><button class="search-clear" id="rival-search-clear" onclick="clearSearch('rival-search','filterRivales')" title="Borrar">✕</button></div><select class="sel-input" id="rival-cond" onchange="filterRivales()"><option value="">Todos</option><option value="local">Solo Local</option><option value="visitante">Solo Visitante</option><option value="otros">Otros</option></select></div><div id="rival-filter-row" style="display:flex;flex-wrap:wrap;gap:6px;padding:8px 14px 0;align-items:center"><div class="filter-bar" id="rival-cat-filter" style="margin-bottom:0;flex-wrap:wrap"></div><div style="display:flex;align-items:center"><span style="color:rgba(255,255,255,.2);padding:0 4px;font-size:.9rem">|</span></div><div class="filter-bar" id="rival-comp-filter-bar" style="margin-bottom:0;flex-wrap:wrap"></div></div><div class="results-count" id="rival-count"></div><div class="table-wrapper"><table class="data-table" id="rival-table"><thead><tr><th class="left" onclick="sortRivals('nombre')">Rival <span id="sr-nombre">↕</span></th><th onclick="sortRivals('pj')">PJ <span id="sr-pj">↕</span></th><th onclick="sortRivals('pg')">G <span id="sr-pg">↕</span></th><th onclick="sortRivals('pe')">E <span id="sr-pe">↕</span></th><th onclick="sortRivals('pp')">P <span id="sr-pp">↕</span></th><th onclick="sortRivals('gf')">GF <span id="sr-gf">↕</span></th><th onclick="sortRivals('gc')">GC <span id="sr-gc">↕</span></th></tr></thead><tbody id="rival-summary-tbody"></tbody></table></div></div><div id="rival-detail-section" style="display:none;margin-top:24px"><div class="section-title" id="rival-detail-title">Partidos</div><div class="filter-bar" id="rival-comp-filter"></div><div class="matches-list" id="rival-matches-list"></div></div></div></div>
 <div id="modal-overlay" class="modal-overlay" onclick="handleOverlayClick(event)"><div class="modal-box"><div class="modal-header"><div class="modal-title" id="modal-title"></div><button class="modal-close" onclick="closeModal()">×</button></div><div class="modal-body" id="modal-body"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
 <script>
@@ -1777,19 +1781,20 @@ RAW_PL+=["0I5x9WwUPorl+QZK2RWc5Be7nz/PN2lAteO2v0mIFIJYgz08io6CrTIbw1nXGrNOL8rGoG
 RAW_PL+=["FNkxVXSUsUPmiP2+Gb66GF7pR4J8/n9SSTBBnOiYyhcoDwkJ1nB5I/9Rb5xStobcQ/5zrlQrvmAZq6nqc7SjhN5oxVDWCwUuPoBXsEFvchxT1Q+Zk9sVbH64OXllWM/IFHVq3IVT8yqcLVbv+R0IdHL4+z7eA9CYa1ysP6UWsiOuLbU8XIocoyAco3tUTH8BE0wTsw7xasWQrg2FKgs1fWBnTIdaR0E9awEZfw+zyje7nzdzbiAJcv7J8v3XALCZHx6IUmwQhIOjkbJ718AZa7SgFhok97egQkT7kvuNnD4vfCmjyOcvhjNtGlE/alG5fgZnkMe7xeANWCTA7+Dj0/fL1LB8v/7wLty+vhyejs50joTsbyBpBOKXWyB9zL9sGKDFt8yicguFT26h"].join("");
 RAW_PL+=["sxdTQ9LDjhWTDMEELNqsqIhX+n55AO6risryLjEoN5/B5C2ZfFmVpleLTfri0Gp6NNJXjADrTHlb1RKcp0GuYlukUtJJzKyqRC/qBn4n59pVUj9bvQ64TLa3y/nD/GuQj3mvmvS5xxNs3ve2AY+RupbmlaEnWbu/7n4a67939cJJsaTOPVwefwd45YOQAnxezjeLxzTfSxDLH1wvbqHjxJvatgfMzRisTN6cTqJOCThCYZU2p310fU2b06ibFvK5B7kpVzRgeVSxMzdd5Bo34v/0fwFU3m392swJAA=="].join("");
 var RAW_COACHES="";
-RAW_COACHES+=["H4sIAAAAAAAC/61bTXPbOBL9KyifdqtGVfqWlRtF0TJtSlQoyTuTGywhMicU6aFEz9hTU7U+5pBT/sDmtj74MJXb1t74x/YBlEVQksEsMpfIaB7SBTRev37d+P1kaHimSyaGc2X0Xe/kze8n/uLkzb75h5MwWl3HDF8uEhqSIY3nEZnQ4I4uohifb6m/xkdrfUvTPykM70Ms+e8i+12w62ST/Xn788mbKn6W2Q/Lfm7x88cPJ1fuiFwas7MzK3dGtsmeRGv2nlzS5D2LyTsWBOx1T6q1SrVTqZ12TzV8GsymdvrR86x32JHRxSx9HO18O/ZN8tEI2M80XMQRGSQbP32KY/aAfQt/TtIv4V+5bwPPskb/sBwn92xnKezZTUg8f35D4wUZxIyFv2Lj"].join("");
-RAW_COACHES+=["XnWk1q1UG9i206aGSxfuJP1IDGdoOcbOq4KxeJjpEzGCFQvoX7kvU8tFALtkaMw8e+dF0Sq5MWURAjpCgCexT4ZRzMJIsTvYnGq7UtPZHQTKwHJIz3B66eNk59meWXItfQyXLCA9GlynX9bEY8tEEfC1TqVa5wHf1vBt7BjTS3fn03Yp+XKZfomj4J6MA7rZfEi/ksvo1g/Y5uF1f9pip/T8uZg5NjaGeDNrauWhVLAWICrwcb2Il7ANI8Mk9Nn69aCqI8ZrPMY7Gp4Zo76Xfpzw85rkQV60ynAAKEif1vwQ15T0GTHCTfr1dSCo1bb3r6EFW7bjpB9lrNoaJI/OYhrO/fWcA5QfBOlTSKYRUGqtivomB9NGTcMna2g7tkuu7L6RI1XBKPlmrfzA"].join("");
-RAW_COACHES+=["j8iVv6ABcQIaqr2qVmr1SlUH4AFG1sg8Tz/neyWZDpIfC1g4v8G5kTEQnT2onBLBVdcJrUH6eWi9yw8vWx4/uvTrCnnlyp+zcMMU7tSqlWoL26Thjmf10887b7LVAX57bAEwmNIVjf2NaluABl093ESWnbqO4dn5dZNMhbu2iUKfsxT8EcAhyq8dVaNml4dQvVLXiW3PHuWYKRaSNw6LbqNgEREzWm8oGdP79Itqg2r8oKo6cTO2TddJP+WhvDNI7lxRxPAmfQZIMn9JepH/m8qbDoehqk7YWBP+n/8zv+vb9UHoWAjkIP0XmbAlDdJ/q256rVlBINe7OptjeEYfnChPuLlFcmnMOGUb05guQI/WnO9is9QuVTXBp+chXezcyVYHuzOIwof0S4BL"].join("");
-RAW_COACHES+=["PmYbf0N6uPsLNRjy9K9zYle2aY2mFjm3vBHSa1/CoCOf5JjK4IecszhE+l3AWSO4ZrEKCGocjSp1LdA2RjMwJdObvZPKltwmeTakYQLqtGAkoMSMk4ftgYal2N3Qw25nZk/IxPJwmDkkFIwyNCT+GmEf40h5sgNUKZxq4GBPK7WOPh/3RsZsn44L2yEbj0OavHimOsQO53ZVHWbn2Pnh8b8lH0yK9B8Rx+cFU7BEoalyoSGIks624EQGYB+eC872aTCTwv3wi+QetmWJ7OJFYHTPSCoPWzJQ4fmGhlTl7CnPftXud1xOY2KNJvbBxdya5UuZ3UljzcK1L+4jsuFa6V1GWU6/gw2/BSMfOHJZc/jlCCt+C76+DHhx0wMFxW9JzOHMdRjE2Op7XNvw"].join("");
-RAW_COACHES+=["0sc8C0i2gzwwoXCGDPwoXqgvQr0polCrWJ4ZqGSMocxBZds+CfXoihNQHmw+XUYljKahmZqQFyXSt13uQ1cPKRKs71sgNau1tGhN35j1JU1ouzySfvo0WUAQGiSQOPwooOrzQoVVb2khvGlbIzKcOY7kVdFa2Ki5z1A6pP/lMhWZzG9W/kKVGBtNgRFadR+gIM862ep42cCxgDjp11vloTUagm7pUGJTln7MPclHBI8RROEaVCsK50x5Vo0OT3xaHNQFqeq7wMidK7mlqNV9WINW0Zi412B+0Z0/J+9o/EF55evalUzfJpNp+vFM5giyreDa+5iheJhs0qf3nCb0/fxvhybBTfqkcrLNC3Y9sDTezmwpnF7WxwMKsnD6TLf1qOowTwU91QVKa1rA"].join("");
-RAW_COACHES+=["SCwld3os9BHWHCXZBqi9gqahdqYljlCHvrgTME7SszgVzklV0SrvVPoU+L8Rd70CgsNPUOSEjNgy9hXuNZtCOdPBzJHxU379xOKQ422r5BG9p1zZUN9BuNKsNKo6OqwLjTznA9vlkXI9U59eQkm1Lw0e1FpVIPQCwyH92ciwJYaS24puQXzqJyH1S3xp6EHk1B3Jxfp2eWRjRvSOxkKaDh/AL9USXfNUu0T23J7lTV0ysHOFTrZJrnkRL+9w7/0A9Tvw6K701nf0wufK9nqGRHf5SlYKFzzb0zXKp/jan39ArmXkbya6HAFiyVr8ytsd/Bv9e4l/Lb2CzzRmUKEgr0oxLtuOwqVJE+QbqK7wcZzMbyJVI6bZ0ablKDzNc0uuQ/lyPxO/gPe38Lim"].join("");
-RAW_COACHES+=["qELrVS32PRYCgtWXFLyC8QCjICiwBeS7i3Isb9U4o6vqXETkNVQnx2SPwy9y6IWx/0tSUD1K1aKWuJ1aF2GAxmz6yTjm5pFPyiyde6xyVWj9WtWDaUORRRfZlAlOwShX+z4EWnEnwGh2apca4Tgf1KEQPXdk4AZ4efzllqM7trsSKExDOr9hsSoxtaqiyNGSJy3IDJ4ro4hkOlLsjOl6niBBjUU3MOJIYtL1hjfDN+oARCLX41+uB5I6cEfvMBzgSkJSwVy4w6jDxJFiXAAUlqu8JTgHutPQbA3YZGw4ksAl22T1Zls3YwMDaFzTaKWWG1pCp9QqXMEFzXNUG7JImRmOJHkkd/TmeZsgQWJVONRu8RPUSgfZIbnkfOZNZb/27ZJ72elF5Bxece+g"].join("");
-RAW_COACHES+=["pKJdGDJackFrutnUc1xopXZBDilaC0phHESQUP1MEmHxnbLFk52lljaeyaVD1zOm+yMNW+NB8sIMAeUNn7JOYSurQnRygulZAwlhxepwcCBvIZgxUypGbaE9aMWWkKy2B5U+YnrIkxLU0Y/7wtb2MNNHzBbxYZkr9INK8lNL9zC9gcWhwR0WcCw3FlFsyeE2iFb8lgaBkqy1OzzEtBK860ylxJStDoLKSdLnNXGDTUwF3uN/V4Z8u6tdn1wYVzY0os9j+SAl29GEeUHvfMhcmbQkPIzLAq6hJ3ZlcQQ+YXlXckbftxfuAw8tQKwACoxhgAw9lEBtV4/sYoxuinKOoME4KKaAon3/EmyhI6MdlT4T7Q9MsqR/+kpO1BXIprOPgK/0Y+6fWB3DMvwL"].join("");
-RAW_COACHES+=["DqQmFw0B/F3d4mA488z92mBrO/QoieeoDL6FMCLIhBSuoxdA+SbQK+QGv2yTE/k1oNZjaz+MymWwtujSammaY06iwVg9OegLxqMXE5w/5jHv8Mm2h0h9ijVN3/qAhz4xEOTSkE/BKPnWB1QsiIGJEdDYvJtWWj1pQf4wffTeyi2+nUEWEHHtIuA8Dy/Muf3Ce3ulInm7rt3ZQN1mT+UaaWeQ42rNAXXA52p4hWQsfT5KSq9poIZ9foZtLcFl9JMhjUm8rA+I/ZUf3tPtiATgQVX2thui3dLUYoSTmSlxnGx5ZCx5W6d9i4iRMa56W8sd3guT/cnWskNZCnwh9iYFMIBBe8m1r7p2HVFvayWbs13dT8yZNZEY6uGXgx7nWS5fmAkDoyhhE009H3+0"].join("");
-RAW_COACHES+=["hy7GIvvWSCpxC0bJsx99cK0eRnDCrKyFFyqv2tr1xpb0WZ492SeCwnbIA1nsq8rFTlYuNvV2SGpvZKvC/09/SfjcFvYlq3eM+xW8md+oL55+sxzZd+LKTU7JdJCPUd0j6IfRvSp+OlUxjN/6zvrC9ab28eIi+/JKZeHGGyWJ6rS1Fa+sV49SUGq7yDZZOs/693ynMI8PGFfeuFZbewDvwsW+4M5bV3LFmtuKsRVyHZ/doV6NViUthk6do3lNSxk0HDTvJb65MxzZIQxfPPMqJ0BXX4yY3qs2Khvm1sH0S/vSFdMWn+SatWg9yqm4o8+8VP0WFrqNfZ2reIbBsUuEOM6tMJaxbz9ekYnrudUGMa2xECDGFrSE03Q0iRYG8eASeh8XRmE6b2cszHmv"].join("");
-RAW_COACHES+=["sgE9HDJ/L4MzDply3Av4qtupEUNdhI+h9gyvOOq1s+6PeYnh1GvMBSCLp/8pAX4urDa0WXP+nmiPOUsfDthz4W1RKbi19FJ3+nkCeC2q+bJNrrA/r+fYrYxZCEW/9CXNFk1qevzZs/sF+izWr+A/OHTsL2TGUy6cdLWfOuw9cjh43sAvJrslNqf3fE5vmZQMgGYkWivCRNPdREPSKPbhM5MMvcn17iHIHP3JbyuwO10RW1pNBXuYJyf8vX90+TO6lx4gKtgVbqTytUNXvM7ScgjPr9DwxtOivpSlCsbCdA5vg4PaL3h+SpTv6U47QuY91ZoXMi/JxDz3rOIkXNFcKEFCDArNP/Bxs5jxqTjV6dW056su3HPwCf5KTGIYO1Px9SENBZmP4pAFaDpf"].join("");
-RAW_COACHES+=["RA94w8mfkZXsWV2vUBsbPcc91iw9+CBXRPQ6iOSGbh9iwHNYIkucZtD//yPYH/8DpBCRZYY7AAA="].join("");
-var RAW_ADJ="";
+RAW_COACHES+=["H4sIAAAAAAACA6VcO5PbSJL+KxVybjZiOoIA3+OBIMSGGiQokOzdlVdNltgYgUAPQPSsemMjVqYMWfLOOnkrQ8aGzro46/DHLquKJKpQeKnHmW4kWxOZhcwvv3wU//5ibnimi1aGc2tMXe/FL39/4e9e/FIU//wijA53MYFPXqU4RHMcbyO0wsEj3kUx/Rhv/YNPwmMEfwLPD9hP4DcrecDZvzEI3ob8g7c7/nNH7tIj/KqN9e6V1rnSevRf/frilw782PMfhP94gB//+PnFrbtAN8bm5UsrV1OUiTpGCXmLbnD6lsToDQkCoug4icIQ/TTBOzSLdiS5S+P9z2jnJ8fYP0ZoRxD9gz/llhiONTcWtnE2RRuNR1ed4VVHOxuljYdDKtGGsnk9Zp7eZN5ss7azj55nvYFjX7zaZB8WFzPLPhPMNQLyKw53cYRm6dHPvsYxeYKXE/6aZl/CP/hy+kx7rVF7z7IWf7YcJ9f5IpFezH2IPH97"];
+RAW_COACHES+=["j2M4+JiQ8Hd4O0UVzTiK3uV62ouZY6wtzxMOf9S76oDfjPPD7+lU007h8AdUqDf61it3lX1EhjO3HONigSSUvSv7iozgQAL8B08XXKjPXahWvbXlQhS6aG5sPPuinywVFFyTCKIygihNYx/No5iEkeL/EMEkiEJcqbE2hhPuDHhkng550GE+35OtGF91dO72tVaA184sB00MZ5J9WF3MKIgFO7IP4Z4EaIKDu+xLgjyyT9VAnuNdDP+fSitG48FFvXOcglHaVbejWNG70hvfxRJ88ca9aH96FLS+yb7EUfAeLQN8PL7LvqOb6MEPyPFJeQXpDj+Q5Jjrfr1ZzLzskyErD9oOcuVH8FLogReV18DGfqOfbxwbzht5G2tt5Y4uSSWsD3yAEOSl5EjQPA19kuAffgEjipJX+iVW9U53zKK3L9nQ1eh76oyabDAWUy/7uKIOs8qDVZaK4AjAmH1NqBclGE0JMsJj9l2BxXm6B0yKkjo7ukxr"];
+RAW_COACHES+=["EfC77NgHsh069S592Az4tuNkH0WUPwkE7V/GONz6yZZCux8E2dcQrSPA90TBTJwcAUrBMpq8Akzdrz64ezSUu4I1Y5CMOKYK1jDP6nSbrLHmtmO76NaeGnkOkISCVdbBD/wI3fo7HCAHFFXtaYVPHabbSMAnBqi6jE89jUaM3uhYgPPWwrzOPuevRBApFIgEJNze0wNfQsolT2pcPD3hmLtapQVjFhpDKbypS2myBZxDNIb3LPs8t97kDsUfy90p+34AlnDrb0FdUtSdJrc4+1Z3+DTZ9jmvEVQ/xbmg+ogefjP98axp9vmiOX9Scq5HdoCna3zAwNKUCLgHLCV1hz1gqgjpbNy/nKug8ZgBbCNnACa2dh3Ds3MQEkQSAh2j0Kd0GX4JQHVMwQiXJTPPvwOEDe5IUnfyOgVKXYjckc5UlrlPv0N9q9lpPHuRpzP2IOjukOghCnYRMqPkCKCC32dfSg4+CGrjVGM0R8zAY+YqHUVhkHca"];
+RAW_COACHES+=["M7Btuk72KY/Si0BQ/BZDeB6zb5C8iL8HNu//rag3+5OtX6v5kEJ+R5c0Bz/SZZfp6xfPqgfJFVX0nzk+np4VR7cgRIPsv9CK7HGQ/etZ6Kgx0NAFikwrlq7iJj0Goo1usjQ8Ywp0PiduuUTQf0loHbLEMd6BVyS0UoS3UNR/kQb1Lt67cIGz7szpOzIu9vvtPGbiAT246M2flDOfReFT9iUAUFySo39EE8DKXVHxFXn0G5y9w+im6DLapVAUVGdg1Bk3Vr22aS3WFrq2vAVwtKkA7yUfiQHAkR1dkzgEDrcDuwwAlvj4jDDQKNDzDCogp66EAS0NuH/VJ1pjsQHGb3qbN0LDIZcJVsxxmEIJwCmNGadPJ4cK1XzrxrzaPRfsHlQVQr3Ocm1XyrVDxh90XTFi3AI2nY29QitalQrwKQlFGE39BII5BpeitAeSQDV/q3kP3Q5jaMOcSVNcBTiSGWifsYrOoGXV6y2MTbHoZTK15o1DnJ7t"];
+RAW_COACHES+=["eI4fDam2nYEc1loxA/dZBtYaOadj5/5Dfxf0NTFQzAg5Pm2EBHu8U9R1UyiLkzq+oHG+L572mJ1/V9IWamLKhRojGdxiBmTYc6FQ+TTbCIGsfiJYAqe9B/LgRVDGfAPO8HSim1eUTnCKL9nl4ATgNzjAD4iaGbwpZMKfxfUvZnRBo3NsjBjJkGNjwJlHvy1oGStrsbIVwDqJRbDiWGUk8Ep8hlNgjFpqGsE23QF9AsNMqIEe/LA2iXByPRLeX6ekdh6weq25CXOuMF9DlTxzxA6G+klJ/fkaauh9QPsYEyjg4KeSWoBeRXdBU/x0OTU9xw8jeZ2CR3ZZUDXGz9KaerTJ62Uf8qQuyJS0voJ65gua+VG8KwEAM/sOFfQdljF4sbYXAgrrvHHXE14Kk+iKCRSamyFsYyyQZ8zFok2UFas2Dx9oxUZjx8d7xQSL5nw/aiDfXZmZjEuKiEG/XdkzAf4k1D2nx2LmmLDMUJ36TJ881fmNzhOC"];
+RAW_COACHES+=["gGS6xkCrcOhDxsobD31qbKZCE/70WMI9pjjdkRjNUhzDqard0hYpg7bPNQ45Z3/hfSK5zBxwABs1Z23TthZovnEcwQJZKp3+FnRF8+x/6QwBrbb3B3+nMKgJVNT3v/unMcPJkpfAAUyRf3R7TMWu8BIGDKDkKoiSkjZlG42snHjwp/JKn2qJnOz7g+o49M2E/lOdw3fZeCavNkFtnrNHstq9di/AFDvsZqGzzpzdgLomgRIiCrclDfY3+BDFdQ7THdIcnZdsRS01vQXWu1AjTF3IVxdVc4k8eHmXAGLgGLl3UPFEj/4WvcHxOwVY5n4U+ltBb8j5E9E7dF1uTvBkNSji4smAxmOe2mi1zj6+FMmpKJOMeBsTqPBXx+zrW8pPp37+u4PT4D77qrauSRglCPuxWMaVwf3gMjA4maWxvmOhCB3yaqhFEfp6Ywtuf34ud3wokrNv+NTqUvjfo092tY7PGJD4RnTWINXlQm44uoR1Y6ay1lKS"];
+RAW_COACHES+=["gkdB8QkJ6eiRpilyhCR7yL6WQD2oGaRAAxm7c4II/u0eH+vM4JloIJjRYQlXZkEjTo0asd9dQaWGJhYtN/OqQZaKbyP7Gvh/Q25ygOQLFkIZmqIF2ce+wu3e4226vRfeyNLysv/MDen12ChkWBrYI43FRaP6C+OvOfywB7XIObXrFvg9pl1eFYMMZEZxyk+58th7tBZmM6bce2hnV0b7kd6u+7J2Pc/KGefpsaTJyKcDZ99X+0aXvmOV4j3aIRLaRrK63Xa9UWOxNhw03SwMW2DJuUxWHAdomoZYcQkwAtcMx5iqXSE1yar2L8m14WQXYi/x9Fhysgv8iGM2VQ2faEGlziwMWnUl9empN5K7crLOjBBojaWk504sb+2imZ3PWkSZoL0X0Z4PgKEfICsBWH9UMWWJjySu7SV22a6D5M06S7P9Ev2bCeSt7U0MoSykT+J4aEcJIxSwt35852/fgZ4E/WTe4zgA17Z2v9PtAfoZ/lPRlJv3"];
+RAW_COACHES+=["d0CSmSudbHHs9UZa3GDG9IVGkGwCow/dRrcxjc0K/rdAGPOoFGWlGcnEKdAFShShRqdgF/zhMV5vKBe5RWMoy++16GWZ15bYxaKPRWJ2zqeVZYgRAMUJa2cwPdbB0mVYpHhTyEajdjiztJas/2lNhSmMJFTg/ZoA2/ExelWRYJvG2eO+dukXqCc+1tgWQSM/A9ryelPa1VU/ESMjjP3fUqmpW95gN8Jar+kzFMrjuWiDprVgNDPDMwGPy4wo+aiWouX2/Pjr4HyyPABoe7HXAlBN27MN00WmyJclodhb9GMfs2gGgnyZGiigGuCkqbilw9GRwI6LureiBhN3YUC4enkA5JLSQ7/EL91xw9t7EuNnzH/5eLFTnsj4YFUfN8fvbGN5rgiigqiko7DEyTYFvrBku0ARBdITZJKj2gnlDTXKiUK+uFITD9RPKl7EgLV8xs3tdA9KrJm7eGM4t67QUZfEEiDFO595EA4eoQCjI7/nTPp6rK2u"];
+RAW_COACHES+=["dcu15wlNazPOttHScIRhgCgTW9Kn7hntM+MUjvdQ0s78kdNnw6ROeUIe8zKs32KoZF5DiS5OlLighMsBh9veYzrWToEcqZ3YOza9rFGZ9vd6VWkXVNa0FnMw7hMuut54a1HzolwwgDtLhK5Bb6o/bfGnfkh+eCuLYY9WxYK4Bc2Hbhqe467QypYasLJUmsrEQZSglc+bsCR+VFcgrJBGdrO7aGUdHt410VrwNz7nmruesS5ufJ6ECnOYA7OnOxCl2z4mhAIoGjdpfp5Xl2reag5hetZMSFLsSV2azKfZZkz2JS4eYCjJt3XaDnqXvakSbTUG//1WDfqTQ2QfnFvDE2hC6YfFlv3JabIPAdRfdGWJ7BVvt6C4CY8nQ+uYQr/Sb9iSWPPpA5rPLAqJ7lyC+FwoA/ye5qwgOlDMCQKV8Lfa+KGNeb2croHmOtuuaXwTrrMWOAJ/UnzcSbNvCXKDY4xZYgU91BBt0bYfjCtLc65xm5T0yri1"];
+RAW_COACHES+=["kZN9XoouI8hK2c0r/OiT+NTvZjbEz1p+HrCxVKdbbgHvBI6bV56pUwOFtLxbkaEV5VL8Uj+HzMTQEaMp0LAnNXxDQCI7wXcQ6j8Z2yPlROBg+C4S7izMNvbCMpBlboy1C1zWkfPXWKjDZOv67dbS54a3zj4t0NRyZnLmleXFiD7BKaehV1PC5vNonmb/9hVL18Dxatu0Pb763K20ZNRm9dP1so+5/uypDP/hv8CZS6jmfxgHcgwCOpoO0O15Z6sSibryRnRRZ60NsrIyd77xzGLpe5Kp+qcxBG11xaLOb8uC4rwNXKL4qF1KMCaWgzxrJe4dijKRr1H/9kjih1FFG/+WBHhXqzLbx+rolSq3QaIlrQOhovLEIJaEpVgEZW1MY9ihVzCengVDfTYIr1J/3G5lfgqgOUUGxKWwnC0JBfWnAKA7ZBxwDJiSr50oJWLsb6PGFoNWrXibLts8++C9FldlLgJxcAJAEkGKpS6efYl/ozsy5ePO"];
+RAW_COACHES+=["Vrivy7Pyot7UqGGL1oi9FnsJF4Ho3AlNVDO6y0w7Ccbepxe3oPZQSMKExHscN+Tb8/xD1Zr1AFtc4rq1F381hAXP87NSst764Xt8Wu4EUPymkuF4BxVUWqcwXxbvVSrcJr2axmpjClyYP5ZcVjz1Oyo7lxCg22birlceL22mNRN3CnKOqC5/FvXl5OVcppo0v0O156V3/nP27Ya8t1qe5WmSGbW48PTy0sND5sZaCeWS+omyMfQyb1SaKQE+WbTiZUpCoC1xA4jzy1kVhrCIbTbkL/bcRRNjai2EdpMkFNT/iw+UfQJOHPIWE+ijLpxGD/WNjcGgssbmavd447tNxWF59qpYcDCZWm+Q2Fc3xtM49utHCUPehqkIyS7zll6LQxam3PxJ0hD/ltKtfDha3gUw3h9A3+39MxQedOV1uKLCNDC7rWjUyhXXgQSRQqJWEV0Emkfv1dkqCf1dFB/qTphdn9T6NQo3DyzFotn11nZ5Oc0/qail"];
+RAW_COACHES+=["3fioMu1lSgeFwGHDurQ+HFS22/luh9Yi0fDlPDR3hWG8KBPnl3xhjx44gloZByqEnBrAYZTSdtiK1DtNfyBf6SgzoEWrF04aEM+6FZtHuUz2+JBOXskjbYgeyubGbWjJkG2patXnPuKrQg0ZyJlaYqVzEZScOKYDAPCYYEdidvfqvZKB6CJ7HO0aGCxbPtQGVZrTPNQIgjf2jct2Oj+J/SNZWkrBqTXfaNuosuxZ06bdvuH0eeBWIA0fdjTWPXQj8AbiE1xEWvosysvbGgx9LuNh6ulLOslUYSja0rWs8NjAcYdV3FwbtOMF9MYGaO041itDusZxEUo3Pg/8Jgf4E/22AnCnkKhL+UB0cbhvSFJVw3umOu0FjFqt4iN6+2piePIa/kVaXMFnd7LucExJWfY/6rjj//77OkoegMoH5Nh2N2vIpggVvQuNbeM2YxGv4/KviCgUeMIHSpEnfV2EX9LTPtL4/hU35IN+JTNjY/xmXMo+ryBt"];
+RAW_COACHES+=["ydNXUSa2xz4nW3gJnF2yCWz59xvQiw/1nPKEqFqV5q0u1ENd59lTqc5jzxWJF4q9GEiCQIuf31st7x7prC/fzNP41ezCTW3ljjaFHfKAbFqp0vsZ+7Ts7pJxeIg4ta+v9iocXdfaLX+ypTfTdoQFYkEkZrD07nJRfkuv6/2xKT298tmvKlX5HlTzbf9X9jxnCvB70UHy73A5L6YgB/4AClbyh3eExux7PKoMYL3IFl+74ND9MuRtpgJ/kITSTjHdOoO6dUeZQxqUjD0eotoB64hfwxvV6NxMlae2eYNW5rVnyRcWZLFUf4do6m/f0U3/mNDLCyVcLSSPJBBGq9euYyymwoLZUKtcQee6j9rcbHGvgU/SrxcRGOZFJH+nDg5ZlUoH7YGfQNA+kbfs+0dUjh9DtUXCOu3pyetVvQ69327Db2lMHLdsM0j5QGwZ4LsgEnebphGQt7Cs+/jDMTDqX3pg5VaNG/3pH/8Pbu4Zvi5LAAA="];
+RAW_ADJ="";
 RAW_ADJ+=["H4sIAAAAAAAC/62bWY+j6rWG/0tdnKvt3UzG0FIUYQabyQxmdHSEmI0xxmY2W/u/pyqtnNitHEWh102rpJbfwgUvPA/ft/74wBAMWX3+g358/+ODwD6+/+2Pj+rj+4eaJh+/ffSfP5277t5+//YNRTCiS5swqqff47r61n5DJ2ZDtobgH+Wak1TZZWd5MI3Pz90+vqN//vZfJK2lUh19hW33PX+pjUNdFBg//kjC/v+krEnTogrz9Pdz3Xbfim/buKPnSfyPh/BvPyg63U+/0a/7ro/Snz48juPvzx//84/jH8MuPv91+AvLnIL+KSVTWf7Iwf/8398+0P/7m/53afSAqtMzKnKF+efX+UzDFqaROqpMqsrZhfiShi9M69r+qW8Qb3brlzRiYVpo"].join("");
 RAW_ADJ+=["PEZ6JYzHW/6Stl6Y1kjXUIk3CGq9ppEL02Sveh72YiRL6kvaZmHa7cklD6bnH0X7kkYtTNO7oXmQg+WN1EsavTBNUKXikty95ly+pKHIwjh+raw9w6n4G/8at7QNZ8RyhHnatfTr9YsurQO3PhehSVs8SrzGLe3DUy6cC0qgE/96XtGlheBiK1DqYvs0kNe4pY3wo4ezcvgmofzXuKWVOHTiUeXvzun+dqEs7cRQHMUDhz4Y5O3olpaCKpOH216YuYxf45a24iGtjH7edRj5+mWxpa1IJ/siivtHfrBf45a2Qps0RbA24mF6e0YsbUW/OybEMKde9Hqzw5a2AqMq6Szd6XB87Sy2tBWNua7mKXee+OuFgi1tBXaypwdHn3R7fI1b2oogCKhqa/G3"].join("");
 RAW_ADJ+=["8fV+hy1tRdYrZaCrRX19vQVgS1thS1Q4WGVjPF7vd9jSVhyGzdrSkJskv17G+NJWKM5JpqsqcerXo8OXtiJvOMer01B46yy+tBWrqEKbm8V65StQ4EtbYauXe+pg2+P29cziS1uxGTjK3stU/QZP+NJWVMhYb50TpRuvZIcvbUVSEu4zYuLnv7TgK25pK+LAch56xSC7N4pd2gpn9FT8SJ26+vUWgC9tBb17TELZ507weiqIpa3AnN4hzcedUF/vKMTSVvT7qLwS12yc/vVg/PPrUYatvwSQ/BLAxeeZa8PEMqXDfih/cq9fzvkFhSKy2IhuVeh2EAolMkpo3S82yuQACiWrUuCdqZOxigEUaotV1SihVK3WAAplCIwX2WZjsAiAQiHNnLp9SK3t"].join("");
@@ -1803,7 +1808,7 @@ RAW_ADJ+=["IBdeyZLE1tAsk4GQi/msUHUqJeSVgJCLzrCudd4dCAtkXeUZd3OYVpp2jCHkotepa+ggT
 RAW_ADJ+=["5Pvo6tJWkJ9flJfGDT+BrKsYrZs95sQt31qxWC5YfNam04P1WQZCLtJLkxVPlTz7Mci6ygXDWJ3m0jiHWFfBT5FPHvk+fBOz5esqwUOVcTNXVy9zIX/+HSCpQ6cnTAAA"].join("");
 
 /* CATEGORIES */
-var DATA=null,PLAYERS=null,COACHES=null,ADJUNTOS=null;
+var DATA=null,PLAYERS=null,COACHES=null,ADJUNTOS=null,MS=null;
 var activeCompsGlobal=null;
 var activeJugCats=null,activeJugPos=null,activeJugComps=null;
 var activeCoachCats=null,activeRivalCats=null;
@@ -1819,7 +1824,7 @@ var ALL_COMPS_JUG=["Liga","Copa","Promocion","Copa Federacion","Copa de la Liga"
 var COMP_LABELS={"Liga":"Liga","Copa":"Copa","Promocion":"Promoción","Copa Federacion":"Copa Federación","Copa de la Liga":"Copa de la Liga","Final Campeones":"Final Campeones","Liga Consolacion":"Liga Consolación","Amistoso":"Amistoso"};
 var ALL_CATS=["1","2","2 GRUPO B","2B","1 RFEF","3","REGIONAL"];
 
-var STANDINGS={"2025-2026":{"pos":2,"liga":"Segunda División","pg":14,"pe":7,"pp":8,"gf":48,"gc":33,"pts":49},"2024-2025":{"pos":17,"liga":"Segunda División","pg":14,"pe":11,"pp":17,"gf":65,"gc":63,"pts":53},"2023-2024":{"pos":1,"liga":"Primera Federación - Grupo 2","pg":26,"pe":4,"pp":8,"gf":74,"gc":39,"pts":82},"2022-2023":{"pos":3,"liga":"Primera Federación - Grupo 2","pg":16,"pe":14,"pp":8,"gf":46,"gc":32,"pts":62},"2021-2022":{"pos":13,"liga":"Primera Federación - Grupo 2","pg":14,"pe":8,"pp":16,"gf":37,"gc":50,"pts":50},"2020-2021":{"pos":21,"liga":"Segunda División","pg":11,"pe":8,"pp":23,"gf":35,"gc":54,"pts":41},"2019-2020":{"pos":1,"liga":"Segunda División B - Grupo III","pg":14,"pe":8,"pp":6,"gf":40,"gc":24,"pts":50},"2018-2019":{"pos":15,"liga":"Segunda División B - Grupo III","pg":8,"pe":20,"pp":10,"gf":36,"gc":36,"pts":44},"2010-2011":{"pos":10,"liga":"Segunda División B - Grupo III","pg":15,"pe":8,"pp":15,"gf":39,"gc":42,"pts":53},"2009-2010":{"pos":22,"liga":"Segunda División","pg":7,"pe":12,"pp":23,"gf":37,"gc":62,"pts":33},"2008-2009":{"pos":7,"liga":"Segunda División","pg":17,"pe":14,"pp":11,"gf":55,"gc":42,"pts":65},"2007-2008":{"pos":5,"liga":"Segunda División","pg":16,"pe":13,"pp":13,"gf":42,"gc":37,"pts":61},"2006-2007":{"pos":14,"liga":"Segunda División","pg":15,"pe":11,"pp":16,"gf":48,"gc":41,"pts":56},"2005-2006":{"pos":12,"liga":"Segunda División","pg":14,"pe":12,"pp":16,"gf":46,"gc":50,"pts":54},"2004-2005":{"pos":8,"liga":"Segunda División B - Grupo III","pg":1,"pe":0,"pp":1,"gf":2,"gc":2,"pts":3},"2003-2004":{"pos":8,"liga":"Segunda División B - Grupo III","pg":1,"pe":0,"pp":1,"gf":2,"gc":2,"pts":3},"2002-2003":{"pos":5,"liga":"Segunda División B - Grupo III","pg":2,"pe":2,"pp":0,"gf":5,"gc":3,"pts":8},"2000-2001":{"pos":6,"liga":"Segunda División B - Grupo III","pg":1,"pe":1,"pp":0,"gf":2,"gc":0,"pts":4},"1999-2000":{"pos":10,"liga":"Segunda División B - Grupo III","pg":1,"pe":0,"pp":1,"gf":2,"gc":2,"pts":3},"1997-1998":{"pos":9,"liga":"Segunda División B - Grupo III","pg":1,"pe":0,"pp":1,"gf":1,"gc":3,"pts":3},"1993-1994":{"pos":17,"liga":"Segunda División","pg":9,"pe":14,"pp":15,"gf":30,"gc":48,"pts":32},"1992-1993":{"pos":10,"liga":"Segunda División","pg":13,"pe":10,"pp":15,"gf":40,"gc":45,"pts":36},"1991-1992":{"pos":15,"liga":"Segunda División","pg":13,"pe":9,"pp":16,"gf":42,"gc":48,"pts":35},"1990-1991":{"pos":19,"liga":"LaLiga","pg":8,"pe":12,"pp":18,"gf":27,"gc":48,"pts":28},"1989-1990":{"pos":14,"liga":"LaLiga","pg":9,"pe":14,"pp":15,"gf":30,"gc":48,"pts":32},"1988-1989":{"pos":1,"liga":"Segunda División","pg":21,"pe":9,"pp":8,"gf":49,"gc":29,"pts":51},"1987-1988":{"pos":11,"liga":"Segunda División","pg":12,"pe":13,"pp":13,"gf":34,"gc":45,"pts":37},"1986-1987":{"pos":8,"liga":"Segunda División","pg":16,"pe":12,"pp":16,"gf":44,"gc":52,"pts":44},"1985-1986":{"pos":5,"liga":"Segunda División","pg":18,"pe":9,"pp":11,"gf":61,"gc":42,"pts":45},"1984-1985":{"pos":11,"liga":"Segunda División","pg":14,"pe":8,"pp":16,"gf":51,"gc":51,"pts":36},"1983-1984":{"pos":10,"liga":"Segunda División","pg":14,"pe":9,"pp":15,"gf":45,"gc":57,"pts":37},"1982-1983":{"pos":15,"liga":"Segunda División","pg":11,"pe":13,"pp":14,"gf":45,"gc":60,"pts":35},"1981-1982":{"pos":18,"liga":"LaLiga","pg":3,"pe":6,"pp":25,"gf":33,"gc":82,"pts":12},"1980-1981":{"pos":1,"liga":"Segunda División","pg":15,"pe":15,"pp":8,"gf":45,"gc":33,"pts":45},"1979-1980":{"pos":5,"liga":"Segunda División","pg":16,"pe":10,"pp":12,"gf":47,"gc":42,"pts":42},"1974-1975":{"pos":6,"liga":"Segunda División","pg":17,"pe":8,"pp":13,"gf":48,"gc":39,"pts":42},"1973-1974":{"pos":16,"liga":"LaLiga","pg":9,"pe":11,"pp":14,"gf":28,"gc":46,"pts":29},"1972-1973":{"pos":5,"liga":"LaLiga","pg":13,"pe":9,"pp":12,"gf":44,"gc":38,"pts":35},"1971-1972":{"pos":2,"liga":"Segunda División","pg":21,"pe":8,"pp":9,"gf":50,"gc":29,"pts":50},"1970-1971":{"pos":6,"liga":"Segunda División","pg":16,"pe":11,"pp":11,"gf":40,"gc":31,"pts":43},"1969-1970":{"pos":15,"liga":"Segunda División","pg":8,"pe":3,"pp":11,"gf":20,"gc":24,"pts":19},"1966-1967":{"pos":3,"liga":"Segunda División","pg":15,"pe":7,"pp":8,"gf":42,"gc":24,"pts":37},"1960-1961":{"pos":13,"liga":"Segunda División","pg":8,"pe":8,"pp":14,"gf":36,"gc":50,"pts":24},"1956-1957":{"pos":20,"liga":"Segunda División","pg":9,"pe":9,"pp":20,"gf":42,"gc":64,"pts":27},"1955-1956":{"pos":16,"liga":"Segunda División","pg":7,"pe":7,"pp":16,"gf":46,"gc":56,"pts":21},"1954-1955":{"pos":12,"liga":"Segunda División","pg":12,"pe":3,"pp":15,"gf":50,"gc":57,"pts":27},"1953-1954":{"pos":5,"liga":"Segunda División","pg":16,"pe":1,"pp":13,"gf":67,"gc":61,"pts":33},"1949-1950":{"pos":16,"liga":"Segunda División","pg":6,"pe":3,"pp":21,"gf":23,"gc":77,"pts":15},"1948-1949":{"pos":8,"liga":"Segunda División","pg":11,"pe":2,"pp":13,"gf":47,"gc":61,"pts":24},"1947-1948":{"pos":12,"liga":"Segunda División","pg":10,"pe":3,"pp":13,"gf":48,"gc":60,"pts":23},"1946-1947":{"pos":18,"liga":"LaLiga","pg":4,"pe":5,"pp":17,"gf":39,"gc":80,"pts":13},"1945-1946":{"pos":14,"liga":"LaLiga","pg":7,"pe":5,"pp":14,"gf":43,"gc":62,"pts":19},"1944-1945":{"pos":12,"liga":"LaLiga","pg":9,"pe":4,"pp":13,"gf":36,"gc":51,"pts":22},"1943-1944":{"pos":13,"liga":"LaLiga","pg":7,"pe":4,"pp":15,"gf":34,"gc":58,"pts":18},"1942-1943":{"pos":4,"liga":"LaLiga","pg":14,"pe":7,"pp":5,"gf":47,"gc":31,"pts":35},"1941-1942":{"pos":9,"liga":"LaLiga","pg":11,"pe":5,"pp":10,"gf":36,"gc":41,"pts":27},"1940-1941":{"pos":1,"liga":"LaLiga","pg":0,"pe":0,"pp":0,"gf":0,"gc":0,"pts":0}};
+var STANDINGS={"2025-2026":{"pos":2,"liga":"Segunda División","pg":14,"pe":7,"pp":8,"gf":65,"gc":48,"pts":0,"af":"Mantiene"},"2024-2025":{"pos":17,"liga":"Segunda División","pg":14,"pe":11,"pp":17,"gf":65,"gc":63,"pts":53,"af":"Mantiene"},"2023-2024":{"pos":1,"liga":"Primera Federación - Grupo 2","pg":26,"pe":4,"pp":8,"gf":74,"gc":39,"pts":82,"af":"Ascenso"},"2022-2023":{"pos":3,"liga":"Primera Federación - Grupo 2","pg":16,"pe":14,"pp":8,"gf":46,"gc":32,"pts":62,"af":"Mantiene"},"2021-2022":{"pos":13,"liga":"Primera Federación - Grupo 2","pg":14,"pe":8,"pp":16,"gf":37,"gc":50,"pts":50,"af":"Mantiene"},"2020-2021":{"pos":21,"liga":"Segunda División","pg":11,"pe":8,"pp":23,"gf":35,"gc":54,"pts":41,"af":"Descenso"},"2019-2020":{"pos":1,"liga":"Segunda División B - Grupo III","pg":14,"pe":8,"pp":6,"gf":40,"gc":24,"pts":50,"af":"Ascenso"},"2018-2019":{"pos":15,"liga":"Segunda División B - Grupo III","pg":8,"pe":20,"pp":10,"gf":36,"gc":36,"pts":44,"af":"Mantiene"},"2010-2011":{"pos":10,"liga":"Segunda División B - Grupo III","pg":15,"pe":8,"pp":15,"gf":39,"gc":42,"pts":53,"af":"Descenso"},"2009-2010":{"pos":22,"liga":"Segunda División","pg":7,"pe":12,"pp":23,"gf":37,"gc":62,"pts":33,"af":"Descenso"},"2008-2009":{"pos":7,"liga":"Segunda División","pg":17,"pe":14,"pp":11,"gf":55,"gc":42,"pts":65,"af":"Mantiene"},"2007-2008":{"pos":5,"liga":"Segunda División","pg":16,"pe":13,"pp":13,"gf":42,"gc":37,"pts":61,"af":"Mantiene"},"2006-2007":{"pos":14,"liga":"Segunda División","pg":15,"pe":11,"pp":16,"gf":48,"gc":41,"pts":56,"af":"Mantiene"},"2005-2006":{"pos":12,"liga":"Segunda División","pg":14,"pe":12,"pp":16,"gf":46,"gc":50,"pts":54,"af":"Mantiene"},"2004-2005":{"pos":8,"liga":"Segunda División B - Grupo III","pg":1,"pe":0,"pp":1,"gf":34,"gc":24,"pts":61,"af":"Ascenso"},"2003-2004":{"pos":8,"liga":"Segunda División B - Grupo III","pg":1,"pe":0,"pp":1,"gf":49,"gc":32,"pts":67,"af":"Mantiene"},"2002-2003":{"pos":5,"liga":"Segunda División B - Grupo III","pg":2,"pe":2,"pp":0,"gf":48,"gc":17,"pts":74,"af":"Mantiene"},"2000-2001":{"pos":6,"liga":"Segunda División B - Grupo III","pg":1,"pe":1,"pp":0,"gf":40,"gc":39,"pts":54,"af":"Mantiene"},"1999-2000":{"pos":10,"liga":"Segunda División B - Grupo III","pg":1,"pe":0,"pp":1,"gf":48,"gc":44,"pts":58,"af":"Mantiene"},"1997-1998":{"pos":9,"liga":"Segunda División B - Grupo III","pg":1,"pe":0,"pp":1,"gf":58,"gc":29,"pts":64,"af":"Mantiene"},"1993-1994":{"pos":17,"liga":"Segunda División","pg":9,"pe":14,"pp":15,"gf":30,"gc":48,"pts":32,"af":"Descenso"},"1992-1993":{"pos":10,"liga":"Segunda División","pg":13,"pe":10,"pp":15,"gf":40,"gc":45,"pts":36,"af":"Mantiene"},"1991-1992":{"pos":15,"liga":"Segunda División","pg":13,"pe":9,"pp":16,"gf":42,"gc":48,"pts":35,"af":"Mantiene"},"1990-1991":{"pos":19,"liga":"LaLiga","pg":8,"pe":12,"pp":18,"gf":27,"gc":48,"pts":28,"af":"Descenso"},"1989-1990":{"pos":14,"liga":"LaLiga","pg":9,"pe":14,"pp":15,"gf":30,"gc":48,"pts":32,"af":"Mantiene"},"1988-1989":{"pos":1,"liga":"Segunda División","pg":21,"pe":9,"pp":8,"gf":49,"gc":29,"pts":51,"af":"Ascenso"},"1987-1988":{"pos":11,"liga":"Segunda División","pg":12,"pe":13,"pp":13,"gf":34,"gc":45,"pts":37,"af":"Mantiene"},"1986-1987":{"pos":8,"liga":"Segunda División","pg":16,"pe":12,"pp":16,"gf":44,"gc":52,"pts":34,"af":"Mantiene"},"1985-1986":{"pos":5,"liga":"Segunda División","pg":18,"pe":9,"pp":11,"gf":61,"gc":42,"pts":45,"af":"Mantiene"},"1984-1985":{"pos":11,"liga":"Segunda División","pg":14,"pe":8,"pp":16,"gf":51,"gc":51,"pts":36,"af":"Mantiene"},"1983-1984":{"pos":10,"liga":"Segunda División","pg":14,"pe":9,"pp":15,"gf":45,"gc":57,"pts":37,"af":"Mantiene"},"1982-1983":{"pos":15,"liga":"Segunda División","pg":11,"pe":13,"pp":14,"gf":45,"gc":60,"pts":35,"af":"Mantiene"},"1981-1982":{"pos":18,"liga":"LaLiga","pg":3,"pe":6,"pp":25,"gf":33,"gc":82,"pts":12,"af":"Descenso"},"1980-1981":{"pos":1,"liga":"Segunda División","pg":15,"pe":15,"pp":8,"gf":45,"gc":33,"pts":45,"af":"Ascenso"},"1979-1980":{"pos":5,"liga":"Segunda División","pg":16,"pe":10,"pp":12,"gf":47,"gc":42,"pts":42,"af":"Mantiene"},"1974-1975":{"pos":6,"liga":"Segunda División","pg":17,"pe":8,"pp":13,"gf":48,"gc":39,"pts":42,"af":"Mantiene"},"1973-1974":{"pos":16,"liga":"LaLiga","pg":9,"pe":11,"pp":14,"gf":28,"gc":46,"pts":29,"af":"Descenso"},"1972-1973":{"pos":5,"liga":"LaLiga","pg":13,"pe":9,"pp":12,"gf":44,"gc":38,"pts":35,"af":"Mantiene"},"1971-1972":{"pos":2,"liga":"Segunda División","pg":21,"pe":8,"pp":9,"gf":50,"gc":29,"pts":50,"af":"Ascenso"},"1970-1971":{"pos":6,"liga":"Segunda División","pg":16,"pe":11,"pp":11,"gf":40,"gc":31,"pts":43,"af":"Mantiene"},"1969-1970":{"pos":15,"liga":"Segunda División","pg":8,"pe":3,"pp":11,"gf":36,"gc":43,"pts":35,"af":"Mantiene"},"1966-1967":{"pos":3,"liga":"Segunda División","pg":15,"pe":7,"pp":8,"gf":42,"gc":24,"pts":37,"af":"Mantiene"},"1960-1961":{"pos":13,"liga":"Segunda División","pg":8,"pe":8,"pp":14,"gf":36,"gc":50,"pts":24,"af":"Descenso"},"1956-1957":{"pos":20,"liga":"Segunda División","pg":9,"pe":9,"pp":20,"gf":42,"gc":64,"pts":27,"af":"Descenso"},"1955-1956":{"pos":16,"liga":"Segunda División","pg":7,"pe":7,"pp":16,"gf":46,"gc":56,"pts":21,"af":"Mantiene"},"1954-1955":{"pos":12,"liga":"Segunda División","pg":12,"pe":3,"pp":15,"gf":50,"gc":57,"pts":27,"af":"Mantiene"},"1953-1954":{"pos":5,"liga":"Segunda División","pg":16,"pe":1,"pp":13,"gf":67,"gc":61,"pts":33,"af":"Mantiene"},"1949-1950":{"pos":16,"liga":"Segunda División","pg":6,"pe":3,"pp":21,"gf":23,"gc":77,"pts":15,"af":"Descenso"},"1948-1949":{"pos":8,"liga":"Segunda División","pg":11,"pe":2,"pp":13,"gf":47,"gc":61,"pts":24,"af":"Mantiene"},"1947-1948":{"pos":12,"liga":"Segunda División","pg":10,"pe":3,"pp":13,"gf":48,"gc":60,"pts":23,"af":"Mantiene"},"1946-1947":{"pos":18,"liga":"LaLiga","pg":4,"pe":5,"pp":17,"gf":39,"gc":80,"pts":13,"af":"Descenso"},"1945-1946":{"pos":14,"liga":"LaLiga","pg":7,"pe":5,"pp":14,"gf":38,"gc":54,"pts":26,"af":"Mantiene"},"1944-1945":{"pos":12,"liga":"LaLiga","pg":9,"pe":4,"pp":13,"gf":43,"gc":50,"pts":24,"af":"Mantiene"},"1943-1944":{"pos":13,"liga":"LaLiga","pg":7,"pe":4,"pp":15,"gf":42,"gc":36,"pts":29,"af":"Mantiene"},"1942-1943":{"pos":4,"liga":"LaLiga","pg":14,"pe":7,"pp":5,"gf":41,"gc":43,"pts":31,"af":"Mantiene"},"1941-1942":{"pos":9,"liga":"LaLiga","pg":11,"pe":5,"pp":10,"gf":54,"gc":63,"pts":26,"af":"Mantiene"},"1940-1941":{"pos":1,"liga":"LaLiga","pg":0,"pe":0,"pp":0,"gf":64,"gc":34,"pts":31,"af":"Ascenso"},"1922-1923":{"af":"Mantiene","pts":8,"gf":15,"gc":18},"1923-1924":{"af":"Mantiene","gf":12,"gc":11},"1924-1925":{"af":"Mantiene","gf":10,"gc":0},"1925-1926":{"af":"Mantiene","gf":33,"gc":16},"1926-1927":{"af":"Mantiene","pts":41,"gf":58,"gc":16},"1927-1928":{"af":"Mantiene","gf":54,"gc":25},"1928-1929":{"af":"Descenso","pts":23,"gf":71,"gc":44},"1929-1930":{"af":"Ascenso","pts":7,"gf":30,"gc":18},"1930-1931":{"af":"Mantiene","pts":18,"gf":55,"gc":47},"1931-1932":{"af":"Mantiene","pts":15,"gf":49,"gc":45},"1932-1933":{"af":"Descenso","pts":4,"gf":56,"gc":70},"1939-1940":{"af":"Mantiene","pts":14,"gf":44,"gc":45},"1950-1951":{"af":"Mantiene","pts":40,"gf":54,"gc":38},"1951-1952":{"af":"Mantiene","pts":29,"gf":52,"gc":38},"1952-1953":{"af":"Ascenso","pts":41,"gf":79,"gc":40},"1957-1958":{"af":"Mantiene","pts":50,"gf":78,"gc":36},"1958-1959":{"af":"Mantiene","pts":30,"gf":47,"gc":47},"1959-1960":{"af":"Ascenso","pts":43,"gf":56,"gc":24},"1961-1962":{"af":"Mantiene","pts":37,"gf":68,"gc":35},"1962-1963":{"af":"Mantiene","pts":31,"gf":43,"gc":39},"1963-1964":{"af":"Mantiene","pts":47,"gf":70,"gc":29},"1964-1965":{"af":"Mantiene","pts":50,"gf":80,"gc":18},"1965-1966":{"af":"Ascenso","pts":52,"gf":83,"gc":28},"1967-1968":{"af":"Descenso","pts":30,"gf":27,"gc":30},"1968-1969":{"af":"Ascenso","pts":60,"gf":84,"gc":19},"1975-1976":{"af":"Mantiene","pts":36,"gf":45,"gc":47},"1976-1977":{"af":"Mantiene","pts":35,"gf":46,"gc":45},"1977-1978":{"af":"Mantiene","pts":35,"gf":34,"gc":37},"1978-1979":{"af":"Mantiene","pts":38,"gf":48,"gc":43},"1994-1995":{"af":"Mantiene","pts":48,"gf":62,"gc":33},"1995-1996":{"af":"Mantiene","pts":59,"gf":40,"gc":34},"1996-1997":{"af":"Mantiene","pts":54,"gf":45,"gc":41},"1998-1999":{"af":"Mantiene","pts":52,"gf":42,"gc":38},"2001-2002":{"af":"Mantiene","pts":46,"gf":38,"gc":46},"2011-2012":{"af":"Mantiene","pts":66,"gf":47,"gc":40},"2012-2013":{"af":"Mantiene","pts":68,"gf":58,"gc":29},"2013-2014":{"af":"Mantiene","pts":43,"gf":44,"gc":43},"2014-2015":{"af":"Mantiene","pts":74,"gf":61,"gc":29},"2015-2016":{"af":"Mantiene","pts":70,"gf":60,"gc":41},"2016-2017":{"af":"Mantiene","pts":76,"gf":65,"gc":31},"2017-2018":{"af":"Ascenso","pts":83,"gf":64,"gc":32}};
 var activeCompsGlobal=null;
 
 function initGlobalComps(){
@@ -1894,7 +1899,7 @@ function navTo(view){
   if(view==="jugadores-view")renderJugadores();
   else if(view==="rivales"){renderCompToggle("rival-comp-filter-bar","toggleGlobalComp");filterRivales();}
   else if(view==="entrenadores")filterCoaches();
-  else if(view==="temporadas"){document.getElementById("tab-temporadas").classList.add("active");}
+  else if(view==="temporadas"){document.getElementById("tab-temporadas").classList.add("active");try{history.replaceState(null,"",location.pathname+location.search);}catch(e){}}
 }
 function cap(s){if(!s)return"";return s.toLowerCase().replace(/(^|[\s-])([a-zà-ÿ])/gi,function(m,sep,l){return sep+l.toUpperCase();});}
 function rc(r){if(r==="Ganado")return"ganado";if(r==="Empatado")return"empatado";return"perdido";}
@@ -1967,26 +1972,32 @@ function renderSeasonStandings(season){
   if(!el)return;
   var s=STANDINGS[season];
   if(!s){el.style.display="none";return;}
+  var allSeasons=Object.keys(DATA).sort();
+  var isCurrent=season===allSeasons[allSeasons.length-1];
   var pos=s.pos;
   var medal=pos===1?"🥇":pos===2?"🥈":pos===3?"🥉":"";
   var posStr=medal?medal+" "+pos+"º":pos+"º";
-  // Color based on position category
   var posColor=pos<=3?"var(--gualda)":pos<=6?"rgba(240,234,216,.8)":"rgba(240,234,216,.5)";
+  var afArrow=s.af==="Ascenso"?"<span style=\"color:#4caf50;font-size:1.5rem\" title=\"Ascenso\">⬆</span>"
+    :s.af==="Descenso"?"<span style=\"color:#e53935;font-size:1.5rem\" title=\"Descenso\">⬇</span>":"";
   el.innerHTML=
     "<div style=\"display:flex;align-items:center;gap:16px;flex-wrap:wrap\">"
-    +"<div style=\"display:flex;flex-direction:column;align-items:center;min-width:60px\">"
-    +"<span style=\"font-size:2rem;font-weight:700;color:"+posColor+";font-family:'Oswald',sans-serif;line-height:1\">"+posStr+"</span>"
-    +"<span style=\"font-size:.65rem;letter-spacing:1px;text-transform:uppercase;color:rgba(240,234,216,.4);margin-top:2px\">Posición</span>"
-    +"</div>"
+    +(!isCurrent&&pos?
+      "<div style=\"display:flex;flex-direction:column;align-items:center;min-width:60px\">"
+      +"<span style=\"font-size:2rem;font-weight:700;color:"+posColor+";font-family:'Oswald',sans-serif;line-height:1\">"+posStr+"</span>"
+      +"<span style=\"font-size:.65rem;letter-spacing:1px;text-transform:uppercase;color:rgba(240,234,216,.4);margin-top:2px\">Posición</span>"
+      +"</div>":"")
     +"<div style=\"flex:1;min-width:160px\">"
-    +"<div style=\"font-size:.8rem;font-weight:600;color:rgba(240,234,216,.85);margin-bottom:4px\">"+s.liga+"</div>"
+    +"<div style=\"display:flex;align-items:center;gap:8px;margin-bottom:4px\">"
+    +"<span style=\"font-size:.8rem;font-weight:600;color:rgba(240,234,216,.85)\">"+s.liga+"</span>"
+    +(afArrow?"<span>"+afArrow+"</span>":"")
+    +"</div>"
     +"<div style=\"display:flex;gap:12px;font-size:.75rem;color:rgba(240,234,216,.55)\">"
     +(s.pg||s.pe||s.pp?"<span>"+s.pg+"V · "+s.pe+"E · "+s.pp+"D</span>":"")
     +(s.gf||s.gc?"<span>"+s.gf+":"+s.gc+" goles</span>":"")
-    +(s.pts?"<span style=\"color:rgba(240,234,216,.75)\">"+s.pts+" pts</span>":"")
+    +(!isCurrent&&s.pts?"<span style=\"color:rgba(240,234,216,.75)\">"+s.pts+" pts</span>":"")
     +"</div>"
     +"</div>"
-    +"<div style=\"font-size:.6rem;color:rgba(240,234,216,.25);align-self:flex-end\">Fuente: Transfermarkt</div>"
     +"</div>";
   el.style.display="block";
 }
@@ -2131,6 +2142,7 @@ currentFilteredPartidos=null;currentPartidoIdx=null;
   applyCompFilter();
   navTo("partidos");
   renderSeasonStandings(currentSeason);
+  setHash("temporada/"+encodeURIComponent(season));
 }
 function toggleSeasonComp(comp){
   if(!activeCompsGlobal)activeCompsGlobal={};
@@ -2230,7 +2242,7 @@ function selectPartido(idx){
         var h="<div class=\""+alignClass+"\"><span class=\"gname "+(isCD2?"cdcs":"rival-team")+"\"";
         if(isCD2)h+=" data-key=\""+encodeURIComponent(g2.n)+"\" onclick=\"openByKey(this,'partido')\""
         h+=">"+(g2.pp?"p.p. ("+cap(g2.pp)+")":cap(g2.n))+pen+"</span>";
-        if(g2.c&&g2.c!=="Penalti")h+="<span class=\"ghow\">"+g2.c+"</span>";
+        if(g2.c)h+="<span class=\"ghow\">"+g2.c+"</span>";
         if(g2.as&&isCD2)h+="<span class=\"gasist\" data-key=\""+encodeURIComponent(g2.as)+"\" onclick=\"openByKey(this,'partido')\">👟 "+cap(g2.as)+"</span>";
         h+="</div>";return h;
       }
@@ -2356,6 +2368,49 @@ function selectPartido(idx){
       tandaEl.appendChild(tDiv);
     }
   }
+  // ── MILESTONES ──
+  var msKey=currentSeason+"|"+idx;
+  var msSection=document.getElementById("partido-milestones");
+  if(!msSection){
+    msSection=document.createElement("div");
+    msSection.id="partido-milestones";
+    var content2=document.getElementById("partido-content");
+    if(content2)content2.appendChild(msSection);
+  }
+  var msData=MS&&MS[msKey];
+  if(msData&&msData.length){
+    var TYPE_ICON={"debut":"🎽","pj":"🔢","1er_gol":"⚽","gol_rnd":"⚽","doblete":"⚽⚽","hattrick":"🎩","1era_asist":"👟","asist_rnd":"👟"};
+    var TYPE_LBL={
+      "debut":"Debut oficial",
+      "pj":function(v){return "Partido "+v+" con el club";},
+      "1er_gol":"Primer gol con el club",
+      "gol_rnd":function(v){return "Gol número "+v+" con el club";},
+      "doblete":function(v){var ord=v===1?"1º":v===2?"2º":v===3?"3º":v+"º";return ord+" doblete con el club";},
+      "hattrick":function(v){var ng=Array.isArray(v)?v[0]:v;var nh=Array.isArray(v)?v[1]:1;var ord=nh===1?"1º":nh===2?"2º":nh===3?"3º":nh+"º";var gstr=ng>3?" ("+ng+" goles)":"";return ord+" hat-trick con el club"+gstr;},
+      "1era_asist":"Primera asistencia con el club",
+      "asist_rnd":function(v){return "Asistencia número "+v+" con el club";}
+    };
+    var msHtml="<div class='detail-section' style='margin-top:12px'>"
+      +"<div class='ds-title'>🏅 Hitos del partido</div>"
+      +"<div class='ds-body' style='padding:10px 14px;display:flex;flex-direction:column;gap:6px'>";
+    for(var mi2=0;mi2<msData.length;mi2++){
+      var ms2=msData[mi2];
+      var icon=TYPE_ICON[ms2.type]||"★";
+      var lbl=TYPE_LBL[ms2.type];
+      var lblStr=typeof lbl==="function"?lbl(ms2.val):lbl;
+      var pname2=ms2.player?("<span style='color:var(--gualda);font-weight:600'>"+cap(ms2.player)+"</span> — "):"";
+      msHtml+="<div style='display:flex;align-items:center;gap:8px;font-size:.82rem'>"
+        +"<span style='font-size:1rem;min-width:22px;text-align:center'>"+icon+"</span>"
+        +"<span>"+pname2+lblStr+"</span>"
+        +"</div>";
+    }
+    msHtml+="</div></div>";
+    msSection.innerHTML=msHtml;
+  } else {
+    msSection.innerHTML="";
+  }
+
+
   var enombres=document.querySelectorAll("#view-partido .equipo-nombre");
   for(var ei=0;ei<enombres.length;ei++){
     (function(el){
@@ -2367,6 +2422,7 @@ function selectPartido(idx){
       }
     })(enombres[ei]);
   }
+  setHash("partido/"+encodeURIComponent(currentSeason)+"/"+idx);
 }
 
 
@@ -2395,7 +2451,7 @@ function openJugador(key,from){
         var j=allJ[ji];
         if(j.n===key&&j.d!==97&&j.d!==98&&j.d!==99){
           var comp=pm.c||"";
-          if(!seasons[s])seasons[s]={};
+          if(!seasons[s])seasons[s]={_cat:pm.cat||""};
           if(!seasons[s][comp])seasons[s][comp]={pj:0,tit:0,g:0,a:0,am:0,ro:0,min:0,ge:0,pg:0,pe:0,pp:0};
           var sd=seasons[s][comp];
           sd.pj++;
@@ -2411,8 +2467,9 @@ function openJugador(key,from){
     }
   }
 
-  // Sort comps: Amistoso last
-  allComps.sort(function(a,b){if(a==="Amistoso")return 1;if(b==="Amistoso")return -1;return a.localeCompare(b);});
+  // Sort comps: Liga, Copa, Promocion... Amistoso last
+  var _cO=["Liga","Copa","Promocion","Copa de la Liga","Copa Federacion","Final Campeones","Liga Consolacion","Amistoso"];
+  allComps.sort(function(a,b){var ai=_cO.indexOf(a),bi=_cO.indexOf(b);if(ai===-1)ai=_cO.length-2;if(bi===-1)bi=_cO.length-2;return ai-bi;});
   var activeJugPComps={};
   allComps.forEach(function(c){activeJugPComps[c]=c!=="Amistoso";});
 
@@ -2462,11 +2519,13 @@ function openJugador(key,from){
     var st=stat?"'"+stat+"'":"null";
     return"<td><span class=\"num-link\" onclick=\"window._showJugMatches("+sa+","+ra+","+st+")\" >"+val+"</span></td>";
   }
+  setHash("jugador/"+encodeURIComponent(key));
 
 function renderJugDetail(){
     var filtComps=allComps.filter(function(c){return activeJugPComps[c]!==false;});
     var temps=Object.keys(seasons).sort();
     var tRows="";
+    var chartRows=[];
     var totals={pj:0,g:0,a:0,am:0,ro:0,min:0,pg:0,pe:0,pp:0};
     for(var ti=0;ti<temps.length;ti++){
       var t=temps[ti],sd2=seasons[t];
@@ -2477,8 +2536,15 @@ function renderJugDetail(){
       }
       if(!row.pj)continue;
       totals.pj+=row.pj;totals.g+=row.g;totals.a+=row.a;totals.am+=row.am;totals.ro+=row.ro;totals.min+=row.min;totals.pg+=row.pg;totals.pe+=row.pe;totals.pp+=row.pp;
+      chartRows.push({s:t,pj:row.pj,g:row.g,min:row.min,cat:sd2._cat||"",af:STANDINGS[t]?STANDINGS[t].af:""});
+      var tCat=sd2._cat||"";var tCatShort=tCat==="1"?"1ª":tCat==="2"?"2ª":tCat==="2B"?"2ªB":tCat==="1 RFEF"?"1ªRFEF":tCat==="3"?"3ª":tCat;
+      var tAf=STANDINGS[t]?STANDINGS[t].af:"";
+      var tArrow=tAf==="Ascenso"?"<span style='color:#4caf50;font-size:1.1rem' title='Ascenso'>⬆</span>"
+        :tAf==="Descenso"?"<span style='color:#e53935;font-size:1.1rem' title='Descenso'>⬇</span>":"";
       tRows+="<tr>"
         +"<td class=\"left\">"+t+"</td>"
+        +"<td class=\"left\" style=\"font-size:.75rem;color:var(--gris-claro);white-space:nowrap\">"+tCatShort+"</td>"
+        +"<td style=\"text-align:center;padding:0 4px\">"+tArrow+"</td>"
         +jugNumCell(row.pj,t,null,null)
         +jugNumCell(row.pg,t,"Ganado",null)
         +jugNumCell(row.pe,t,"Empatado",null)
@@ -2497,7 +2563,7 @@ function renderJugDetail(){
       fb+="<button class=\"filter-btn"+(on?" active":"")+"\" onclick=\"window._toggleJugPComp('"+c+"')\">"+c+"</button>";
     });
     document.getElementById("jug-profile-comp-filter").innerHTML=fb;
-    document.getElementById("jug-profile-tbody").innerHTML=tRows||"<tr><td colspan=\"10\" style=\"text-align:center;color:var(--gris-claro);font-style:italic;padding:12px\">Sin datos con estos filtros</td></tr>";
+    document.getElementById("jug-profile-tbody").innerHTML=tRows||"<tr><td colspan=\"12\" style=\"text-align:center;color:var(--gris-claro);font-style:italic;padding:12px\">Sin datos con estos filtros</td></tr>";
     // Update totals stats-bar
     var els={pj:"jug-stat-pj",pg:"jug-stat-pg",pe:"jug-stat-pe",pp:"jug-stat-pp",g:"jug-stat-g",a:"jug-stat-a",am:"jug-stat-am",ro:"jug-stat-ro"};
     Object.keys(els).forEach(function(k){var el=document.getElementById(els[k]);if(el)el.textContent=totals[k];});
@@ -2505,6 +2571,8 @@ function renderJugDetail(){
     if(pct)pct.textContent=totals.pj>0?Math.round(totals.pg*100/totals.pj)+"%":"–";
     var minel=document.getElementById("jug-stat-min");
     if(minel)minel.textContent=totals.min.toLocaleString("es");
+    window._jugChartRows=chartRows;
+    drawJugChart();
   }
 
   function _toggleJugPComp(comp){
@@ -2512,6 +2580,79 @@ function renderJugDetail(){
     renderJugDetail();
   }
   window._toggleJugPComp=_toggleJugPComp;
+
+  var _jugChartMetric="pj";
+  window.setJugChartMetric=function(m,btn){
+    _jugChartMetric=m;
+    var tabs=document.getElementById("jug-chart-tabs");
+    if(tabs){var bs=tabs.querySelectorAll(".filter-btn");bs.forEach(function(b){b.classList.remove("active");});if(btn)btn.classList.add("active");}
+    drawJugChart();
+  };
+
+  function drawJugChart(){
+    var svg=document.getElementById("jug-chart");
+    if(!svg||!window._jugChartRows)return;
+    var rows=window._jugChartRows;
+    if(!rows.length){svg.innerHTML="";return;}
+    var metric=_jugChartMetric;
+    var W=svg.getBoundingClientRect().width||600;
+    var H=180,padL=30,padR=10,padT=16,padB=36;
+    var innerW=W-padL-padR,innerH=H-padT-padB;
+    var vals=rows.map(function(r){return r[metric]||0;});
+    var maxVal=Math.max.apply(null,vals)||1;
+    var niceMax=Math.ceil(maxVal/10)*10||10;
+    var n=rows.length;
+    var gap=innerW/n;
+    var barW=Math.min(gap*0.62,40);
+    var CAT_COL={"1":"#7ec8a0","2":"#e8d47a","2B":"#e8a87a","2 GRUPO B":"#e8a87a","1 RFEF":"#e8a87a","3":"#e87a7a","REGIONAL":"#e87a7a"};
+    var CAT_SH={"1":"1\u00aa","2":"2\u00aa","2B":"2\u00aaB","2 GRUPO B":"2\u00aaB","1 RFEF":"1\u00aaRFEF","3":"3\u00aa","REGIONAL":"Reg."};
+    var MLBL={pj:"Partidos",g:"Goles",min:"Minutos"};
+    var html="";
+    for(var gi=0;gi<=4;gi++){
+      var gv=Math.round(niceMax*gi/4);
+      var gy=padT+innerH-(gv/niceMax)*innerH;
+      html+="<line x1='"+padL+"' x2='"+(W-padR)+"' y1='"+gy+"' y2='"+gy+"' stroke='"+(gi===0?"rgba(240,234,216,.2)":"rgba(240,234,216,.07)")+"' stroke-width='1'/>";
+      if(gi>0)html+="<text x='"+(padL-5)+"' y='"+(gy+3.5)+"' font-size='9' fill='rgba(240,234,216,.35)' text-anchor='end' font-family='DM Sans,sans-serif'>"+gv+"</text>";
+    }
+    for(var bi=0;bi<rows.length;bi++){
+      var rd=rows[bi];
+      var val=rd[metric]||0;
+      var bh=val>0?Math.max((val/niceMax)*innerH,3):0;
+      var bx=padL+bi*gap+gap/2;
+      var by=padT+innerH-bh;
+      var col=CAT_COL[rd.cat]||"rgba(240,234,216,.3)";
+      var r2=Math.min(3,bh/2);
+      if(bh>0)html+="<path d='M"+(bx-barW/2)+","+(by+r2)+" Q"+(bx-barW/2)+","+by+" "+(bx-barW/2+r2)+","+by+" L"+(bx+barW/2-r2)+","+by+" Q"+(bx+barW/2)+","+by+" "+(bx+barW/2)+","+(by+r2)+" L"+(bx+barW/2)+","+(padT+innerH)+" L"+(bx-barW/2)+","+(padT+innerH)+" Z' fill='"+col+"' opacity='.88' data-idx='"+bi+"' class='jug-bar'/>";
+      if(rd.af==="Ascenso")html+="<text x='"+bx+"' y='"+(by-4)+"' text-anchor='middle' font-size='12' fill='#4caf50'>\u2b06</text>";
+      else if(rd.af==="Descenso")html+="<text x='"+bx+"' y='"+(by-4)+"' text-anchor='middle' font-size='12' fill='#e53935'>\u2b07</text>";
+      var lbl=rd.s.replace(/^(\d{4})-(\d{4})$/,function(_,a,b){return a+"-"+b.slice(2);});
+      html+="<text x='"+bx+"' y='"+(padT+innerH+12)+"' text-anchor='middle' font-size='"+(n>12?"8":"9")+"' fill='rgba(240,234,216,.4)' font-family='DM Sans,sans-serif'>"+lbl+"</text>";
+    }
+    svg.innerHTML=html;
+    var tt=document.getElementById("jug-chart-tt");
+    var bars2=svg.querySelectorAll(".jug-bar");
+    bars2.forEach(function(bar){
+      bar.style.cursor="pointer";
+      bar.addEventListener("mouseenter",function(e){
+        if(!tt)return;
+        var idx=parseInt(this.getAttribute("data-idx"));
+        var rd2=rows[idx];
+        var afHtml=rd2.af==="Ascenso"?" <span style='color:#4caf50'>\u2b06 Ascenso</span>":rd2.af==="Descenso"?" <span style='color:#e53935'>\u2b07 Descenso</span>":"";
+        tt.innerHTML="<div style='font-family:Oswald,sans-serif;font-size:13px;letter-spacing:1px;color:var(--gualda);margin-bottom:5px'>"+rd2.s+"</div>"
+          +"<div style='display:flex;justify-content:space-between;gap:14px;font-size:11px;color:rgba(240,234,216,.65)'>"+MLBL[metric]+"<b style='color:#f5f2ed'>"+rd2[metric]+(metric==="min"?" min":"")+"</b></div>"
+          +(metric!=="pj"?"<div style='display:flex;justify-content:space-between;gap:14px;font-size:11px;color:rgba(240,234,216,.65)'>Partidos<b style='color:#f5f2ed'>"+rd2.pj+"</b></div>":"")
+          +(metric!=="g"?"<div style='display:flex;justify-content:space-between;gap:14px;font-size:11px;color:rgba(240,234,216,.65)'>Goles<b style='color:#f5f2ed'>"+rd2.g+"</b></div>":"")
+          +"<div style='font-size:10px;color:rgba(240,234,216,.35);margin-top:4px;padding-top:4px;border-top:1px solid rgba(240,234,216,.08)'>"+(CAT_SH[rd2.cat]||rd2.cat)+" Div."+afHtml+"</div>";
+        var wrap=svg.parentElement.getBoundingClientRect();
+        var ex=e.clientX-wrap.left+10,ey=e.clientY-wrap.top-10;
+        if(ex+160>wrap.width)ex-=165;
+        tt.style.left=ex+"px";tt.style.top=ey+"px";tt.style.opacity="1";
+      });
+      bar.addEventListener("mouseleave",function(){if(tt)tt.style.opacity="0";});
+    });
+  }
+  window.drawJugChart=drawJugChart;
+
 
   function mi(l,v){if(!v)return"";return"<div class=\"pmi\"><label>"+l+"</label><span>"+v+"</span></div>";}
 
@@ -2546,8 +2687,24 @@ function renderJugDetail(){
     +"<div class=\"filter-bar\" id=\"jug-profile-comp-filter\" style=\"padding:10px 14px 0\"></div>"
     +"<div class=\"ds-body\" style=\"padding:0\"><div class=\"table-wrapper\">"
     +"<table class=\"data-table\"><thead><tr>"
-    +"<th class=\"left\">Temporada</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>Goles</th><th>Asist.</th><th>🟨</th><th>🟥</th><th>Min.</th>"
+    +"<th class=\"left\">Temporada</th><th class=\"left\">Cat.</th><th></th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>Goles</th><th>Asist.</th><th>🟨</th><th>🟥</th><th>Min.</th>"
     +"</tr></thead><tbody id=\"jug-profile-tbody\"></tbody></table>"
+    +"</div></div>"
+    +"<div class=\"ds-body\" style=\"padding:14px 16px 16px\">"
+    +"<div style=\"display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap\" id=\"jug-chart-tabs\">"
+    +"<button class=\"filter-btn active\" onclick=\"setJugChartMetric('pj',this)\">Partidos</button>"
+    +"<button class=\"filter-btn\" onclick=\"setJugChartMetric('g',this)\">Goles</button>"
+    +"<button class=\"filter-btn\" onclick=\"setJugChartMetric('min',this)\">Minutos</button>"
+    +"</div>"
+    +"<div style=\"position:relative\"><svg id=\"jug-chart\" style=\"width:100%;height:180px;overflow:visible\"></svg>"
+    +"<div id=\"jug-chart-tt\" style=\"position:absolute;background:#0f0e0d;border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:8px 12px;font-size:12px;pointer-events:none;opacity:0;transition:opacity .12s;min-width:140px;z-index:10\"></div></div>"
+    +"<div style=\"display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:rgba(240,234,216,.4)\">"
+    +"<span><span style=\"display:inline-block;width:9px;height:9px;background:#7ec8a0;border-radius:2px;vertical-align:middle;margin-right:4px\"></span>1&ordf; Div.</span>"
+    +"<span><span style=\"display:inline-block;width:9px;height:9px;background:#e8d47a;border-radius:2px;vertical-align:middle;margin-right:4px\"></span>2&ordf; Div.</span>"
+    +"<span><span style=\"display:inline-block;width:9px;height:9px;background:#e8a87a;border-radius:2px;vertical-align:middle;margin-right:4px\"></span>2&ordf;B / 1&ordf;RFEF</span>"
+    +"<span><span style=\"display:inline-block;width:9px;height:9px;background:#e87a7a;border-radius:2px;vertical-align:middle;margin-right:4px\"></span>3&ordf; / Reg.</span>"
+    +"<span style=\"color:#4caf50\">⬆</span><span style=\"margin-left:-10px\">Ascenso</span>"
+    +"<span style=\"color:#e53935\">⬇</span><span style=\"margin-left:-10px\">Descenso</span>"
     +"</div></div></div>";
 
   window.scrollTo(0,0);
@@ -2925,6 +3082,7 @@ function openRival(encodedName){
   document.getElementById("rival-search").value=name;
   filterRivales();
   showRivalMatches(encodedName,null,null);
+  setHash("rival/"+encodedName);
 }
 
 
@@ -3018,7 +3176,7 @@ function openCoach(encodedKey){
         var j=allJ[ji];
         if(j.n===key&&(j.d===97||j.d===98||j.d===99)){
           var comp=p.c||"";
-          if(!seasons[s])seasons[s]={};
+          if(!seasons[s])seasons[s]={_cat:p.cat||""};
           if(!seasons[s][comp])seasons[s][comp]={pj:0,pg:0,pe:0,pp:0};
           seasons[s][comp].pj++;
           if(p.r==="Ganado")seasons[s][comp].pg++;
@@ -3034,11 +3192,8 @@ function openCoach(encodedKey){
   }
 
   // Sort comps: non-Amistoso first, Amistoso last
-  allComps.sort(function(a,b){
-    if(a==="Amistoso")return 1;
-    if(b==="Amistoso")return -1;
-    return a.localeCompare(b);
-  });
+  var _cO=["Liga","Copa","Promocion","Copa de la Liga","Copa Federacion","Final Campeones","Liga Consolacion","Amistoso"];
+  allComps.sort(function(a,b){var ai=_cO.indexOf(a),bi=_cO.indexOf(b);if(ai===-1)ai=_cO.length-2;if(bi===-1)bi=_cO.length-2;return ai-bi;});
 
   var activeCoachComps={};
   allComps.forEach(function(comp){activeCoachComps[comp]=comp!=="Amistoso";});
@@ -3084,7 +3239,7 @@ function openCoach(encodedKey){
 
   function renderCoachDetail(){
     var filtComps=allComps.filter(function(comp){return activeCoachComps[comp]!==false;});
-    var temps=Object.keys(seasons).sort().reverse();
+    var temps=Object.keys(seasons).sort();
     var tRows="";
     var totals={pj:0,pg:0,pe:0,pp:0};
     for(var ti=0;ti<temps.length;ti++){
@@ -3096,8 +3251,14 @@ function openCoach(encodedKey){
       }
       if(!row.pj)continue;
       totals.pj+=row.pj;totals.pg+=row.pg;totals.pe+=row.pe;totals.pp+=row.pp;
+      var tCat=sd._cat||"";var tCatShort=tCat==="1"?"1ª":tCat==="2"?"2ª":tCat==="2B"?"2ªB":tCat==="1 RFEF"?"1ªRFEF":tCat==="3"?"3ª":tCat;
+      var tAfC=STANDINGS[t]?STANDINGS[t].af:"";
+      var tArrowC=tAfC==="Ascenso"?"<span style='color:#4caf50;font-size:1.1rem' title='Ascenso'>⬆</span>"
+        :tAfC==="Descenso"?"<span style='color:#e53935;font-size:1.1rem' title='Descenso'>⬇</span>":"";
       tRows+="<tr>"
         +"<td class=\"left\">"+t+"</td>"
+        +"<td class=\"left\" style=\"font-size:.75rem;color:var(--gris-claro);white-space:nowrap\">"+tCatShort+"</td>"
+        +"<td style=\"text-align:center;padding:0 4px\">"+tArrowC+"</td>"
         +numCell(row.pj,t,null,null)
         +numCell(row.pg,t,null,"Ganado")
         +numCell(row.pe,t,null,"Empatado")
@@ -3112,7 +3273,7 @@ function openCoach(encodedKey){
       fb+="<button class=\"filter-btn"+(on?" active":"")+"\" onclick=\"window._toggleCoachComp(\'"+comp+"\')\">"+comp+"</button>";
     });
     document.getElementById("coach-comp-filter").innerHTML=fb;
-    document.getElementById("coach-season-tbody").innerHTML=tRows||"<tr><td colspan=\"6\" style=\"text-align:center;color:var(--gris-claro);font-style:italic;padding:12px\">Sin partidos con estos filtros</td></tr>";
+    document.getElementById("coach-season-tbody").innerHTML=tRows||"<tr><td colspan=\"8\" style=\"text-align:center;color:var(--gris-claro);font-style:italic;padding:12px\">Sin partidos con estos filtros</td></tr>";
     // Stats bar — clickable
     var pj=document.getElementById("coach-stat-pj");
     var pg=document.getElementById("coach-stat-pg");
@@ -3157,7 +3318,7 @@ function openCoach(encodedKey){
     +"<div class=\"filter-bar\" id=\"coach-comp-filter\" style=\"padding:10px 14px 0\"></div>"
     +"<div class=\"ds-body\" style=\"padding:0\"><div class=\"table-wrapper\">"
     +"<table class=\"data-table\"><thead><tr>"
-    +"<th class=\"left\">Temporada</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>% Victoria</th>"
+    +"<th class=\"left\">Temporada</th><th class=\"left\">Cat.</th><th></th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>% Victoria</th>"
     +"</tr></thead><tbody id=\"coach-season-tbody\"></tbody></table>"
     +"</div></div></div>";
 
@@ -3167,6 +3328,7 @@ function openCoach(encodedKey){
   window.scrollTo(0,0);
   showView("jugador");
   renderCoachDetail();
+  setHash("entrenador/"+encodeURIComponent(key));
 }
 
 
@@ -3181,6 +3343,89 @@ function readHash(){
   else if(type==="entrenador"&&parts[1]){if(COACHES){var ck=decodeURIComponent(parts[1]);if(COACHES[ck])openCoach(encodeURIComponent(ck));}}
   else if(type==="rival"&&parts[1])openRival(parts[1]);
 }
+
+var RAW_MS="";
+RAW_MS+=["H4sIAAAAAAACA6W9zY4ryZIe+CrEXR8BjD8yqV2QjGRGnmBEVgQjb51sXAitUWNGMw1JaLUGENQCunaqRS0KtREu5m34YhNOMpg0c3P7zPMuTp2DAs3dw93c3H4/+x9/SjZp+m+m/2T/kvzp3/7d//jTP//3//IPf/q3f/oP//Dv/9s//+nbn/7LP/79f/+Hf5r+R9mU7aGc/s//+/f/+Kd/+5/+2z/+4//8Fv712/Tr3Uu5r5rGSvLcTyT1sOsW++54/l9ttXuxkr7Xu6o9VYuhG6wkx7Idq2bxXvbTEs2fVR768ji2J/ss/c6+pp/Gqi+biLFP59/a6iN+gyP2aVf2TTcsyqYu2en/5dsD76Qq78zn0/X78x/n39mSyUD540DJP/zTv/s///M/Gs+NjLNSF/RWt6duUYfJ1yp5P27rzswz/e6lbs6/DuHZnuBHRx71sZRmy9xs+b8s1W9ryvfSfmnLQzeYb8Nt1+uo27MYyua93Hd9"];
+RAW_MS+=["+INyILhO8ubfqAuw+RbmvQ21wucYFgfT7//+3/39f/2P/xVy6jdtDuFzP3//f/39P//zP/3H/+P/CRP8Xf4t+Ys+Q1gkoI9BwuS2jfrlO3btqTz/Pq1ZvMC5G6MATP5e7+2Ctu925gfivWsX38vx+bnqw2vLjByniOn//O//8R/++R9UGZFo6zyMdTPJpFbbwhwuU9lEf4Hk5wnkFSTzhAWJ8uX6SYX7pBXgiqFr2LGpO3iqz7/2ffUxSaj2dTz/0obn1Z/Hvn7rmsALcRsgM1+JCFERJiNzIz5Q7kfgaPUbfJsWyWXttAKyNKCUkmmB4jC9jWUfu9E2KmnFIUKyZKg+hPZbFygSdyR05oQytj/II2+oAuki8ZqmGuy7ikikx86j+buMvnfWjUijuFw5vIRfL1kWxuoNX3pDvN1JvrAzGfu+An+fpk9bTzF9PMWJU/7dP/2n/4DZefmFD8xvH7hyH7gGZvP9HMqxN2sRTflWtaX9Jqi/"];
+RAW_MS+=["9xXi6ZVs626x69p9FaFYGsi8ubaV/7Bpj2pfVe2fZfl82+4Us5O6HQJr+Gy/jGbA/Fv2F7pQ/cneXt6iRRrB9Z5GdJVdZNIcyGNv4SmlR4+uwa/jTyoQYf1Plu5ksSvwsd6Gpbqno9lX/fmPNjwhMUykIxK+lD8wkmjyVPclEzFEb/0v/3fYL1cs9UscFkd0wiSWjzJ4oJIooJOm4a8UNrZYRj5mXG5DvVZUy2M5Pf3CC1PohwiEqj8JI0jYRhSIraX3NmeSJ0HOD9WBDJQY7fH0P5fK/yRS+KfFF7SP4i9IeEvnLDhbhF0IP7z0AJ7wy+ib7PRtNTyusjsz/uVKZ/5Zu7mfgGleNtsQAzBxyJdHxYTvnHUSv45wMgAKgR05hW4HlcOFuU4RdhAgETbzua/23UJ2sZBT0ZXbttp2J9OxEMYrlnQS3Tsyu6qiJAc+V9E9qW+kjbULpwl+TRikf0G+Xe3g4J7Yj508jVZjahKcZJAi/Jx7"];
+RAW_MS+=["S+AssTYIorBICBEEAgEzry9j9cnsS+ecfZoK88wZfIE5az7q/vMo6NS8QZD56xNEKrKcJaiqgTWV2Tp5cuQb8Eacur6vDn03mC3hU9Xtu97diLGv/wZXe65GvcphNwYd5aK30Ccg25CCc5bsra84OlZ02gxM671zy8htLAz+ULA1SKeHPCLP+1VGkXZ1TVeM1Obw1GSYtSJsRRNjSemfkOyTBnmiY2yQBaBEwm9DJLZEAi3srJsSasDawKPsTlDJLQwgHh9wq4o0TBRCYS9PzE7d4pwF+tfl93GigJ/qx7gNBITnZepBmaE8nn+xeyT7U8+DdbpRT4VOwta2/srN2TCJvgRXBxyC95XTBx6qZrGdlKTzL8p9SxMwsbhddIg0Vm1aA7WJz/mo68yT5l+5d9lXIl7syqTRXsenLwQmiuUXVcucb5TBK6DeH2zPpgbXn3rnpO8Tz09iBPTo+B9HlZol1Ejp2ufrv5nosyVVSUVZaAg8+U6A"];
+RAW_MS+=["t+m6l0NEtuXpeyd85G2R6JKj+STLgFKwXVE8uaI3666N3OjR48ZFMiMvdIdCfazazuhNoqxexKq0m7htTL9464u/0A3YIPc9m/erhuyKzUvjBooLKFnG7iS5MaJxyzhyGbf1OfsShYX5Y8y5FyqFfO6C0eeR9CtGXyD3TdD9Mo+wjlzBmtE/Rfh+HC9Q6YGFqvcGFV9wQefIT8e/ksfyQm5EQZpePjBbug9MgB/jM0/7cP7jaE/63fbd6fxHeNbEGkSkl9Nw18jumxWrBFkRASk/f08KjIJr2vAi5Pabh9Hj9G9j9SMqNcVnmfQvUfZFSpdnSA9CB4+C+oh+FelboPzDArn0Ywt2prFy54mSK2LHcz7AJ4jLmIxdJ5BM6hSdpuzr8uta1YbNqHP8W7WfFOZtd5IrI+6joFzSHxqxJVtNH6EAlRknd1IK/eorsYn1lyQUu4r0VQsX5Ij5fvdBNuogr2NTT9bGoh+rUxUeBToM9ENIE+i0"];
+RAW_MS+=["+FEy3f5Om4UvGTeW+PWGZjsTD+zKxdve+JEJJt/cJ9VPfbrjQ6fs9Aawq2dffsVTn7CNytJIXz15wemZesrqvD+JmysFysynI6qphpOWsM05WKUkK9CD1M9dc3CFdWZj+vxbF+Va/vonfuWNeLyZKd2HzOLqEWckw+jlVMf64ArwYopi3MYox1dEX+qv5FQlOZ01XpRkdIB1pOPoS4su6Jwbu1F6t6rutwSURJVN1bovXtxCJeYK0ap/r3qFn5IE8yUeJPuKmz1ZsVFWVv+Enjb01l+iq4OyXiUgFzLwuGSFj7y4DBhDhWtPFUvRs8n4mlE0gE+fMPoVZhajgYz9him7XmnsnWYiId1EfvwswF0dcJaBp/TQtZW5aHHfNR8xCaL0u9SEhmbclXEsp1F4wzsD4FRFja+SCPUP03M9CcsupvZBJxHm2F/KtialYJCk2u3AkWM+fqvllZJJkSQlkyZxjAPMLF/9SOja8khtOY2ekF25ImYz"];
+RAW_MS+=["0rjNWAH/Aj8qthdPKCnM92nm90jAPAgyP4QTWcZuacaYOoFuimnVyqVAiUa+qsMGQFxEORx8L/lxhsxJwZyja1vZrWfmofIUr244RRSJgZ9LSplHQT8FgGRUu1qRQqn+2E17cZDdtjO97sa6MOn5N0UKJrFBEuhD8iyGPGhU+5forvy5IEi+BEbtW/nTWJ/Mz9FrN5x/XQxVczQbbXf/+aHsd+ffzHQvVd9OPLy3xy36ctLdI7LX+8kA3ZcRipDERbddTi0ms2kjZGJvdvWKgp0QyqspQYJKF7SdCyXS+zRkBxGYBeYH/7N8GvBl+iEXSK3+KJtLWvxHMA1GSsny1HEy6QqIt6as+ypMvobBhXJXnsqmbm11Md6byeWN7uUs+6o9/xGpigo0ZMoNvnyQe0Q2B/MCBWVbtZWdV72NVRGNujYKnuPry0jZJ6c23yBiKt9tdP7l46cx5ngwhZS++xUi7yDpluQAB+tlnPSxqCp8lUKAm+k7"];
+RAW_MS+=["RbCCQFnZt+WoUBv8KPpzI94sPieAlnr8vS15An3WGqb7Ka81HQplDnqBAKo5LIH+KDxiS+wpkXiIzpuCZYd0vcsouQsQ5SgD5e38ax8BNneNCESD1G3LoW7quFiLTiNEk6OedO3nkjfv8ecJ3WCYV61+iJgVTSkMwDVkfamu7D93DNWSfE2KQgfNsBgmZt+9RIpoNDEsjPN3BRVRClPqG08JHnKQ50Uaiih8ziIjKE4BMRF6Vt5meugqIvMLn6AnJVy8mE237auYLPEHQc4vhy5+Jh2km0RKDJ7N+fewNSyGvx8Xt4z4khQEGIhIYKeUIJcDY2aPHsVWKKfyTQd5P9W+L9suzKMwK9V/8FI2AjDEri/2Yj/9J8JYfLT9+Cejqja+4Yx8g64VVXAKmOrnbxEoSWELZBuaouIFsr4MV22FboVF8n4iIN2Xl8Vtf8bIkW+eXDZOrIhUyefNrlqqhG/9Q+TiOH2KOZcc+BkM10J07BNZwFe4"];
+RAW_MS+=["idnbnD3KChyRoH3ed8dFSXOUMFS1fT1ZevHq5HXmSG9lP5atWZusjo5bFwEQlfnzEmihhMxsMowuravmI05xVgjwQ0SibCZTZ46sz1+TW0AAw0dh0/zm2rd5UoAjXDXVpLBywC9NSz7/UrURng5vzymfoOwOlTcFX/Djz2HaY0jVmBdXxInunJGj7Cqy2JQRI2W0PkiocDO5mr3yKNW4XKKWtVyRwNS7mLe7iFUN2J6qebdsKv5ledxprhD3iL4NOqWSik/dC6imjrBKFi0U5oB47uJ+Ocux8fUCTzIXyyhRed/623SgqUa7dxlBEYk6dLY1nUypWSNQTXyRKIajLzOUiOLTkEkLey5jumQL1oMr9bbrpVzCmXoNzDAqSWPYM2eHv4y7d0+MXPdQ/zQ6RckU/RE03iJcoyPdbs7WRbQxWLAR0BPx+HomjBadIKGNE9MbNpUixyR90Lv/m3gP1oqJLJAqIbfLoSMk8GmLYvqQ9jBPpwgi"];
+RAW_MS+=["Mk8ROQ/jgxTxAfWAFhHu0gIFnPUWRbaDXke7C275zLnrlJGjzicqWpGH5VdX7+UXfd9sVStYfPLoUCui3td1QefSdfzXrvxpvOS0l2LG8zyKASRDUDtVDvH3k8y40SoVH7YHwFc21dtotpCHqj9M8qrvXALeISpoayWVnJIh0oTuCHAKn8rpTT9IZar3AUBYf+x39iyjUz++ymm09+nSSOdiyuhVff6R2e5vykypX/vbs/RcbvvqUJ6ULyiMdejH0gcfoiMZ8Bq1Z2oeZmM2cT41khttqij2vqkf+/BkbDJ09qLTDoOeW3x92DBFDx3/uJx9XIHSY8r3KhhBk/J1xc3g57eKNMx8Dnj6yqGwWwkdox4bMzGWIbeOfq3UgwuS8jUkVuPb28QsNXpPPildu6gcddw6lvuxt/ePfK76fhyq4YsKyVr1+da7spfE4u1DDOVq4mOkY7Zrr48IPq8vUn8CXupD3dbdF23DlB9tYWlRE3W+r5MV"];
+RAW_MS+=["sBi6cOWrlNiCaASu8GkS+mnICvUHSJEsji+p8GQKwoGi3GGDkYdsjxKafMnH2ATANLri6G3ZKivQlflqP5b9PqiE0qGekI+H7Ib3JYoiEkp3KtgYXvWmcCZfYWnvGDI2b4ZRkodFeSxjcmAYw33C999nzcM75q3Y26qV0RryHh3oARAEwDLiIZk9cq6ZVY76B5ZD1Q5SzctMnoKM023Xx6bnoykRILI0QJTyWND5DE8F5kDsZvtkhNu8BgNE1CnIIABgZzIjImputmVTOuAJZTr9pj6X7T6mexs/mRWb7cmAqhZyzHC4sEe3Q8GOAmPT+PtIB0g09DgpDW4mNGS5q4doycmKtBzXbIl5TF5K6n0h8ruzd41Rr63K/X1e1xkmXyPBN2nDH10TAbHibJDFoRzGiObrR7czp7ATTkLen2TN4rU+TqaSqC3cvg57x/2ECDJACrbnFNED79i1z52oqN0mi1dZM11O7au2GmJ6TMskZJFK2MRf"];
+RAW_MS+=["H+e2jaUNkcpyoex68ML6HxqU4TPrgJvxNjHtzp6wfvV09OdfR2VKVBo6Vgr3aMCm3tvOzgU8WNtu2L0smu4jnLeCogHejIUpm8rbMFxHoDO9QbA/sZWadVjvGyHqCF9swgaAlSxWQWh5QLXBwAbSy8S+woL8gu8jNAiYwguTv9nP2WxP0bI4pyNouZTMi6OHgg61GRvm3eG5RcCUqb8XO70//j4x9Obwxr/ukesalD+h5udlTFznWA3l31KIrHoWT7Jae/sMZIrpHyLiDezk2m/TlzzR1RW2NtTBBcoGRdxl49c7pUvU3UvHyTCIAvU5Kcac0FDi4dcJXZfutlLsXMkeP4oRu9tMGr4t3er7I3Oj3GDmi1OuXTClrqRKxXlKoBrdzHrU2UQQyQ9bxE4CqUZ99163u7ps7N/5GXPxIA/p1IanU+E4kADHjxPqReHnIGQWD9rHrQxYRDvenS4yZ9z7xg3wxrQXcIq/QQPJQAG+KlHEXaAU"];
+RAW_MS+=["j4V2t49K7eFBnd80J4kA0bSM03NS5BRhqhyubJY2k34QRHikI7CrD3OcGTl7W1JdiDvfoXPHKct/gl4viV+pogOMyWP1cep+xDwmPgGdUJeX9WmcPnt4q5QRDKCz4WW4Jjw56ut4EYZVf4xEO+rrbYyraNt0uukqKJ7HicgOlfFc/ujsz065rerevBYBCJPscAKff/1bJO2TUqi4J88O1CAme04iIB+EUBD8zSbkmdqfhGpChUG4SdtHJkTSiawXYMgo+CwijIz+eylSgnZfzxDqu+kxEWXljXwFyI9VhBqv/VzaaPptCV3ZBhSmn3+vlEZZsmJEWcMGgwLYN0kheB27nUs2QIEVOrbu/DPmOw8SVST76feayZ+M0YjPfJT58itOkwfFl19cX0ZEydhTdzz/Miwcak6EJAtS0S8yFEgi7hOAeuthMVw0l+7rgj1lK0URKHbBZnIHX1MswVPf1+MXDLMreHgwGyugH0iNUtC1tFBKvgOB"];
+RAW_MS+=["B1QZ31d7MdP5tom6Q2z3UrYy2siN3ODqiZXB4XML9Yjxg1zfbGYROm0tbZLTYt8kmJfs65Ml90GVBreBgBtjkq3vYlfXO32KMnjj8hhE18A8VwYj0qP32s60Oew+28ou1XmAFYAarvvS7Bpuu+O+2lejMt1T5LMLG6Ox32d0PtidNyyP6DjIg966jLZrYCcyTM17HX2D+C7KMkE9QteeFvtqcex6bZAnDEiq354Uddl4tEXvSs0smpdRbpmZvHDQGkUC8yyOVXvozIGen6bV2m3gGXmjPEziaWxPdtv5gkW8cECq518aO2JH2R6acGKEDMOvE8iA+E1E9sVH2ZeHLgo1DpEIZkSM/HWoE3Ys5VqCcJq5K4FxYuNJSo27AqQAudf/OrJi9ECoPEtGAmiazbPTuSRY+nmAFcqkFIeAaqjU8A7xNOS4iCq8lH6lIY/SKCfEPtPycz5P/mTzAy52Y19L2Mt3Pgdi1PVgicLhlV46OiO6WhGL"];
+RAW_MS+=["T02wyN4bBmvLtBXoYtfbL7pgg+0KrjnorLhtJiX8RSFHRVvkCxJKDKrrr7dUxB+mw6CWiqH958tJIfJ3PV1+ZSFPJqXR8EVoV8mhss+A7RU8GQYB5zyKa93LdVoHO1NAbLHh5DBJzMrAnL23cIAi4fvm94TsT/VHRD+DOkZDOehVg97wH21pVuqb8x9vEcC/obLg+TQMlXQWH5VvkfYRYZcbgGqExw4RSHZ97CTCTpOtg5A8OtcEmzloRBKKILnikek7uY43seskm3XeAJwtFZk2IpfMztOBmuc5A7MOL3gFEZ/FMQCIxK6LcTTS37NPhIBz6r0CebTKxlgUGvVDQzE3JH1gozNyB/lu5ZYuVNJ7vmQDFRb9ouy/6Iz+CmWcmHcNgE8PbalsvaN0ogj9KGXbuf6inpWxcdRe8dTPomfeutyQOia27f+ergzpXXQAxrdpArrdnLTlYrnJjgO2IxAZgQ4B3zpPhaH0Ocq/3Fdm3eLHOMT4"];
+RAW_MS+=["fsDPhYvhU9CPMRcD1JKHRfRJ82Z5UYWWBRNnmndUUuZQEPaAxHgGDasy3IAHsjOTChn08mjcJFkt9GV7NFkciFmhAlKyRApQADAtLKaW7lq9vtiV9gj4JE7tfdTf66Zs7N1w6u35l/Pv9lfpze2r7LC7bazB+tA+SE6SxrsmF1BoWyFWUDwSAB8q2LpAz1xIFPCDhTdcrSyjpsFdqtxIYZ8PtiMPmbXzEAXuURLXcko4NDLhCjhqbo2IysYlbtQRvnS20QmdFrl31EsqhWcffp4AYcaZRjiGjbVBk7gv9AKjLCd+TZAHyWeiFGSp8w+GUwg7lLIdMvlLjdwjvfeMe5ZRzJaytRpyRTRvl5xZRl5ggYfUWspHZRCDM3vKEhM8sKGY+qyC68Q3Eyn2HrdFHV3GpDHCqGO3gS2WauVidZdwOegQOexgV0eh3PmsTecrgPf3rXqNKEymkpHPBStiBEmQMT5PMSSHvAgH1lbkwNu9rav2vWrr"];
+RAW_MS+=["fUS7tJ1ZX9u9dP0+xlTSCQT+ZARqwtxbd9QqWqUyZoVCcIFslUogweTs+uhuqSqN8MHttD8Rre203wtgq5NgeB/FqN+N95DdbxjCkvMayzT81qV0SpTA5ZEX0SpF9hdUlOMfNFkjbBPGBXfB6DPoktnqlbKiP28rl2/dZy3i/AIQSIfNiFM1DRxHFQtR4Po6JR0B6QvBgBYd5glgeLTT11RKbxooLtV+j4dpdREhR5d5V7YSqsj9ezZaLj+11Au2pdRjabtkObhk4ophri/8TA3YnosOpcEC+x4ERszXlbBFwVoOdpUeNe55DITZzh/jZRQzZnEfyIQ2TEQgSlLkXLPW7AAFC4RiqwdbhKyy3fmXD9F3fZtOd9afqjZCH6v7vo5Rx/Tfi4+xQiLwjMe3yHjmBF6PW8GEqPbRb5lMRc5FT5huXXvSGMchZgSDLiTNSsZAwGDsUoK+g3C6DZzukV0SxvhJnHXKrilEamyVhQMYq2pw79W/"];
+RAW_MS+=["KvQKhh9xhihPAHFj3NEs7zMgeAfFUgs1IA4SGG/i3Y01r9GA1xSK3M1DrI0NCHbl4EocBmUo5Bb9SpzcIL83hqr/OLezsE4ypdoHzjP5C8ZZKWoZ4yIcJowSYkB70zxZkDjbv5El7/4Uh29ZIHzdY/XhctTtL2o51K29Yn8SGuM25gHWfi/lvJ3GsrHXZPSXnFfpxtw2K8PZQDEz7l0FUSc1vJwnzC0soR5RQC2J2shyepOicqroM5bSb1qhwqqu6Rau4kc5iDUUIeqmiMo6eXmXMR+Y0cWBgvguDkkOMwlMUtNvpXzPotDr6HbkbHkJtrXI+h5trXkMQz5c7KKZtsRXrXsbpqnaTmFQ2Gac27OMPDHBudbxCYCW24W62XT74HsnCUXv53Qy6B1CW63fNwcnKec8zEIdXR88QmaB4fSfBjqIoiF7DrZZdXCImAWCmt52kxIQ84RP+/1uT4upmtpex1cNk1weym1lfiT78rmcROBzhBZS"];
+RAW_MS+=["7V6qd5eyZ6bYdhFpN9e6MPPQDgRLOPbb0aEiqLjDu2Kn1sewF1QqCETbJS4rYsNcX1upRnzeAxQXQQmYfp31qY5wOb2Vp74Or06xHfjCDLBHIXYmU+YYMzquk338hSj7XRdeILK18aUNSMmu0fZlZZDUEvvTG2doMqNzEI4vFUxAJ4m1sU3k3ZUWSmc2aE6CjKFj5KA9jnseI1ANfozDqVKmK7A+6z9RdAhDTS6SStA9Igyg40WS3ydMBuYqvNqDh4HzlgUEPO7JOjnUxxjoOYmArlH3Wr3Xu6o9VQsfAUsYSlfM38+/7RzW+jCNM0k9bSAEXDbJy5h2derMuiUSoDTEb9HGZ7CdOrn7M1M6pMriCemV5bTYyKI//+rr5XGPtkOiq61HZ9nEVIohEjHAzkgSSw9g672bjv8wvZqoTUAAi2bXjxK3344S6ZnawYTSG6TtI5OCZk2T5fBmV0hO9U59GoUlahtKFopeHPNAKwSJ2zpI3BCY"];
+RAW_MS+=["1f2wALrrBbl0MVQH19JFGSaB4EAKcWprE66lsoYYR7UwJeecd+1QWNSj4A0ffauuPr2KEax5P4BS7o52bzc5xkZ0isyTodwCJviRv5L/nM4GnVXebqZsAJQ3K2YzsTFAD8a6jQh8+MfP8tZDivBeOxWIl+1Nm7EBEBAkOye+zes4cj47CrzJijyV6NGskrMB0EMUPmiLYLgn9s3TRR9ZEXWTcn19gXfjniE3r7IA113OBmSDrCKzCQs+AGKv0NfQYXK9q/yDs/C+AIeTWmxgO+xTeSxjwlB+KUNKJ0yABXBlDeE23OhRPFDVcGxSEnUVIAryUnekbksJlXL+GFR5cKrKg0KOjXZhN9Wg4+5FLnK9TbgyYAS8NZNxM4THeNKMbk+r5vwK1LSjlj9OJ/OlUDgNhhy5tySdpS8cNhltfVwNp5oILxbZPPw+rrg4Z9+TWt0in0GRmTSDpu/DRnLJkMcQZ4xYAfkmIsE7PZUfyT55pButkpQY"];
+RAW_MS+=["6pxUgwb3RahHnRjuYTi5ex4l/4IGybYdhi37vdRR406OGtM9aCYJewdQH3jqB0jYFlrih1wtug7gEFRXCCHcgQ9G+BIOfX3+vWwjIN7Lwd5M7r0+lQ5rxPwMbKvG7kFx7e7D/iWZN0mnSX9vkb6qTinZJpRA6G3g+Zn9LSArhGVF6gkFnONgTqT5oGP2bxfdFvBo7Lvj+X+11WcYLKfLM+RNiSskg+ji5FQ+l3Lk5UYOc5Tkq0bGgBabsAjdfKEEScyZpOxiJDFPZI4KVb0jvUvJeb4MCFnGQZwcodlW04H8+Cq/ZuxKJihltJ7esYXz34VrTYMdJYO0dA2GGJggvOgYT2b1q2D7nSEwMO/AEfK7R1CwGSPL6dJlWMkWuHEZuboVW51inj887vM2rhwo6Aqjm3e7iIKX164/mF9HB5nlmgHYvTFMXBRhE0bAGGDfrXsDh65vay365HtcJVE9T6bEXlluoo4n1EjQHPMkQDutdi5Bo4nq"];
+RAW_MS+=["kPL4rCd0NhS8VvfDgCJCH09DM0NJC6GTKheERKf4FUlQ/+pHxR05ymuO2nafZQNm8VuOoyCFR/GQ+TpPC6CW36o357I9juffO4X3YFeM8Djfotqss01LM1s8bDiV5WmYHuDW5C7h7Mc5QkumYMawJ3hS5RWhAs6bFflPKXnOqDcwY5jdOSYwl1b+9Jzl9yFSK5AeU3vuAyiOD+Y4VxxcTFLct9nhza0QXnV9aMtdHdMpQk3WEMpTL9hCi360w1VfUFQiuhwcu7baR7xtR4d492HPd7zedRHNXLOt6+owhr9CMo11ChFwLAw3IxaoaQTSHaIECeUsXWn/aazbU9T3AwphfZxCTXl5r/r9KMHaz9+TQpAAuh22PovSppNpC0vnJNQvRXZDa9ci2DUNEAnlh9ptEjzYlIAx1cpqQVFzJFj/p6xNuiECj+hmDLuz7GvQE8fmwxlskIk3sOsm3RNYAP/cNVJjjLsQgN3GPXoMkhGmELoYX5xC"];
+RAW_MS+=["MeDIkELslioQ0Y1A8RPyWcCTxI4ZRDW5mIYghZ4cmyuv7x+j+Qbqj5CukUTye8bIkc3Ar8syahdzBNvxcD6p2e5h35Aa0uXRQydg6Ti/Z4QcEynoOtOYKFbCTxoiaotKHB2iMHl4Pi2OGx0sQPtCRjG9ELNV5jD0VhnqHd/9iED844/fMuqtVBGX9t2xbg92pOXSxZ0juPCtbuXaiXmfQHrIZCuXEZ289M8Ri2jABwmoPpwkoV8EzPG4Sn8HL7GIxaDummMlea3nFeamQoHJPmyHOjxKARJ72r1CDGEq2Uk+em1uQ6BQMrsGGeM76K0ROFd/IRmFsOQEGf8eb6V6Ou1R6vt7n80QoQOvhO1kUv6ZAPB0Uga61g7/WX7suph3TP29WDh5/nVYTGb66dCIHVjv36WnQ7k0psV08+qo7eSqde5vJ4py4okF90evfCdybOvUSpaM6Nq5qwm3ATQtg5uahmpQ+AQBB+pQV2IFwJ1ccYReqwiC"];
+RAW_MS+=["H2qFandtX8TC9pWDolvlAGHmrWvKXWevb27eq4iGDVHuGvX3Mir3IwE0PC8Fnq6fcVt3qMgnVNxqJBcif8/2NhTltj7/eooBKQEUUkO+S+ZDTJFhgIbwmn5byp/fzMyzqyKhNd7KUYxu3VaWw1KoXcxm+LPppW6VKGRuayug37OLyv8ki0voXAhwj3MSI0+WkfQpbvJq4KsE5VgprCW2E33uYxuXRdzfW9f4xdv51z5Gwih0dDcM+YrK/RECEvu+WwyTNP1FmRTlk3icA0xR/vuMzfeEzADC5o8a9TzCJpJXc/ZwJhh52XOU0REQ24p3mw6hODXY7AWfHRWxUTmxjBAqaZT7g50sKEY/lmNUuMD7OZ3sCbfiYuIHJsw/TJhEbBrbBljK5a8sjVhZymZLgGE/qcFv579GdoK/pHU1k23Ri9LbISuuEEDxcxeBi3L+pXFokx9fjg6pDV5fq2EcIjxYp25bNjFterXfSwgI08+jQe8FInIa"];
+RAW_MS+=["iVYeRvaqiJTgBar3R0vLIwX2ipKjKj7u/ATrBdwQSrPyjpisEelflD7BV1AEZyJTriNtbppqKbWR9UUm4BSfIqNrNGCvguMQwbwbks5sj9aw1W3w6oBgkvQX/kGPKsx8V5cAy7Lvqwjvl7hIOqEF+FAx4xBDp2w6VLUYzveh48B6fXqtljFrZsxAXW6iWhh/QbhkW7M5DfdD9AGQUUAu464ch7INANrcx1AccI82x10ZnekygGWzrZuurZWJc1jgKi8fAMp4RAmbt4gJw+cgQnb+o13sS21/tT5yDxfP2991zDILRqyUGQjGoTe34tXlFk4RF6AEJQlchIK+wp5zokBVMVxnuVt4DjV0tQKqrTvw3/oIJKHp42sl/KHh8euZ8Rd4lH7fLd7KxuVnDhHY02X7sYiAdQIUElpoaXcqX7yw14skXKLbqUBQT3U3yFApBCmLKuXWCeBTlNPF6TI1ur+ccBJkOuQBepT/EMG7MlfB0S1A3c04"];
+RAW_MS+=["+z1qVbfvQCEstA8WBEvrhYO6yj1JfJ4clf3xDUANcul0wnbBWnw6wkrP3+7aoVO2Fgb/veUSXCFhdfQ0EzYfRrKXRDIdYxO1P2vwRvHjYy+OhhZA33hOmGI0uAgfuvp7eAwpW5vBo41YB0RMv4/Dh1fgQgeINpR5hJnvkThnuOyCiDl+eqgNJGNzTr4xNTdRtQ+DrEljeCBjj1kK7aqgUEWvDT+IJMIXsGLLRNKQXgwmb7LCgiz4Vg6nro9A6in39pKbzxZFkuNW007rg6scGLyUB5g1jwnFdo9V08T0K9PFQwbjSYLmkLKnMNtEPr4zjzs42NUaImy5eoTWQUt2lyLzGDjDycxa3AeIjZwr1GT9KJ4VMZQBm7RalM105U9deJQc9CSdzM8mxkMvUpAZE1TnR9O+C0aNuie+ytmZM7nR+wKr5cki18E3SbC27g/TvCTFYcHtX0tGln5k4rPgOffoApFn5HHj0jjlzDvejS1r6336R9Xv"];
+RAW_MS+=["K+WmLSMlTc7oE7tPJjFUPgmcGUQXCL3SnHWo1icebdiFDw2nYhlr+My92e7rU7L3iPMlXfIv05/5O1bF4lgNQ+maVkZ2AxVcLHQBG0tLHMHnapcaT0yeqyhmdCakN0cwG9+KO485NMzVE/Df7KtFUy6eR5fUbn1sGzflaIf0cjK0Ptm+hrE7+xbgQj//tYzLZqzFl/U2mf6yOk0+thevskDpISz3ZXh1hQFbB5+t5BpUFikU5D/8OqEr1K3R1jUYL8eI1AGwISCn5qqB3wBk5dpfMlySRNrCKWdW0LF2Oyn3YoHCTG4oUEB7AnrIHbu+c4uIavcikdBJN0AldV3yeCN7KrKMzWrCQkXEBGUrZ+yqtWilZrsnYQ13URIXdBCLfwJvvvYIcS1x/gwHArnawC7qTROTu1zVdviIelAy3gTopaasDqP5+Xk+/9rUP0f49bTf+w9oOe4lDL95VwEOW/cRTjmTCjGlbyfzIQNV32v/2tDfJwCv"];
+RAW_MS+=["K9g8Z14ekon1qY6EETE7ifZd89w5QOaPMry+3Gheoigu3TacAx53BZw2WXdR1REimOb81QCZ8FbyEYM409TH8quu8ZwuDiWM8TuRUPI1wK871McIUdVUriRO2UpYOhl75XVF07AfaYRJs2Efg1I/2MOo1t06dC37Z2s/l2xZ8nsDpq10kPoMjMKGVYP5ZR0V1rj7W2Zxb8NVU96LVFd7HljP4LwS3k46G4L0IMfIbnK6gv3woKCyHayhU4vlsYtLSUIhHH6vM90XxL4qYdoeDKd5YnWJwqGGDUHRA/oMZkx3MFhEvtigQxQRGRwpyrR4/LHX3gkfIHvnsjVsI724gdnbs5e2Zb+t+mB75IDQCj/eMkpEOKnPYc+uET78a1kfq8Vb/aGt0/PfQCIJgtUOUvfc9cdK6k82f5Ou2Z//GHZiKuqNGsVtht1YNotm3GnbajA8v7BN1dFpi6FemLqyopKStaN3jxkeILmvOXZtZPtAkYgscQOB"];
+RAW_MS+=["uHwWCeI5Ezvx7kKYeSkBiDh9302P8Slg+82jgEr3uj2VkWDfEg2dc6VaTI9uAO+j1xqUwaOW7FE+2cw0D9FOwDEBn2dwy0QwvaZtEQ+Lgk5KdSxLRDFg8s5rwkEoltdIyZX6TEkhK2BgllyqhM22wrDS6sca6gig5NfSvalKxxk3U7zKVOB5lGmkGVwwekP9fy12yLmPADCNpss+nGp1hBXMHKBnjwKY7Pc2k8yy0KcoPTVnT7viSfZOCV/fsM9v7VCP1xCi/4bhc8luq+wAW/uqWWy74aexsleDtlF4J+rv/e+QgF5A457oljP2LkJXHLAbYkEMhHEXPsgEgZX39r5F9xjXojn/8WYvwdiVP0YVesSDlYvmk311rE59rWxECvsaeltB6DOzUyNBKoK4WC08MT16yl3NLXFbcUPJMAbNXzpIMgZSb737QHlViTRR4we0rBh3deWA/+VeSPfpElQIypMlKXkKU9RbH7XwTq2HLcJdue8D"];
+RAW_MS+=["wNo9IWJGRyhMkCdK2E064SB21n3ajT2p5R5RvN/iFFYsAhb11D2x4Dzu1cGnpel31EGkcvauUZKLpd1oZBSJu1CDV6AvG3WAzGyrWTLi4HphS0XmomTkBtNLOUuHbbtOYfsil205nMrarIY8u0ySWumaJem1xGTTfRmuY2yl1fBKBJKTaN4BQzKFMETI+mRnhhLZArtFFgi7BFBGeyjQmkfIsFHYxsKTGxaeo4X7kYWMrbwwrLySC9LnITRjlKhJs0l5Z4wENf2my59jT3d6JN7DNe33IdTGV+Rx8FYPXfmEa2A5Jv01m8viNdC0c94LTlB5vO/bgFKJ8+/2ipdy21eH8qTcwSROVqeMHJcuaTIQHQefLYezBaJf9xFWVuX1U6mZSVHxbMjzfxdWCs/zTWJzaw0GPW2sgMniROOFiCAtQV6m69LaLhFCzuW5lmYZcFwYfCaKLjRPrBWSEOa7L9kB064RKHvXn8bwzZQSHVQC31yS3qPb"];
+RAW_MS+=["yozJS9mSfdHGoFfGRQ2UV2vexQJ7nekDkPBzQIlB9BgzRo3iT2B2WJ7C6Rl5an74YCkT+30aI1lztqwsak8LRq32PxXevIRzoiaX6QMLMbo8HkTFM+zJwcgoUfoFk+zss1GiiP8xbABNCfQ0WSW45E3EpV+WxC41ZQMob4X3arPJ82W0qTAXsN6HSGPXzwSH5t33PXf37XMolOscPB7X9I6J0Y8RfvH9eAx2AQl7hQXJfFtialaNzEFKiBNg+XDJN6t8eqBQMqjzSHDEeLN0x+BL1Vf7ugyTgyyQ8bVrwsQrpIhMKn+Yem1XJe+lLTOtIm2oqe2x/9LumPdoE6N64xHmVlUv4R9q8brCQ05MfdCPonk2D/FkVbC9T9DqYKlqx/cNum99/sQo4l8QcFeiWwUXbRohXMgkVgfhn50hn4xoTaMvD15HByG3LiCO2q7eRbSdcNgDCxeJisA5u1pb5jBh3T0/m2tw3DUrj2Nrf6eq1lgxyrXl"];
+RAW_MS+=["+3HeNlZ/cath1zUxaYc6gRAn3peHsv0RPvgCFMyPvcI1OCM66lCH6r3qxcyIeULYbUdji0BVW5hd6UGCKyLio96JkxgFGZpcohxL2JTgfd725b57Z9eajoBcTYA7UkOwWTgwOoYhAoeWgZgGs10GHzHBYplpFYXW0/A8Yhi4FSUbHQM9KEq9grzhCoFk2JIjhklV9OeP0Zb5e54g5qdUononhw11vRWkbAV5GqG8FrZIJjjEHIla9MDnKKeMHROjVlRuURihNEs622yjO5SnNQJ1nZPTt1Vz6s+/SEd9GycB+ci7l3ohwFapuk1Tt1V4Rj0D+v382+7U9QuX912efxeL0OeRQN+zqgnWSMAreA+k3abSrcBh3NZ9eVKWqqsQTdNNO93FadtvpdjWbZ4RZuGGjpaMYrCLLDyCmDujswJv90v9rnw4bM7t00Pho1AI/H8Y+0A26LzE3IKEEduaKUxGJy80MKwHI+b+0M6EqyjxmIM6ee96"];
+RAW_MS+=["0skg6Klhmw0xYbQMRah76iHfMA0GlUcElpxWU6fIPnuzGnBKY6Ss2rKaOja8peCWByRkyYQuTKiXRE/CxlBWL5s1esbYcznKOZfzfBZlXHou9BwdNCtKFPW9E1d6B4y1RpiPF0i4Ux0Djdk0Vb2PyLleDKfzr88RcJLNWMX0/a63YqTz9vkoy0bksyUdI7UYYfI+knEyaFDCwxAqTx6lXILgJaHueFuq4p+W+uPOZHFadkGJN/BZMHjWpAsCOMSQohe8pPMYuubr0GQltMU7ObRzpYyKb0Yb7DPjYObnRMfM9NE275RZVCJ3houdfWFCJ8whUwRMknkApCzDFRj0ZEFi0TE2MN3CIoc0eCnyClAPGgsRCRPxY8ZhZmGQlI1hUoT7alcrG5cVsCv942cz4o3dbQV9jtIXZzoJ5Sy2uByZMkhmaLlbXAu5n6/DKVs/AZ3gUiblCmr7KgKaZ6wjRLLyawE6SoJhhk0eFnvXAMtcFeXwcM9/"];
+RAW_MS+=["tVe3lXvhaG7bC8rJXaXx4YIyPITHgB2H1RUUsJPhJ3VCSVeWVl9s7ojcxdwYpfRdIIa2nIt9N4QjGbcPNAdzPw23+VyXsF0c5jytu4RESVeQxJo8ifcRMbyRMlrDWxjStuYhUFTFdj2o8S722nrgcLYFELYpip8A2PIFOeZYtpfwed0o46yQa2zXKdRPEceaMdqNRcWpbdqncH3585OhewSsaPB1eVwe0t01Ma9OSTFraJtSSmfIVgkytyLc2nLixV45+mwVcfSg6Wz47adTWpJqjEMhsw9+f56C3o59X1eBO+zQn9YIfXUYhzKqdH8RGfl/L5t9TI34VmviJkYglG8HLSG6gKPgRp1aTRKUhKgqYNJbC9TCgHfU32nyORnC8OnCtCCQVDfv1XDqKw3/eh6qQE9BO/1pgjgBujUAi+4jGWxb/tDB2P3KNI3AH79rq1N4rzRX1aMucn+FbnRIEUGcb2px8EPGnb7fPcWi9xicfwAEOw0I"];
+RAW_MS+=["IjqICRLBMI7BbojkW/5MG8BaBEFNV6mlvz9oON5WQ8cmvTIJI0fIi4xRGLlWl0HFJl93ugFPY+OdBhWHqNsQXzibPzO4zlXBL5YG0a2G9Tnk5ylboJKdfOkFFL5+MLFIeHiDTrmAY96bcwWLfhvlfoWkFOKCtQXvZBvXWZZxDj8X2OmMS8f5zjgYqCeEeTm9C2WMdrYdq9b8HvadW5g9R/X8e0QuS6Cg8/bVCfYzq4VZvvonG5236VLUY8OPMumRGm3nJJ3R2zuyvCxOaGeUOgd1mdw7C108+2A7uXlKVFTvV3cV7Pz1E7ktYAEag4dcVCZingtBttjjV4P2AQ4ZJPq+VsP5r4PY0ZAOszYaMp9ewZkyUjfI1cz7ujn/GnUsPgVdHTKvAT30lWkXQdqMx58nhlJyOQgyry63B0ESznzA4XYch6rvjO+3L1X5ZOsITd+jzmDvc6blMLkA42j8njJyVK5N7mgSDj4Sg8z7Si2xmGqJPmkG"];
+RAW_MS+=["05rpFz5mVs9joFizpjWoquN9uU8OXemJYUaqhdZ6ytLb2IShkARfzvgR7jcleq4rsx5zvDg3/Ks6f7IFCEn7Gpkk6Bycp01B+lN7nHRfVUmR+sUojCA2cfe2BpblaCQ83eMH6xNBNgDjC7NLScktWcJaVpFe7UA2kgPISgTsYzlJoBxiseua7igBHM6faXDmCMopZXCU3hXOuroPoTxnRMTyQ9YSf6kZCisTHh/cVId9v/ZZVT4HakaPk2Xs4i4N/jW4o1pfOSY7dEn7XrvGm93+/K/KZFr6NeEefn6WOi/TCiCuClG/YDHS469t+M6YK9INvCfCELovgVEkTAQWKu47Me498bmy2gUe5TrOd0YwT7DDhF2XTElrIFIWxmEMbJbpbsV976pugyXTSHXmG5lbuq1KU9JR0HHQG3p/Bx1i1RNCstyVw8kOX70flWfS1/EuRR/TE9aenAJrdlt9tgRalMfS2M+Y3HhdIm6ng9vFaWsqiQC2"];
+RAW_MS+=["darbCChs4ffkCBMTjKBlz6QGp0RhS+jMEKoxal+uODCL51BkfZ41M1XjNeMunObHUjuIQVCwGwKr0jQ+JiMppjI1EZAsU3bqG0pNNYZWScCJb8mTBXokzkWq5yJIYcyI6sOZJy6FCPvOjHb/Vu37Tke6Dxa1RVwx8nt2xQA+wevomsTECd4rzVtfVyfllsEobHAYaANG7s/jSfPdyawOh7t7806qoV4GwlV32pWllbRpl/Wq90vjuckAdZJ7VEYxmHlyxOMuyVFMgT5C2MGpXjk69ZPZlEn4IcLWf54WlrO3JAXaE3v/ljGvZcrmWhmtYAtMOlIKQN+/nVO5mybu4gIiISzz3Fd2N95r+V4vXL8qO1xQ2TfdgCI3gvPkuQxkK+kASBHt7k6lM94qhe+zJ1gAGVwmHUi3Wq7YVotp+bylzHUUh0D4lAFDoCmP1yiZ5JjUcwYnJTAiJ/Ql4Pa8rTKNDwTPMYN5iAyX4/FzJvQoZEGsUiQw"];
+RAW_MS+=["6I+D+hiVK/fn6LaiVawQVFsq/7m8MK69jqXhfQ7I4lBRPJguFLNV5zTop+K0ZBDYyKZR+jsIiR2PP0/oVImeF9mWP8qIRkHly/iqXHQQWN52k8XfRCS8yMYI/0L9OXoZJ+FSRrBcXR7KL+59qmOVbcvhVItOovlTENRH+THJMDFd7y7FEqNTSyt45ABMekBt+ipRCZtXlIGUl/5YvWpyOcc5m8pDIErycPA1lIZp2PkCAPe9Texcn7QvhalqwgWiI6wtEQB/w9H3m7wCKMjNX0vYmEC/ujLGNYcOozNiwavcfhFcUTpUtJsGVsiWiJnqthvikhaNipaIEYTZH+dZoouerWFZC1DhLB2YJKaiShhK4PUsR0avV4ds++pd2cYcNhcid+ohJ+M+AoKZkQFznhya7FOOOp9fS/MuZZN2++bZAevYs0Gb8rm21w59TGzdR2ClTI9Vb29W1XQfYhLcvF0WD3nc15/Kk9SNZZ7QkB4OdkTyeOpz"];
+RAW_MS+=["Ig8OtSGyoF5Bn93C4orQdz+PWlhOiRUvnVJ5xO+LpeGft7vqYSCG9j+TUyR0ieidhTxuyCsIeFjoOJndL/rpj5uJkRpoWsEqimEKRo0eKEFw0QEM1qNuJEloWIJ4oRIDZTISu0C1YW7dg0Ot42HirU5OV22NzsMyyS85JNU3CDpzU8Y5WrsTlqbJ5Qus/DafiWDr7srz77VyCJZiJMMoWjyEsrvSoYO7y/k+PUH/HXef0adkrcETUg5CHGcI7vmKRvVeKw/dE7Rc0CloiLzMhOY8WCjJt77YLaIiGSulmLEXuprd14QAl/iOsEexSEG7wnayesSkLIdw/IQaIEx8PU5/zOFg11XtIDU2nqeDrdYdmLKL55UHu3a7LZvyMBlEi7fpH6M9yHHJEJ0oYwqPbIFyGYLvFA6sCz5p8nscT9THFxjD4ZJMNtBPYwReQVu2+wiFXPu5sKT9WPGWfIR50hgNIIu5vms6EfD1lQ55vzbliVDX0V3a"];
+RAW_MS+=["3+ZZxXwQBlASr5+avdFUhz6q9ZNMQj7KAtALIBFAzifTscMNX4n2U7DNh/kbuvCTNgeLvwylhnoGBBtAed+ZCq0oISzuzHdGwzhWji7h7J3iqlRe3cMG0J3R5fS9zWI/tmWtCI11hLnm7QTGb5Sdw7MgwTsQVnyJR1+kjcu9oH4LttDcaKekqAGkp7AsUeiJ/j5lC1NyQtjn88PTMqMp38GPoltQRISsCz09Yxh3thTMMJvwz87j3ElPjLqIot5ERE6KGP5kbKCp/cz4UkOCzATSfssZ877PDp/7CXXr+Lk+2kvoTt3p/Icgwm4zIShrJvgTttBU3brHJ055MnwD6VPc3+bRtabqWDd1TLRGuxsBD6W+jYUxuyzlJ722uA/UTC4s9jJ25OjMjc+GMLNCydaQwtphdpsYvaFpwdcSiNF9yeOcKESgizXWXGqE88Ife3JxPoKeV4mL6FVeAoTZ47YrFfJUa/vuKVN8/ZYuFL7co0MgpAtP"];
+RAW_MS+=["HSji7lHO5ltH+lcKRr+xgsZmnjgEjfO6axhbhAa9j6HkwTBm8cVxYTYVfNqnr1kAnGM0rOqQK8UbI9Ncmo+PhEdZGEoDdk11rNpTFT4EGoqWgtmcif4u/4xnO9TupzVsNHr+a7PY9eNA0hAf1nIbRtlP7UVY6o6XUzWGp8yslgGoox1fv3fvRuwYJm+Rp1pxc94+AoXdhNUR+icLEJansNCjM8Qf8YdAr4XGSiYv1acgm6cEPuaxVRes2N/ktUz4vCnyjXMpxsjTOPKUkeca4jY9JkMOwFeORdC5C75HKF8JnA5Ej2ablDHZsIwzTe7+kZk+/Rv8I0htY9zFZtatlY+mnNatCMXccpmDDu15FGRsKx9vLNb0bhVK7BqHkyZHC3hgfNu/Rb7//orXcM6QBeyAop9Q24t7ItjibawPZuf5OHyPgBKs+62kmN8WaAhQhzLubiNksGm8tlwh/ER+n1iKR99ca5UhPpYm0JFPy+Hp1e0wdG14"];
+RAW_MS+=["BK2ujDz8BWOcJ8stF+cP6zbjULZ1I3ROnifV0+f7eucQL6Z34aex6r+kT33GoW4zJopdSAw6vlQNt0Yy7T361Zf0WW8YvUh017tc5d/C/AEqFt6qt2pxlNqA3e8v7E8qLAGG86Rpv6FGaeguaKUVVA/ku5wiGROy/Wd6pITjDxaxwzzBRmd9suqf3vdu7Bpgwq+U1v7c1+u8G5lh9K7w+wkkO9vlhM2M4FL8TwcxgPA6qZjX5fy1vUjf7SVY9fsYusW/nzZ+75TwD2UIC+ZxUKA4FOMn1FbivW5/lPYi3mrYddvSnNpx3aiXsT9ZsV8CtoluzzdjvXup7El61auDku8uJ3j+7TCKWZO37cPNjpiydr+6twFQ0bp3Bxi9pd2ueohahyvpaMjsa7vTTz+jU18fpO4n80Qb5Nji+/RYqDGf1TJ6kOJbygdBT4t+B0IFSj4NnXUNkt/al+75WaFHhVjG805xJoq/kiCsFttt72rklmhWzG2F"];
+RAW_MS+=["Pn2+JGK4q7DRn8/qPNfKqKn6lJa2Heo+S9BhsuT0xAlSDyVhQkdAvjA2QsLIiwhVpohUIFI21yZK8ymA+iAFnumEOe7OB9g5eJeIbhm7LxlbJqo/4vRzKMuhFG9QY4PpYbg0Enz+Wk2DmVzPkUCRhq4ewtmmkkGjEvib8OP8150o8W97iAStNIAefqQECZ0ujY9+fVohtzEKtXHNgwrGCRVJSXMxANK0k2ynOrynynVnLzBfoaUBdzTLwPUmaueygDznK9dtlW53mqRWp6wBu1G1bjchfwH6ckP+gSYF6GCKXS3qPTqbjYdtKQH+36/S0qwUp/y0NKVBexs4v1ra4UARBPzvE+/tYloOXi3aWmgJvHH4p5sEvRt991H2EU1ujl0fASXvYsuvQUBYAUajrU/dYpiYb5JsH+GPwu4RUW/4prcUly8/nbmwyCxli2Qk9qAe+S028SD9i14q07ev5ffwxqJ4oswvZIh1jP53jzbP1LDXssYj"];
+RAW_MS+=["34w6bmoAkNNZV2zB5e+tCkQ0vfyLU8XbXdPdyKzPf+JtJGpLeeRMSslXkZlaBZ/fWvrqsUCK4nVjX++k5/U+QGLVfbxdU1Pkgs+jkjjLXmW+SwBXaN9t++69a4bv9d/iyku8aZEqILzHev9guNAADC6ks5vdc3bB/SORf0YQ1PSVUZmBmT58i7MCB5VeqklxqZX7ryXicbXnvgAHe7hByOV9t63tse62HmJEoU7g3+hm4rWIKjT191KtY9fIDak1kADXrLvqj91iOunzLx92B/xxHCQ8+vlYUFoS/bgENepZXDE+7ZsXIiKLBBDik9bcnsQqwHkAU36MIMehC/0rn/w1Dqj242Jwz7OEKjJ/Z2FK6gvNToZaRzFGSokNmQqGU4PZheBW0MFSU2+diP7R/s1Sju+nsf5prFSUjvtKLZUKcSLNMc+pmzZKmdVgTgqSjo6hZy4cq3Zfi4Bnd2lkyUodVeEvQaRYhafkC8dsmqYIRuBSeT6Z"];
+RAW_MS+=["9K/K/lsiIdggnQdDQRAm1pd2W4W/62mUgz3j5JpSE/hcb4gC7H9TX5UbXeBptZ3UQvAWgJIUwgwIy6PClOyFW0b7Ee+eqfsYGdDRjhEVc0a2h90OPZlMyQuw5EnoigLHAfttEIz2/A1mj39flzFo6G+1HWGvepW59/YhKCLHHoyEUmsBOSIp7qx/IzQ8GiHPAsKXequVz32yZCWa3Zadw3lR4nCiEqeqi5LIfXy3YGeCMXxYGAVAke5S/SJirWWUKpjFZJtaeidIp0kXqLilwgKUszJA9d7V0+XedZO232pL0ZM4JgX+UAcc5PMIWiTDNzdQuGx6+W6pq8qUG63TEZEbfNNgqqnhi1M9BvFx/uv59/qgrB94rd7rnSupmx6inTZIrnbno0qgtw3gGSrHfVvV9kCuNyETARZManStU9zQwl81GQF2Y/E/A4gi3Qs9T5tHyaPcUA2FPlTH4J9ma1zBsjXB8UGj4YyUbSxZydKNRh8pX0QV"];
+RAW_MS+=["YFhuiLJxYG8bBGp86iLM09K5NSIgFqufF+Vbqb2/QtrqaXp6vtK1cDc62gjCYxSGlV/vqmoqw2J6Qk9dXKZnWA2+naWa4ir5i1ANLFyoXP8c6XxrRBXx9k2ZpSGa3f/a1203vSQv9pMN0JBFGox+yzBFjA2e3+2+GzVMxNCup2z6KXdARP9b1P35r3HdzwNklK+ReqLfczpWojavI4YiSs6jO4rhFJExPS8RvoyPwiZhxE/Ayz6p0u2LMrsWrJS054KxIazo8d8USq9ocFQZ8maGPSzQCy+dsUfDNlxzfQmKEF90lkUZCiAZcnpMv/9QhCmqzPa/NrUYduqc6FQAfW5wJutqgegPRtcgj2vwGxQ7DmtsU/yLEbdF1Qgl39Oxs2dZXd6Qt748RTi32mofoTRNOkYT88Dovxd3XCHxl3/+o991YWQEyWMFSELdEKMbf+zLYx3Vq1ciICyWWOBEtPMUgBrIdid0vhS7fA1MrfRMUFnVXyzb"];
+RAW_MS+=["IPwcy2dNvhG5tYUNJfQALKisj9ViYp8yeChci6fuSt1ttHuZePPH4toqO8LDSbSLJf0ghC5MOSalxGuTSD3KYbrbGE/wRDSZyLfz4UsL9qWmRHIZ5eg+RGppzOGzOR3EEEcOqVTzELmu84pvmLcf6Oi968TkhaXFh2qjeAs/Ul+emhc58QVP+afSTIm8+ZEFvjkQFyggDLlIzezGyWeW4Uycm1IjviyTDXu4/gryQup9iJafRhiEH4OmTJM7ggrEfF4GpqBHwEQf9HZ6A2RsgAJWs6quMSSqMxjJC6s5dKEojE7fTP7AQBOFkTPqjUUJ8l8I+ugjhzgTPfwTYJs5plbN5A4acIMwgPfdrtuaHV4vXb8rX0u7Dr8tXVzvZASBYTyny2CXvRStJr92/b6eyIa2G2PSpMpJWJoJ3pxPIxYvNkREzjIxmX1vVd1L2LPzKEiNkD+YDKHH1prx/Nv9ckd3SNlWjagD36ZGgssyOXNDcVlZsCuk"];
+RAW_MS+=["B3qqXlT5b7RPsP4ec6QvtSSqxIDtEJiLMtlSAzN9lJZ8nxKUb+Jxlpo6vJ3E6u6l6s3Sph76MhKaRyChnwRRH9TTTxC3wvlhs9coCetbCN4ZGqyq6GdgYpuTHHaeZ32CydwqOXIKohWH+hUZZHKKgLmcUNO9RpILUmWrLAedvtvX8tqlquynN+H8S0yE8xJS2JXHN3uYzgX16oWDcNvGoOtZyAQpIpIlbIcKkHKzLbX9XUdpjbNy7sAgNwhHeVr9oe/a2qyzXBKkD2VtfkkPTsyH2zBKBZd1E1nO+9y7FGCz3niJE5unOJx/afZilsFth3U9qDr97JjDzLyd4yTxut2my2Cn5jrG8RrYPzKlfsEdBl5kERv+SkOZCOCsQH66yl4Y7n6l76fEW+S7VgCzzelEXX+qDsoYazs2zWep6I32Cb7g3v5QZs8NuOwnudx5HgKpIWrYfB4EeezohyTIve5fA6zBWoSPFODmX5fAsrpr58XduCvV"];
+RAW_MS+=["s1lH7UmqVVSwJRaMjZCKdANruZiAx2DykJSRIkhbHeqvrw+L3Uv9rm2MrhUduh/doh+3YqrObQjNhSoaeVprIMHy4RsMna5cMK0ZvcGzDvbadk1SBNUg9DejK13Fg/6kXKylAJnOe4Lpk6ocrqB2IwerQGJAo9EcHfM6c2NYUnC6qEpUW0869o+x0qRLhgq2RDcAOyetgsnbgELrS0ZsOH57oMrsSzimNme6yNiN1buosztQ1M0TUNLmcrHFtu9OXZxdE5frWbfPJe/VojoLDxHoYS49MRzmDyg3rgfOdJvtWbFv9ak+/xreal2j+lG2MS2E/YurP1fS6rAhf4gC6JK2mewAYnbhs1I6giGyAFehlbh4VuP9ws7EEOpa2zS5wsjXs/ikK8NnhzTyYN9J+qiiNEu2rYnFRxHMx5q/y1TyBoWJCE3rs9IDxO19AbrwbJqxVmQnLNjx6fUO3GZZ89yff9OkOigDup3lop9U3j6m7E7iVCRF"];
+RAW_MS+=["WrnIa14p8tQC8jXyGk3M4zePp08gihRy1kfYXez3V76LVcQIlK6dw1PG4Uw9gPeaydsceOXqfR9faBBgvevEDlN1s0FFqQjtVVQ5AY1UqDB+RED2Hcem6foY0Avl9xLgnjWhyr+lS9Cs+OQqO1+V89ho+dXMNVuYINiiKpjFBeq5IB5NQr/I0rVNFeCWOVOA519ty4XLgu77Krz3WrWEaNKD8x7G7+Ok2yoTZhj+PLRyA1I+JpUSfPty2CkMqjWc4UlTd6VupkVuF2cJdGG493kcgF6ym1Q0BaXIwk8ZmxAdlD5lCBRGEUu8NoI8Hnxf05UNzeXY9VWr7atFT0RMnepPStVOx3zQ6CNf0gynPhvkbpYgQBYXKFWWTbPxxEwwT1CyY9R8IdTc4QyQrSNMrc9cypl6A+OJfOk5HSFHzbaJgOffnWe26hMTD+coHnHxnO+rbQQGbz9uz7+2i3tW52QkaSvQg7v1u9PLhAj2dZDNv0mXyyVq"];
+RAW_MS+=["Bb8fLy3M1Gx3yd9yqCbTdX/+4/y7nWwSxc1ztxgiPFPOI7zYNlHlNLfzPZz/OLr07K5xmqs9Cu0KTs0h5b6MKaR9K3t7dPhSs94FWiTNp2tIXoYviohaIUysI+7qOyGBvDw+Wgn9LAuUn39QZIiVofgV8QkZEPnChG1jX/UULR0LjUF+dklOkxRTNgF3BALb8OiCmcdMAODIey21a72Tg5ye8RQX8JcYj05YmBGI76/hTLqKPrEVG8GgCCkymI71pHZf56zDvgUgOV8y5gYXfquVx0RDc5bthEJD1yNlM5oxMfa1mD04L0tzEBM54+2KUuMTRK30BgHgSdcigCDK9zyKrnv34xDh+BMM2yLWdFkDG98/FH0C8ntDnSE49CzBKccGLQVoidbXIVtZitakC2Yq6oQ3E0QVP3M97DwE9sDgSVZUGLdot3LeZcBfuQuw7yPUF51AqHb+5VjatbJn18evicuv1Wn8LMLzr5fUhGP3Utm/YxJR"];
+RAW_MS+=["h6pZXN1Lu0m0NnVEjfstwB5bjV1Xh5k9lANOjLUBkbNvJ+PJN6Qf5tWdO8fOfuovDkRviKjymNMlTt3x/MugrBFUmExn2Nur6q9ZNP1oT7q9YGW05ft0Z2LgTQWGpp+VQ/yhr8wb5DdrRUigDO9h4QXKopyelF3Z7Ec/q/VhFPQY6EInFNyPAhFFtwOmgQX2LMENb93NOmlTo/Z79OlPGXX+tYXzYVYYSZSaqEs2AMD7dkGdY91PL2hpf3OZNcPnhN0roQTQ8k0VMu5D9KB5HtaIumpNd9g0C9sLbx7QruUCEbHoz79F4sUFCensQOd/qU+dQq3r+mEPVKC6q9Xmgl3EOZtH+G3YpTIVEntbo8ox9dtgv1FwDnlu69UQG5DBdz+EcT8oWgkSlBn7uEIHde2DVyvXkzSuXpPFqRyHU6Vs7ibWWeABIntJcbaZi6XVH3ALYTyQImU1WhUsh7oUsFkeptSg48gB83MqUDRRCxG4EdwwKchz"];
+RAW_MS+=["vKStHOvXiFTPptzV9qq6Y30YJ8vl2f1VR/jHJwtnsmmj6vBUCrEEj1IkoMCqjkgJu+RGb7vxoxyitPWbO+n8SzNpz3ZrqWrqarjkyE6UdrLRz27/ZBw9QPtokYbHgCiV0rbSEQyQQ8G1RB1/yiYuUEiA0Wegv3ZA415aqt7AHq2N+f2CwaqnRJkub7A5gn8f6bINbeMibCIDF8j1NOxE7nL4tkyQRvKJwX7Z4/DnQtOG71geVp6JJqG71y9lN7VyDCBp86X2UxrQ2es0wuXwRDECYQ6IV/JhWnmO5KLgBw990OajBxaB885XTaPQbwB4R1sN0/Xe1+UhQvm2JDkE0v+qKExLxIG5FuExM/q+Kht3DnYMCeZ35+efoxeAXsOEUa8NzqZJm+qOCuPkSETKBUWfAxQwRsyv3j0o7OjdIBlAbOwaXkSpFl6+VU1EEq+7p69mresSND/0k4Ja2rvXRXQqnN6K3aSdTZetH2Pw0q10orVpIBXO"];
+RAW_MS+=["5GTXtcvt9Gxux3JfSYx044E1hFpTDzbgJX6NM739wyJrREXqmD2YffboX7hLh9tkBmeIaWNhAEXjUAXyxTPq6KyGnpGh7aIDoWCAbRNWFkDrWA4TbVUyr1aezQUjZwANFD6gOHtDxKqEBTx7TSeBSX8yTNDDegst9ZRutvetK+xRD0AsPQyiP6o3hW4xLaXfRWRuOoiuieqj9dusPsy9AdXejzcO1e+RS53QiTJLv1KTZSYWjUnvScIOCwLUK2FsMlCuG0/nP4ZdOY1S7WPi2U53j4qDXph720glCw9LRanZks7INy6PvdErRm8QhIpZLKyactq83MxNl0MI/n1fx5V01REJsH0ZGQnRaQSnWPfDvnrl14J61UTUu9/ywt+rfn/+a0T+gxCINoQYguHr25GDvInzr80hpotwoHH353x6IO95dK+V3Ud6DUFPb4UTfuW2rw7lKTx3brMrYWQC7opwFAKPkLUh4/KRH5OgikoU/YLdbpSo"];
+RAW_MS+=["gJa4NmA2vdbT5shZF7dRlMRWYjpa6hSFcyBzbXSPz2sX2ipL+SEIfYilyo9zouDr44mHQZaIPPc+Q0nh5fozyMol4NbhHU9QpgllsoRRG2p6PMFMR7CAMfiWJh3jSUNGk/Qlvu9q6rSoNvABQCXPcDr/+q7dMmhKCNZcoie5tXtlz4A6/zq+V23ZKPTraOvJ3zSISwxXgfRc0alI37fUICWP4/n37mP6SxuosHAy+CCIYESvY8qoFfnJd4JfAZqtIQhD8qBx4txuWFoaKyv3JXczFrDHZ99XO6eox+b1brthktBx0RILqYgaEtWHcDsOEf4AJy1U+HchZH/c9mMb4XIYKve+1OFD0q9W1zelLKNu5LpM3U33YLI99cA+bPsQnzqknYNiaQvcQT7W8A7CDVvDNoXitSBjPFm6TYTiXbcxNggvp2pvgGDKxySKf46YqndJNhNmlqYxrbEnMvtY5BgK+GfC7SYepKr3IWsLYqoqFwIQeIQm"];
+RAW_MS+=["McHMKAe1MVoInwrALB+WKK5abieW3ynsmiaWVlKxr8FxWvdwUmbNYeoDGACZj3QAVdObpNlOk8K4Fks93iyP1a69c86KSPWa3wQQgL+mW3WLXdW/V73CLRbXrIXrsg1G42404QZzY4VD/WY0DL3tz1MDAI3/lFuwZ0IKQOFmRn1/Lkf/7FVwGgr17ZVXH2VMKdFr15ZtbMvSj/I5Bjjg0L3bw9s3LWWxr5pDaf/qq9Uy441Ghd+n7QoCW/pHMTaHMnz8CQgZ9bXrGz2UQ1RaZkzoQC4wJYtMQeuMfd8JZcb+OLq2erOJYZM6Lwaq7zB6h6JhQJ77aq9caIOW6o/whYBWWtB5FW+DrGDfX5CZFRNUb+iDzT5QG8LtiqthHkVt5cd1FO8L0Fmrok5JEUDfjnD7FWFDB1rDZwhL34A6b12Cwbqx33gAdFaOfeUKIhxsZheRtWui82b7XrWvysVlqrbQzVPcwoSNogvLU7ktezFPZKbPv7SK"];
+RAW_MS+=["VN8wPK1BbOFBNkZ79FP/ml8GpOyBs8sSC2DxV++O8jLRVWSW9CwgTDRLgAtQ6ij0rHKmpHNxaal28zU3+riiVnKMZ9hlgT03A1duiSCu5Rfv7pNduelRB6jTz/X3CP9j/9MYETF/q9p9rG9NpxFSfhyIgmRh3T4/gb6TaO1zW9aHLqKp0/SAfO/68BJ1YVpvu+lCjw5nvu9joHnRtDnEiAZbW4CsE4f+dVLoVyZEHt14EfNXhImNbj2A8Vr2ZVsqvJZaPWCGILmgxtHJFH+ML4ILJhUSBM/NZRrwd7Kfp2y2tZrBEV6mlthJUj88QpDsPj0wx9JeHnotgT39bA7rOJ2trbtwKua8TsPzhEWUpD0aF2BRKpSxYPqMsNF0foWNZQ2YH7WmS4SUeG8MdB2YMOSPbBZtmH5qh7M4NqSuQJEMVRX+HYwceQgDF4EOopm3VEzcj2HtSJ/+xbAFX7OK+vK5jkk59wW9qub09S4ytV8j8Xzr/Pbr"];
+RAW_MS+=["KT8PXbPsOs31ajvtv5QskNv5gJ7f1eGgEAMHW+fKCwSo3c8BYPsrff4C9j5U1TrJKeefIpnRYG7GMmZYns5HtIRuGmVGYInx+wqQsd7KMdBc9GGINUCiqYdTPZm0qiNmHgu1P36rFsexlwthZi6FERnTTUkNnkLf9qJDGHBPVDkFtbSMTaggklNtlPNBavCnideLjrIBj7As+xO2GK1emC+Cf0imafD06nmkeZxGfXdtz/SGmKSN9zLDaYQfCTrUxqZ/p0u2GzCwaXmlxFqwUW+5StdIbWD93SzLXsB+dV/jPmnzLxACs16M08oOZUwShve2JyAB7FTFVEQ5HJ24AtKJQ2U0p9su6CrAFfyvr37YawHaQUyHuk2HfGfSDi6jNz2lk1qKd8BJCKzrnwWZFEVFvH0KAr9RD9pdTt3mMRichlMULIuH9eFUIo0xRU3L9wpStkRxDfJS4vXpXJkgOwlLA9ZwSBDs/OA0h4/nreG0qHsr3R5O"];
+RAW_MS+=["rSfW+xeQ01szw1LF1c+VUe235Gv4PmoFvwGnI8r2I9ycsOkwhqW6+aBW9lKyGug7/zAIamsgMCz/Dq1ulhhC+jPbHV22bnm8uGbCK85QHjrdc7ZpmeKDoAYQ5w7oApElPx2jQGgdZPGPUB3zCLau2AGXgGQ3gl13COXJEug4TVPtg32lbY434GD/uR4mdhaw8L7BBHA9kVtmw7iOOofx43jBdptkXbUr4wCfS4cl3MQkoJ2mud7Lac/NfqjzL6J1fDtbXXP7uT52i6o9jPXPETn04a0nU4N0ge78u8KTllb2XzsZV5Ii53fepn4CRba/9D+N2pZvYFtjsADozTFcmIBjHvI/vdBEYiFpYzwP4RmSCRO2K5mtylPfWoN7JaTG0YGU+IMwgP46trVDoNBwFCTTIEBEl7nSlDj2pt1fxfkCA7PvIuKGunlXFpCil9WQcTUPlRkySrv+VEfI9qrvtcUbqvqCd5GKsyjF5u4lmqn1g/C7sFHq"];
+RAW_MS+=["FO1b1f44/6t506Z9PsmoAfOECH+93y123XCsYqC7FqfeNcER9jhxmLtJgvAwSocwaf7I7lhHNndozr98lHY4Mtct8Vgvmi4SH+qrdLHHPGn31e2NN+tklwqMoK4YRN98K4fdWEaAEtoI1XLeGKRFSCVoctf37OQVgqgYiG1rZ7pT+VL33bQT4QuBsqAwKwUrZeWWWZ9Tp6D2YzxWi7I5VpH9enylUUcajdrR7fnX19LcjrLpmoiV6L8WM1Kl4zUEgOvt+ZeYnP/jZKPsfzj4UVHfmQ8U1rwFh4ECrZNqpeZ5YfxWO7RATEo9Z189Fa5JYhC3pm2FvckMgiRQySYJYzL3kxEmDN11xUX0Xrc/ysbL/LgLKC2Jh6cGeMQWn7YvAKiYgk2NhbNn69A9i8O464xukOdpllqTqRYDKJxQcR/GoNSaxfwTTrSVdD0yCNBPt311Uj4nQ1gml07iCxfGPf9VtC/uI61RnWn18+K5auo3uxpQNcp8"];
+RAW_MS+=["T6Ct5AV5LIzRdB8HVKI0V/z4S+e5h6bqtjJPdftgMTw9+ptBnzh44yQFrilUOCOi1sdkh808/ladfy9ju8eJp/INdHmsFu+TjeA5j3Sg3c5utLx6vVdUjKhtFaGcvoyuv1tcbezupf5pFFIWZgawgO+44przb4cxopd5X7tKUfuJtlJm1bxGS5P2yHYq114H4SlNGUDaNwaNmMBmktmRwhX+CHQ9hVSLbwiZAInu26LXlpw7GztZBFlqQv5WfRxS+mkgFWX+yCdT0rjsKDHWgamnKjb0e+wbTKW77o6ZJNWzdu8gsrZBIAV0mxAhnX9tAfSKkLfjdDbduyIMl8DH96Pdj/aTkb6SnVCK0sYpQ3LqwgrXeM8MuJMqTmk6Z8EpYRWxciR0ok/oicVuUpgFBI37pEjJRbwMS0DjFJe3qhmVyRLcbto1SrulD8QZlVbqEFZ0qC7lvvjU2AwpVv+6BDq3Lq46OJDyQVlCbgGQUlZBRyuwgRTl"];
+RAW_MS+=["ln2thvNfB7yR6KJYD0S3LWYdehqq3JYRevTtPCb73J4zeG2ZN5RyEGBWnpaGmBU+NwB9foUyPkz85MHRXIdxiOBJBk2c5r1cuK6mpd+JXU3Z7MuX8hhRBlMuDvWxssP7lfv+ono1nd19unsp++ZHFJjLQTNIQzLkrftQdlzHqyJX7f643EgLiy8jHIW6jbKCsXtFEn2DzfKQDyLU2dU7G7LoNWzWqtOjlIfQuullwS2UZZ6ho1hKG9ULFJaWHutZ3AtiYvV9tSkqp3bX0PWEbXdyH8H7SErym7D9nPlhrqjgzsHlzOHXCkBvByw/MqWUYhekvKbbfcPIkKXGW7baLiBtfRQ9LlVwpk3Ym0QXvIZQda/doq1lD+s8iO6nrNq+3k0SbdIHpSyE+ygbXKIWtXHBo7Zho1etsli1PZB3EQx1/bZZc92Ru++aZ+WcUvSAwQEM7G3UWcReUkDoSoI6pIfQdSuZ6oGrwsUfhMm0rSRX+CZscN4X"];
+RAW_MS+=["4wC1kxxojW/dEJPyenm664nzhqFy+U7maHjXv5aLn0bXK/0U16zHJYbbK4HOvw4nCbFk3g1kEkoDmPSh0KaQ2TOcylQ2kzpXmvfoXtwa6U2fbI7R9U+R8k/hOV4zZsKfmVtCi4Oc7zuPYYgr6mclW4nPXd9qJ6Q/cUPVH+qFO2Up0W8ew+BaDQrP2xAbtRmdKDO9ew9cppOJfdJ2AsAcVsfqu60wSRJ23mKhhVy9RwQoQkf9LVzPwbUFb4WKRsweI9CctuzPvylHn6AiYMo7iYJsRuwsfVWXwvaha1SOWIOV0QkTvoNPILJcvZatS9/9AvqkLSIqnMVh0TVDFRFHkknoGwMSbC8y9K0pPxQZAsCHns+/NvXPi+0kvkWNfR5lBTX2xU2ZjEp1vvZLj3xyrnajGjWclw36kLtohCtdOnrp+arj6tLj+tj9iEBYnsR9t6gPkzVVSzXu9wXrrD1n0wWs93kQkHlxE6MC+oTyCT/Kw/n/iwgb"];
+RAW_MS+=["xv5eOQuq+SztgALeNqEarGPnmoXuK2V6A5ZG+E59s6AQ6IebrYANyIx2S2sbM3sCv/vtYoaxsOXpBVahWuAy2pCC7feMx50b3HbWoXLQeaYbIoqTxEkTrHEHmMuh8icFMPEuguNfL/GF6hDVk+c4KUXnP46x5kFc2/WLH/ZtfO0ae7JRW+551xgNVX+60aU9tn4otz++0Evgklzr3PDv9pSmsu9dJ9rBvlkXWAVHJzeFmDkiNSXxTU9iZMgAbL3cIwl8o39LfBqcIh1gI7IrmcUtI98UMk4Byum3Tee8MhFdYq63zY4HewxD7oZScuwYvbuXcff9R/jzV5bOJ+DUQwEZcILYAx1pOCASb5HhC6g72U1CJVRCGqYlu/Nka20TqC6cR9lY3Be2iwKDcEZ/otSiQBDqdO4Ud4wZqmlLYrs3D2MZpSB+kSz4ltKvzK1YPPjRSGATTbhngSiWYQeEx7HZVyIC/P2RWxrk8DCGbOR5FJS4FuLR"];
+RAW_MS+=["hI2Tog5kDiU6Ag2J6teqkthWh77ax2VfSTT0gzLkCxXrS2bqFWyGo7B1ilxNbHOWMVsJekDAjcFd0IK6Mx0HBSNEnqFDZMBvescAqXrtiwpzq0ZtMeDI+3Ef42lTfy8cMv09u50aCqFkwd/dvzf63NQV3CRwcti5RBKXCcB6WYx9Xfbag5ijRoHyO8E2Mkcw1/Lq+XYaEqKF86djbL6yjylT5ZH097VStiEFbInnq5h0ACWyEHp7irDXn8o6zseFktImOie8AYBjup7syqML8+6VT14tv3J0N6zZxDVFSVBLuGrYTexjzym+ucFPl6BRF6kSPrtNsxdWXfJkdk05DnY4hKGsP0opOHPbDYRyGfS46UIYbKOIRReSABYtWd3JIJ8QqsRQ2uftpTHlRmIPcgz6e3wtAI4ImFwMtqAecZszhwUBOuustZJjqoQD2Pgbksa2GyS87nm++ASbRJ/3UPW8cI5MCAIr19YUYXKtJ4tsVCvimb4G"];
+RAW_MS+=["d+k6T6Xzz/f6+8Vrd/6t1xgC9tmTPvmbrYOHMiuEHwDVBvM4Cn/IKoq3i5svaTqpnkcatANhly2mmbLVYrh4TWroWekAJOCaYXUIFzDMS0TYXZOOVLkuw7uXiNghurZa3qTIS7qUuNZsToc+qTilMmsBGhP29U8KNYi4XwLnb/U0iiYhU+zndAjmsRH4yT4Y+6imVkNEVqrCTMqaqu2fKw5QSfcCpfqqXyX2eFRP0BKp/uoBuEJrZWbkV5D2SlWPGEEC8t3JzjxAyt4XqFxI304yZU6jx8BSQAdZyOLeQFyxMlh5QZagQ20gmrPy1FDNT/eAXvWxhdBM2ACItgj1IL5PnpjiQJZTBgVyz+W25gAFlB5F9vAIyCnDmAwX7eMpDXE04em/juEaZSVrYAN/lJf6pjg1zxAbDsX9tVyBAHoWJhTCk865up/u2Edkmjaik4NEk+30EfG8QBqhUXrZfl/cXlw74KGDOlvUk/UxhPkjhcU2P432"];
+RAW_MS+=["hoSud81+0pu7fhuqm7vNWxhwWsuvxJB8/wCZdwV8QpMKGCbWw6djW7ZjaQfCa8fodFRnYOnlbf6ZHOvWfoD3FNuh5EicZCcQ5Oqkby3acmI9u6dsmvvn2tUs2dNjJuEwUey6dq+cOAwxB66JXl0UWCydGbmOfUmAXVMWiROAPUSywAR5rd9L3zuoXihLcBoNgYuJo6X6Nd8xqJPMonNpgWvWSkrmgRBi8iQpdi6T4lVhthQ5+SRZTkcogGVadov3Wi6emodYRXvuUkMea/A8QsapsO1FVAQ4Y9+1xv1VaIlHsgT4bG1nL+FqfmgCDkeJPXroBLlWuypzZoaE4aFsTsoQOeb6W9OHmGJuIi5Q2J/+mK3vyY7tkKASasvlyZAfQ+caqdHB4+/Z5+UIIt5/MWA5vE/C6+CDlQ8hsIZ5tSg0TU5yDuG6PoEJ6ij7fIEWqiIef0AhJcL09pTfcTvJycj8KUAUijDG5WFfNI9JyxZd/LetTi0J"];
+RAW_MS+=["Yv4YeoIw+DghIYtRJKgbRviDdDn352mamhWZE3Jk5gxyR4iZfG1LpaDRzSUdA+Xs6d+/sfk6ZWaitzCFb6gfnGBDaB23hK0oOL2S28DUIy1A52ng3jxIWnEGTWGRmYuedFsxSDtPihyQkFktIIRYWoZsFnDr5fKlPqIo4JGRE12k6Nhe83YoCgB1u/HzB9Gw3fRMHivlKFOUq+EJOL4AgyWHV5FrrZqJ4xB48h/6a3stBBETmI4KYpH8TUtQiek6DJX9YTtsHkTJRPQaVHLWswSnfJcQHQKh1PvXGeXuQF5joOxYYmaMPjcX338Cbs60Gj4oCR3yzc6XFgcP3Sk2QhKeWzBivbXTuIikk4eYF2rm7fhSOgOsaw9xaeMBOrpuhP8VWvZd0rkmlglqFX1TCmKDsNdC8Peq3zPPE/RBGyj96SonS+39tofy1J//Opyqw2jOFDu4NKSYUkUHOHmNzUUgvDsfld3hezz/8sMOzuK0zGO5KHfV"];
+RAW_MS+=["u1rIIIVdIZ3QHKk5lPafv9S7CITMaxp439XSBbnxNc7813c7lIERf67H8TD244f59nyvJy2zDX9ZZkH9iufw00sVwRXCgZFFFgaUH5cI3TX1GB5FDzZNtD/aH99jUPWxdGFJOuzVLJj0RL7zSLFxhbs9jKf6/GsvJyDOYtuQGiDIBzoGUvoQJ1rwFfUdkGBbpetCp32KzRYFSXouJlMdeCktndNgx8cJsRtG6U5GCZ2l2DLSkEkLXKgMNzhN1BZJJG0N5T+WtTuN8y+9E7jKlKlFD4lKmbhtsFrWO8+ue6luHZRBQkSg73J8GkXwY+mac8uOTbOrH45EwFc23sU+uoWkAdC5YXMAK+9sbB8B9iIziFTjSIaobAR3ZsgDCRTggFEeYs/r3K43bIqaa8/Bh9hGQ5P+VA2LC87e3q7B7sqmfK/6Mg7dMh5n5Pzb+ff60Ek9RMnebOyAS/oGSXJdOB09JFo2z66oVtcebisHlfszFvZFUfp1"];
+RAW_MS+=["UMYxMLr1FASXhbQHbAEgGfwxh316arfRriuwq+p57MqoBuESAf3YtS0dFF8thnf56Ca+a7jzpEACVHV7qo+1gsQixFWpTohzdqw3MkX53eaBMg0e1Deu+K5prl+ufxWwuoVTJHw2BJfTlt491tIe60NlLGJgJ+ltwxPySgpXPGVjbCxcr74Muk336RO8zQirBDSpTkfKYJXJqXPAkGO4T7KftFc3ZaPMidBNyXXnrAQb4NjWLHhyRTomzgG+wffyu40tBduKsyboHnqsv1eXUiaxFHUeQ5eNTen3qqT0SHGFI+TRhZN39PLUtSNNWadowVNz/p0hxHwD+NrH8lSNsb3udTK5hMOP4SlL+/OLc/eZ+9081/uysWP5HcZJy6j29pSWa5naMKlEuxdJU5tPR+naJslOfrgrGO8npgwn1+/IR+OgT5Sm5xKolIFGipoLx0FWugEvoEuscjpo2e6lOOg8DID0vkazFseuERW1+yiWnm7HxWTf"];
+RAW_MS+=["HqvIRmJhjKn75DCFSFPI6VCFLX2G8BBKGRRp2LwrS2snX2DQQQyh5PBJkKFS3BAw3t9el5MeWrd7EVf2PjPKgPfvE9vLFLGDdje+QTweC61/jS5NIxe9C2krnAzU2s9aC8cOnbaL0E0vim86hoGd4h7LS2zbgWW32h7ogm0ibhfbbu809vAgsKGlcZgEJuN5308HSG2gNEQ24DpAo1TWUhyYs1JPx/nev9St/aG/AoQNXe81BMPRxjAt/bSV5rAXPQL8qc8MzgUjmzxhIDBmOXmLUTJ4Qs+XknB4cI/mvgvNBjO5A7bL0gjTw59HOrniaeB+kiWn1fWz79136VFzLTPTFHh2r2WjqHxAKzlFtIIs2y32dWeH6B1qZwBU9rQP19ZFAWEXNrC1i/NqPy6asY2oX+xr11my33VxeQ8vBoxb/5FXKAlbbDAOyXSB+xhLZ7i2QYooEPBdHN9Mfc6iEfZDh0C2BGrUiHM1MEPLmVjqCvXLIAX3"];
+RAW_MS+=["Neb2n2by84StD+NjxV69avhprMRevfdJV5bYA+Y9gczfGjqz4anUONjzvvvZ6agcysS30GwRNxl2dI4W7Neslnqoq96O4ffzBQm5bDoJIOP+habyV/UjJW4VrhKdVsNz414pgFTm6xV39WSebWMAYQ66oudRsqWh4HA7aYraGMCvUTaiLTtTF5Z+wcLjQkcxXHtkX85DPcU51z71r9sA8d7X1BsC1AxXfXX8celFV6kBfhnbXL6qdAHINg5vJnz0Q/g2qWu/mWbAvXjPYA40tEIdTy4rju2OoBIJKmXfR6YjHeomCuFCdBFjtcZE6efERiZYTDK66heTEIvIvm7L3UsnNQ4mrPFkrUeBzAFKUuKZ61rgPe/uF7Y5bgDBKpk2sC+Hl/e6MdtKz+W2r3e1wyWZnpwhvPHIA948d+3QLd5KvYmrr7CEOJLObugiFv5+OpRBaf6SnNAdt/PslsyY4PWhQ60w9FbwbHHBBeZFuhoUswzIOTII"];
+RAW_MS+=["dEobz1hL0yBK/F2nmgn1qOdrfVQmXRk8J4e+1FCuBdenfhCJnmrk3tnJvtqLZsu8bt3jUw99WU0rGCOe+blj4vPoUIkHe3HI4lhPIlfjEEPWh2EY6Pm2jGHpbGi6gh7yM3ltOY+C5JG+a8p2P9mApXU60Q/8qdTO02KQ4bBOSkdSzKSQ88OCgmqdn/p15RyCsBqQsH3RKg19/wY/TM1UEB4Uj9zwmJneJQskovLGX8dyjRvTHFTnHLr2o3Rt2vrqdLJDRx2r/di+Tu9yhLEDaYL9+V4jsXT39e77Yti99JXD7Lfjl2zLWw/5/vy/p2Ue7F3onGxaPJeNKNlvB2HwR9lOQ9J2vvAsvHYfL2Pp0odPfTf+eR9RbGijFAy++vVSLPBS9xG9bS/637vz10yS6Kj20gtpj0FqckKG4DFmYgFlnb9eCZ12AwJbPr0a+Dx2P+pT3B4JJGSFwNy4lpKEkFHug6CCe9H6gGhMItUDaPN9eqTNfmHf"];
+RAW_MS+=["oLdAdGCELwFdcGbxxBnuhV9E2pddr4mqpNBAwYT9BqH4Sa5OinalvFLQfPq6dN66sLx7Dv5cfjc7tt/GSRK3MWjqwp7CCIa4LxAj51iffy9b7aahhG5PoqRBhRRYPAZN0M7wEOHepg8wjTqsPEI4O5Ncg9lf/pvBHgBLgCRssNKhlJwMX1ohtEhZIuswY98nIbqou6F+7t7D6wSBjn03HppyWJRj77rRR9xDdKcCWnlIf6KLTkAmeT9MSlGz/3P9+t1eRIZ8Cku2iMzQ03rRdKeT1JbyPorBwoDPRIaiEuoxkqEsfQUjRstMkgTuUp5b7DDbUIUlEG7Sq3lSHJPloPvLNdvpOPaqUMtByV6567YuzbmtfiiDGBTq8KW5DuU65aWo4fX3qm2r08viWB7LF3vg5jQshmpsT69Va/aKvU8vyb5qF9uqOcUBLTtP0nSl7Ljfb1VfXbNmw/sC/bzK1GQgpOJXE0su/nxJxB6UUWBRlmH7DPpK"];
+RAW_MS+=["ZgiuGU5Xw2G27FkK0rBcRsVzU34ftS3LoP8LvxBB4SB6QqDeYzxslFBkupZCEpNEluiPqK/RFmyxK5TVrG9yyoZTvKYBLw7ZdeETJB0ElWmINAbfbOh8g3wk6/B3B+i8K6DD4LHuF+W22n+U++olzn7b1W9VeyhjYplBAUDWrEWnQgaHki3E4wWfnvt5vhya9QGx8Q27cYPO4HlyxbCXeIkfcGpwYhpEfMAcNogLKYnGwB/MhUE8Pbq+5JpvfA82oxFbuuBXGySLdeMwWV6Vy0oqe+X9yaKCHR4nam3M4JMD+im+TEfyNj2gZgaeDO2Psn+OcAsfa9dS67V7ZVWK9BszAL/ff58Mc6kH4X0Egw0QWj0dSFepyz9X/cQ3WzEiPw+xBo9YQHVJEORgGHf5PrUh1Gv5hBzFehXmV59CmS4Jp3UGjC0u8izt3cIiiA6FscF1X7+cY4w4GPZ0kyQ/03fyv1F9ythwT3AnQqzMjqdAZUFIryv+"];
+RAW_MS+=["poyP/LYa18suXYFynfIwDi7TczHUVWtP4Lt26d268iizOJ0eobZ0JJW91uX1/Gt//vX4Y3Gsmsbet2Vi/kPLO/zpTuy36mQPVtTThkti9bblqEfX9BAv9t1oLxG6Jj24FBEXqw9PnFgapH5tS5tx5/xcze78i9ix/L6EBHhpvnfboWojMn7a+q071cqMKIpm4/GAgy+e0fvuWNau2uF0evkxKOuGwbSvzN2WzX5Survjm1jjPs8N0Vr0cwp4Z8G9SDYG58TgOi3aMYecyTg9sm0MhFznrLDDKOqxt6VaWowpVwK9j6IAoAuAXC1rNrgjhHqwwmsVfvV090fANX5/LecPzSDOQFD42SrlsNyEaJbig0KHWKklHdIOolCXrD6mbF6DQ9ukvwbSfMMCBTWQD7z2ZPWWpgl470EQbK6oCZc6zeOgO2e98eJG2l4FZh0Kjmf/VUhQPTn04wVsyK+obM/lXkyKnb8PoYwFjCYmNbQSrJCL7NPb"];
+RAW_MS+=["cBuEGn7Y9eQPgGIL1veY2kNym0NP3vM9ofE8KTEpIIgeU5PmsVY4ihO+VP/z/wdJA1hTH6ADAA=="];
+function updateClear(id){var inp=document.getElementById(id);var btn=document.getElementById(id+"-clear");if(btn)btn.classList.toggle("visible",inp&&inp.value.length>0);}
+function clearSearch(id,filterFn){var inp=document.getElementById(id);if(inp){inp.value="";updateClear(id);}if(typeof window[filterFn]==="function")window[filterFn]();}
+
+window.addEventListener("hashchange",function(){readHash();});
 
 /* INIT */
 function setProgress(pct,msg){
@@ -3201,6 +3446,9 @@ decompress(RAW_P).then(function(d){
   return decompress(RAW_ADJ);
 }).then(function(d){
   ADJUNTOS=d;setProgress(100,"");
+  return decompress(RAW_MS);
+}).then(function(d){
+  MS=d;
   document.getElementById("loading").style.display="none";
   renderSeasons();
   setTimeout(readHash,0);
