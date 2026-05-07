@@ -286,6 +286,9 @@ body{background:var(--negro);color:var(--crema);font-family:"Lora",Georgia,serif
 .chat-msg.bot li{margin:.15rem 0}
 .chat-msg.bot strong{color:var(--crema,#f0ead8);font-weight:600}
 .chat-disclaimer{font-size:.68rem;color:rgba(240,234,216,.3);margin-top:12px;letter-spacing:.3px}
+/* ── LISTADO TEMPORADAS ── */
+.lt-sort-btn{cursor:pointer;user-select:none;white-space:nowrap}
+.lt-sort-btn:hover{color:var(--gualda)}
 </style>
 </head>
 <body>
@@ -334,7 +337,7 @@ body{background:var(--negro);color:var(--crema);font-family:"Lora",Georgia,serif
   </div>
 </div>
 
-<div id="view-temporadas" class="view active"><div class="breadcrumb"><a onclick="navTo('temporadas')">Temporadas</a></div><div class="section-title">Temporadas</div><div class="seasons-grid" id="seasons-grid"></div></div>
+<div id="view-temporadas" class="view active"><div class="breadcrumb"><a onclick="navTo('temporadas')">Temporadas</a><span>&rsaquo;</span><a onclick="navTo('listado-temporadas')">Listado</a></div><div class="section-title">Temporadas</div><div class="seasons-grid" id="seasons-grid"></div></div>
 <div id="view-partidos" class="view"><div class="breadcrumb"><a onclick="navTo('temporadas')">Temporadas</a><span>&rsaquo;</span><span id="bc-temp"></span></div><div class="section-title" id="partidos-title"></div><div id="season-standings" style="display:none;margin:0 14px 12px;padding:14px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:4px;border-left:3px solid var(--gualda)"></div><div style="padding:0 14px 12px"><button class="season-tab-btn active" onclick="selectSeasonTab('partidos')" id="stab-partidos">Partidos</button><button class="season-tab-btn" onclick="selectSeasonTab('jugadores')" id="stab-jugadores">Jugadores</button><button class="season-tab-btn" onclick="selectSeasonTab('goles')" id="stab-goles">Aportación goles</button></div><div id="season-section-partidos"><div class="filter-bar" id="comp-filter"></div><div class="matches-list" id="matches-list"></div></div><div id="season-section-jugadores" style="display:none"><div class="filter-bar" id="season-jug-comp-filter"></div><div class="results-count" id="season-jug-count"></div><div class="table-wrapper"><table class="data-table" id="season-jug-table"><thead><tr><th class="left" onclick="sortSeasonJug('n')" style="cursor:pointer">Jugador</th><th onclick="sortSeasonJug('pj')" style="cursor:pointer">PJ</th><th onclick="sortSeasonJug('tit')" style="cursor:pointer">Tit</th><th onclick="sortSeasonJug('g')" style="cursor:pointer">G</th><th onclick="sortSeasonJug('a')" style="cursor:pointer">A</th><th onclick="sortSeasonJug('am')" style="cursor:pointer" title="Amarillas">🟨</th><th onclick="sortSeasonJug('ro')" style="cursor:pointer" title="Rojas">🟥</th><th onclick="sortSeasonJug('min')" style="cursor:pointer">Min</th></tr></thead><tbody id="season-jug-tbody"></tbody></table></div></div><div id="season-section-goles" style="display:none"><div class="filter-bar" id="gol-comp-filter" style="padding:10px 14px 0"></div><div class="results-count" id="season-gol-count"></div><div class="table-wrapper"><table class="data-table" id="season-gol-table"><thead><tr><th class="left" onclick="sortSeasonGol('n')" style="cursor:pointer">Jugador</th><th onclick="sortSeasonGol('g')" style="cursor:pointer">G</th><th onclick="sortSeasonGol('a')" style="cursor:pointer">A</th><th onclick="sortSeasonGol('ga')" style="cursor:pointer">G+A</th><th onclick="sortSeasonGol('min')" style="cursor:pointer">Min</th><th onclick="sortSeasonGol('p90')" style="cursor:pointer" title="Minutos por participación en gol">Min/GA</th></tr></thead><tbody id="season-gol-tbody"></tbody></table></div></div></div>
 <div id="view-partido" class="view"><div class="breadcrumb"><a onclick="navTo('temporadas')">Temporadas</a><span>&rsaquo;</span><a onclick="navTo('partidos')" id="bc-temp2"></a><span>&rsaquo;</span><span id="bc-partido">Partido</span></div><button id="btn-prev-partido" onclick="navPartido(-1)" title="Partido anterior" style="position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:100;display:none;width:44px;height:64px;background:rgba(20,20,20,.75);backdrop-filter:blur(6px);border:none;border-radius:0 6px 6px 0;color:rgba(240,234,216,.85);font-size:1.4rem;cursor:pointer;transition:background .2s,color .2s;padding:0;line-height:1" onmouseover="this.style.background='rgba(232,184,75,.25)';this.style.color='rgba(232,184,75,1)'" onmouseout="this.style.background='rgba(20,20,20,.75)';this.style.color='rgba(240,234,216,.85)'">&#8592;</button><button id="btn-next-partido" onclick="navPartido(1)" title="Partido siguiente" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:100;display:none;width:44px;height:64px;background:rgba(20,20,20,.75);backdrop-filter:blur(6px);border:none;border-radius:6px 0 0 6px;color:rgba(240,234,216,.85);font-size:1.4rem;cursor:pointer;transition:background .2s,color .2s;padding:0;line-height:1" onmouseover="this.style.background='rgba(232,184,75,.25)';this.style.color='rgba(232,184,75,1)'" onmouseout="this.style.background='rgba(20,20,20,.75)';this.style.color='rgba(240,234,216,.85)'">&#8594;</button><div id="partido-content"></div></div>
 <div id="view-jugador" class="view"><div class="breadcrumb" id="jugador-bc"></div><div id="jugador-content"></div></div>
@@ -444,6 +447,32 @@ body{background:var(--negro);color:var(--crema);font-family:"Lora",Georgia,serif
       <button class="chat-send-btn" id="chat-btn" onclick="chatAsk()">Preguntar ↗</button>
     </div>
     <div class="chat-disclaimer">Las respuestas se generan con IA a partir de los datos históricos del club. Pueden contener errores.</div>
+  </div>
+</div>
+
+<div id="view-listado-temporadas" class="view">
+  <div class="breadcrumb"><a onclick="navTo('temporadas')">Temporadas</a><span>&rsaquo;</span><span>Listado</span></div>
+  <div class="section-title" style="margin-bottom:8px">Listado de temporadas</div>
+  <div class="filter-bar" id="lt-comp-filter" style="margin-bottom:6px"></div>
+  <div class="filter-bar" id="lt-cat-filter" style="margin-bottom:8px"></div>
+  <div class="results-count" id="lt-count"></div>
+  <div class="table-wrapper">
+    <table class="data-table" id="lt-table">
+      <thead><tr>
+        <th class="left lt-sort-btn" onclick="sortLT('season')" title="Temporada">Temporada <span id="lt-s-season">↓</span></th>
+        <th class="left lt-sort-btn" onclick="sortLT('cat')" title="Categoría">Cat. <span id="lt-s-cat">↕</span></th>
+        <th class="lt-sort-btn" onclick="sortLT('pj')" title="Partidos jugados">PJ <span id="lt-s-pj">↕</span></th>
+        <th class="lt-sort-btn" onclick="sortLT('pg')" title="Partidos ganados">G <span id="lt-s-pg">↕</span></th>
+        <th class="lt-sort-btn" onclick="sortLT('pe')">E <span id="lt-s-pe">↕</span></th>
+        <th class="lt-sort-btn" onclick="sortLT('pp')">P <span id="lt-s-pp">↕</span></th>
+        <th class="lt-sort-btn" onclick="sortLT('gf')">GF <span id="lt-s-gf">↕</span></th>
+        <th class="lt-sort-btn" onclick="sortLT('gc')">GC <span id="lt-s-gc">↕</span></th>
+        <th class="lt-sort-btn" onclick="sortLT('am')">🟨 <span id="lt-s-am">↕</span></th>
+        <th class="lt-sort-btn" onclick="sortLT('ro')">🟥 <span id="lt-s-ro">↕</span></th>
+        <th class="lt-sort-btn" onclick="sortLT('cs')">P0 <span id="lt-s-cs">↕</span></th>
+      </tr></thead>
+      <tbody id="lt-tbody"></tbody>
+    </table>
   </div>
 </div>
 
@@ -2142,6 +2171,7 @@ function navTo(view){
   else if(view==="rivales"){renderCompToggle("rival-comp-filter-bar","toggleGlobalComp");filterRivales();}
   else if(view==="historia"){renderHistoria();setHash("historia");}
   else if(view==="consulta"){initChat();setHash("consulta");}
+  else if(view==="listado-temporadas"){renderListadoTemporadas();setHash("listado-temporadas");}
   else if(view==="arbitros"){if(typeof filterArbitros==="function")filterArbitros();setHash("arbitros");}
   else if(view==="entrenadores")filterCoaches();
   else if(view==="temporadas"){document.getElementById("tab-temporadas").classList.add("active");try{history.replaceState(null,"",location.pathname+location.search);}catch(e){}}
@@ -3622,6 +3652,7 @@ function readHash(){
   else if(type==="historia"){navTo("historia");}
   else if(type==="arbitros"){navTo("arbitros");}
   else if(type==="consulta"){navTo("consulta");}
+  else if(type==="listado-temporadas"){navTo("listado-temporadas");}
   else if(type==="entrenador"&&parts[1]){if(COACHES){var ck=decodeURIComponent(parts[1]);if(COACHES[ck])openCoach(encodeURIComponent(ck));}}
   else if(type==="rival"&&parts[1])openRival(parts[1]);
 }
@@ -4599,6 +4630,131 @@ async function chatAsk(){
   }
   btn.disabled=false;
   input.focus();
+}
+
+/* ── LISTADO TEMPORADAS ── */
+var _ltSortCol='season', _ltSortDir=-1;
+var _ltActiveComps=null, _ltActiveCats=null;
+var LT_CAT_LABELS={'1':'Primera','2':'Segunda','2B':'2ªB','2 GRUPO B':'2ªB (Gpo B)','1 RFEF':'1ª RFEF','3':'Tercera','REGIONAL':'Regional'};
+var LT_COMP_ORDER=['Liga','Copa','Promocion','Copa de la Liga','Copa Federacion','Final Campeones','Liga Consolacion','Amistoso'];
+var LT_CAT_ORDER=['1','2','2B','2 GRUPO B','1 RFEF','3','REGIONAL'];
+
+function _ltInitFilters(){
+  if(_ltActiveComps)return;
+  _ltActiveComps={};
+  LT_COMP_ORDER.forEach(function(co){_ltActiveComps[co]=co==='Liga';});
+  _ltActiveCats={};
+  LT_CAT_ORDER.forEach(function(ca){_ltActiveCats[ca]=true;});
+}
+
+function renderListadoTemporadas(){
+  if(!DATA)return;
+  _ltInitFilters();
+  _renderLTCompFilter();
+  _renderLTCatFilter();
+  _filterListadoTemporadas();
+}
+
+function _renderLTCompFilter(){
+  var el=document.getElementById('lt-comp-filter');
+  if(!el)return;
+  var LABELS={'Liga':'Liga','Copa':'Copa','Promocion':'Promoción','Copa de la Liga':'Copa de la Liga','Copa Federacion':'Copa Fed.','Final Campeones':'Final Camp.','Liga Consolacion':'Liga Cons.','Amistoso':'Amistoso'};
+  var comps=LT_COMP_ORDER.filter(function(co){
+    for(var s in DATA){if((DATA[s]||[]).some(function(p){return p.c===co;}))return true;}
+    return false;
+  });
+  el.innerHTML=comps.map(function(co){
+    var on=_ltActiveComps[co];
+    return '<button class="filter-btn'+(on?' active':'')+'" onclick="toggleLTComp(\''+(co).replace(/\'/g,"\\'")+'\')">'+(LABELS[co]||co)+'<\/button>';
+  }).join('');
+}
+
+function _renderLTCatFilter(){
+  var el=document.getElementById('lt-cat-filter');
+  if(!el)return;
+  var CAT_COLORS={'1':'var(--verde-claro)','2':'var(--gualda)','2B':'#e8a87a','2 GRUPO B':'#e8a87a','1 RFEF':'#e8a87a','3':'var(--rojo-claro)','REGIONAL':'#887799'};
+  el.innerHTML=LT_CAT_ORDER.map(function(cat){
+    var on=_ltActiveCats[cat];
+    var label=LT_CAT_LABELS[cat]||cat;
+    var col=CAT_COLORS[cat]||'var(--crema)';
+    var safecat=cat.replace(/ /g,'_');
+    return '<button class="filter-btn'+(on?' active':'')+'" onclick="toggleLTCat(\''+safecat+'\')" style="'+(on?'border-color:'+col+';color:'+col:'opacity:.45')+'">'+(label)+'<\/button>';
+  }).join('');
+}
+
+function toggleLTComp(comp){
+  _ltInitFilters();
+  _ltActiveComps[comp]=!_ltActiveComps[comp];
+  _renderLTCompFilter();
+  _filterListadoTemporadas();
+}
+
+function toggleLTCat(cat){
+  _ltInitFilters();
+  cat=cat.replace(/_/g,' ');
+  _ltActiveCats[cat]=!_ltActiveCats[cat];
+  _renderLTCatFilter();
+  _filterListadoTemporadas();
+}
+
+function _filterListadoTemporadas(){
+  if(!DATA)return;
+  var rows=[];
+  Object.keys(DATA).sort().forEach(function(season){
+    var ps=DATA[season]||[];
+    var pg=0,pe=0,pp=0,gf=0,gc=0,am=0,ro=0,cs=0,pj=0,by_cat={};
+    ps.forEach(function(p){
+      if(!_ltActiveComps[p.c])return;
+      var fl=p.fl||'',r=p.r||'';
+      if(r==='Ganado')pg++;else if(r==='Empatado')pe++;else if(r==='Perdido')pp++;
+      var pgf=(fl==='Local'?p.gl:p.gv)||0,pgc=(fl==='Local'?p.gv:p.gl)||0;
+      gf+=pgf;gc+=pgc;if(pgc===0)cs++;pj++;
+      var cat=p.cat||'';by_cat[cat]=(by_cat[cat]||0)+1;
+      var all=(p.t||[]).concat(p.s||[]);
+      all.forEach(function(j){
+        if(j.d===97||j.d===98||j.d===99)return;
+        var ams=j.ams||[];am+=ams.length;
+        ro+=(j.ros||[]).length;
+        if(ams.length>=2)ro++;
+      });
+    });
+    if(pj===0)return;
+    var main_cat='',max_c=0;
+    Object.keys(by_cat).forEach(function(k){if(by_cat[k]>max_c){max_c=by_cat[k];main_cat=k;}});
+    if(_ltActiveCats[main_cat]===false)return;
+    rows.push({season:season,cat:main_cat,cat_label:LT_CAT_LABELS[main_cat]||main_cat,pg:pg,pe:pe,pp:pp,gf:gf,gc:gc,am:am,ro:ro,cs:cs,pj:pj});
+  });
+  rows.sort(function(a,b){
+    var v=_ltSortCol==='season'?(a.season<b.season?-1:1):_ltSortCol==='cat'?a.cat_label.localeCompare(b.cat_label,'es'):(a[_ltSortCol]||0)-(b[_ltSortCol]||0);
+    return v*_ltSortDir;
+  });
+  var cnt=document.getElementById('lt-count');
+  if(cnt)cnt.textContent=rows.length+' temporadas';
+  var tbody=document.getElementById('lt-tbody');
+  if(!tbody)return;
+  var CAT_COLORS={'Primera':'var(--verde-claro)','Segunda':'var(--gualda)','2ªB':'#e8a87a','1ª RFEF':'#e8a87a','Tercera':'var(--rojo-claro)','Regional':'#887799'};
+  tbody.innerHTML=rows.map(function(r){
+    var col=CAT_COLORS[r.cat_label]||'var(--crema)';
+    return '<tr style="cursor:pointer" onclick="selectSeason(\''+r.season+'\');navTo(\'partidos\')">'
+      +'<td class="left" style="font-family:Oswald,sans-serif;font-size:.8rem">'+r.season+'</td>'
+      +'<td class="left" style="color:'+col+';font-size:.78rem">'+r.cat_label+'</td>'
+      +'<td>'+r.pj+'</td><td>'+r.pg+'</td><td>'+r.pe+'</td><td>'+r.pp+'</td>'
+      +'<td style="color:var(--verde-claro)">'+r.gf+'</td>'
+      +'<td style="color:var(--rojo-claro)">'+r.gc+'</td>'
+      +'<td style="color:#e8d47a">'+r.am+'</td>'
+      +'<td style="color:var(--rojo-claro)">'+r.ro+'</td>'
+      +'<td>'+r.cs+'</td></tr>';
+  }).join('');
+}
+
+function sortLT(col){
+  _ltSortDir=(_ltSortCol===col)?_ltSortDir*-1:-1;
+  _ltSortCol=col;
+  ['season','cat','pj','pg','pe','pp','gf','gc','am','ro','cs'].forEach(function(cc){
+    var el=document.getElementById('lt-s-'+cc);
+    if(el)el.textContent=cc===col?(_ltSortDir===1?'↑':'↓'):'↕';
+  });
+  _filterListadoTemporadas();
 }
 
 window.addEventListener("hashchange",function(){readHash();});
