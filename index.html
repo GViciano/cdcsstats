@@ -4574,19 +4574,19 @@ async function chatAsk(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(body)
     });
+    var resText=await res.text();
     if(!res.ok){
-      var errBody=await res.json().catch(function(){return {};});
-      var e=new Error('HTTP '+res.status);
-      e.responseText=JSON.stringify(errBody);
-      throw e;
+      thinking.remove();
+      chatAddMsg('bot','Error HTTP '+res.status+': '+resText);
+      btn.disabled=false;input.focus();return;
     }
-    var data=await res.json();
+    var data=JSON.parse(resText);
     var reply=data.reply||'Sin respuesta.';
     thinking.remove();
     chatAddMsg('bot',reply);
   }catch(err){
     thinking.remove();
-    chatAddMsg('bot','Error al consultar. Asegúrate de que el servidor está activo. ('+err.message+').');
+    chatAddMsg('bot','Error: '+err.message);
   }
   btn.disabled=false;
   input.focus();
