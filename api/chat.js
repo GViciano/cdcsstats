@@ -37,14 +37,23 @@ export default async function handler(req, res) {
   const { messages } = body || {};
   if (!messages?.length) return res.status(400).json({ error: 'No messages' });
 
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const client = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+    defaultHeaders: { 'anthropic-beta': 'prompt-caching-2024-07-31' }
+  });
 
   try {
     // Without prompt caching first to test basic functionality
     const response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1024,
-      system: SYSTEM + '\n\nDATOS HISTÓRICOS COMPLETOS:\n' + FULL_CONTEXT,
+      system: [
+        {
+          type: 'text',
+          text: SYSTEM + '\n\nDATOS HISTÓRICOS COMPLETOS:\n' + FULL_CONTEXT,
+          cache_control: { type: 'ephemeral' }
+        }
+      ],
       messages: messages.slice(-1),
     });
     return res.status(200).json({ reply: response.content[0].text });
