@@ -280,6 +280,11 @@ body{background:var(--negro);color:var(--crema);font-family:"Lora",Georgia,serif
 .chat-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 .chat-pill{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;font-size:.72rem;padding:4px 11px;cursor:pointer;color:rgba(240,234,216,.55);transition:.15s}
 .chat-pill:hover{background:rgba(255,255,255,.1);color:var(--crema,#f0ead8);border-color:var(--gualda)}
+.chat-msg.bot h1,.chat-msg.bot h2,.chat-msg.bot h3{font-family:'Oswald',sans-serif;color:var(--gualda-claro);font-size:.95rem;margin:.6rem 0 .3rem;letter-spacing:.5px}
+.chat-msg.bot p{margin:.3rem 0}
+.chat-msg.bot ul,.chat-msg.bot ol{margin:.3rem 0 .3rem 1.2rem}
+.chat-msg.bot li{margin:.15rem 0}
+.chat-msg.bot strong{color:var(--crema,#f0ead8);font-weight:600}
 .chat-disclaimer{font-size:.68rem;color:rgba(240,234,216,.3);margin-top:12px;letter-spacing:.3px}
 </style>
 </head>
@@ -4549,7 +4554,11 @@ function chatAddMsg(role,text){
   var msgs=document.getElementById('chat-messages');
   var d=document.createElement('div');
   d.className='chat-msg '+role;
-  d.textContent=text;
+  if(role==='bot'&&typeof marked!=='undefined'){
+    d.innerHTML=marked.parse(text);
+  }else{
+    d.textContent=text;
+  }
   msgs.appendChild(d);
   msgs.scrollTop=msgs.scrollHeight;
   return d;
