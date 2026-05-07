@@ -4370,8 +4370,7 @@ function closeHamburger(){
 
 
 /* ── CONSULTA IA ── */
-var _chatHistory=[];
-var _chatCtx=null;
+var _chatCtxSummary=null;
 var _chatCtxLoaded=false;
 
 var RAW_CTX="";
@@ -4509,8 +4508,8 @@ RAW_CTX+="Q6NozyP33nhIssewBuP4VLZHXboo8mHxqmys5Nd2qrY/Fn8v17d1BS8pJiDRRkFEH51jDG
 function _loadChatCtx(){
   if(_chatCtxLoaded)return;
   try{
-    var raw=pako.inflate(Uint8Array.from(atob(RAW_CTX),c=>c.charCodeAt(0)),{to:'string'});
-    _chatCtx=raw;
+    var dec=function(b64){return pako.inflate(Uint8Array.from(atob(b64),function(x){return x.charCodeAt(0);}),{to:'string'});};
+    _chatCtxSummary=dec(RAW_CTX_SUMMARY);
     _chatCtxLoaded=true;
   }catch(e){console.error('ctx decompress error',e);}
 }
@@ -4566,12 +4565,10 @@ async function chatAsk(){
   _loadChatCtx();
   chatAddMsg('user',q);
   var thinking=chatAddMsg('thinking','Consultando la base de datos...');
-  _chatHistory.push({role:'user',content:q});
 
   try{
-    // Only send full context on first message to avoid payload size limits
-    var isFirst=_chatHistory.length===1;
-    var body={messages:_chatHistory.slice(-10),context:isFirst?_chatCtx:null};
+    // Each query is independent: no history, always send compact summary (~9KB)
+    var body={messages:[{role:'user',content:q}],context:_chatCtxSummary};
     var res=await fetch('/api/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -4582,11 +4579,9 @@ async function chatAsk(){
     var reply=data.reply||'Sin respuesta.';
     thinking.remove();
     chatAddMsg('bot',reply);
-    _chatHistory.push({role:'assistant',content:reply});
   }catch(err){
     thinking.remove();
     chatAddMsg('bot','Error al consultar. Asegúrate de que el servidor está activo. ('+err.message+').');
-    _chatHistory.pop();
   }
   btn.disabled=false;
   input.focus();
