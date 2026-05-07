@@ -246,8 +246,8 @@ body{background:var(--negro);color:var(--crema);font-family:"Lora",Georgia,serif
 .hamburger{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:4px;color:var(--gualda-claro);cursor:pointer;padding:6px 10px;display:none;align-items:center;justify-content:center;transition:.15s;flex-shrink:0}
 .hamburger:hover{background:rgba(255,255,255,.14)}
 .hamburger svg{display:block}
-.hamburger-menu{position:fixed;top:0;right:-260px;width:260px;height:100vh;background:#161412;border-left:1px solid rgba(255,255,255,.08);z-index:800;transition:right .25s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column;padding:20px 0}
-.hamburger-menu.open{right:0}
+.hamburger-menu{position:fixed;top:0;left:-260px;width:260px;height:100vh;background:#161412;border-right:1px solid rgba(255,255,255,.08);z-index:800;transition:left .25s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column;padding:20px 0}
+.hamburger-menu.open{left:0}
 .hamburger-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:799;display:none}
 .hamburger-overlay.open{display:block}
 .hm-title{font-family:'Oswald',sans-serif;font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(240,234,216,.3);padding:0 20px 10px;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:8px}
@@ -4569,7 +4569,9 @@ async function chatAsk(){
   _chatHistory.push({role:'user',content:q});
 
   try{
-    var body={messages:_chatHistory.slice(-10),context:_chatCtx};
+    // Only send full context on first message to avoid payload size limits
+    var isFirst=_chatHistory.length===1;
+    var body={messages:_chatHistory.slice(-10),context:isFirst?_chatCtx:null};
     var res=await fetch('/api/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},

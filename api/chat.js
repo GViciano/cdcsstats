@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 
-const SYSTEM = `Eres un experto en la historia del CD Castellón con acceso a su base de datos histórica completa desde 1922 hasta 2026. Responde siempre en español de forma directa y precisa. Cuando los datos no sean suficientes para una respuesta exacta, indícalo claramente. Los datos excluyen amistosos y Liga Consolación. Categorías: Primera División, Segunda División, Segunda B (también llamada 2ªB), 1ª RFEF, Tercera División, Regional.`;
+const SYSTEM_BASE = `Eres un experto en la historia del CD Castellón con acceso a su base de datos histórica completa desde 1922 hasta 2026. Responde siempre en español de forma directa y precisa. Cuando los datos no sean suficientes para una respuesta exacta, indícalo claramente. Los datos excluyen amistosos y Liga Consolación. Categorías: Primera División, Segunda División, Segunda B (también llamada 2ªB), 1ª RFEF, Tercera División, Regional.`;
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -24,13 +24,19 @@ export default async function handler(req, res) {
   const { messages, context } = body || {};
   if (!messages?.length) return res.status(400).json({ error: 'No messages' });
 
+  // Build system prompt: include full data context only when provided (first message)
+  // On subsequent messages, the assistant already has the context from conversation history
+  const system = context
+    ? SYSTEM_BASE + '\n\nDATOS HISTÓRICOS COMPLETOS:\n' + context
+    : SYSTEM_BASE + '\n\nNota: Usa el contexto histórico ya establecido en la conversación para responder.';
+
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
   try {
     const response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1024,
-      system: SYSTEM + (context ? '\n\nDATOS:\n' + context : ''),
+      system,
       messages: messages.slice(-10),
     });
     return res.status(200).json({ reply: response.content[0].text });
