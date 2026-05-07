@@ -58,15 +58,17 @@ export default async function handler(req, res) {
     });
     return res.status(200).json({ reply: response.content[0].text });
   } catch (err) {
-    console.error('Anthropic error:', JSON.stringify({
-      status: err?.status,
-      message: err?.message,
-      error: err?.error,
-    }));
-    return res.status(500).json({
-      error: 'Error Anthropic',
-      detail: err?.message || String(err),
-      status: err?.status,
-    });
+    console.error('Anthropic error:', err?.status, err?.message);
+    let userMsg = 'Ha ocurrido un error. Inténtalo de nuevo en unos segundos.';
+    if (err?.status === 429) {
+      userMsg = 'Demasiadas consultas seguidas. Espera un momento antes de preguntar de nuevo.';
+    } else if (err?.status === 400 && err?.message?.includes('too long')) {
+      userMsg = 'La consulta es demasiado compleja. Intenta reformularla de forma más concreta.';
+    } else if (err?.status === 401 || err?.status === 403) {
+      userMsg = 'Error de configuración del servidor. Contacta con el administrador.';
+    } else if (err?.status >= 500) {
+      userMsg = 'El servicio de IA no está disponible en este momento. Inténtalo más tarde.';
+    }
+    return res.status(200).json({ reply: userMsg });
   }
 }

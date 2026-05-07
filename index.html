@@ -4586,7 +4586,7 @@ async function chatAsk(){
     var resText=await res.text();
     if(!res.ok){
       thinking.remove();
-      chatAddMsg('bot','Error HTTP '+res.status+': '+resText);
+      chatAddMsg('bot','Ha ocurrido un error de conexión. Inténtalo de nuevo.');
       btn.disabled=false;input.focus();return;
     }
     var data=JSON.parse(resText);
@@ -4595,7 +4595,7 @@ async function chatAsk(){
     chatAddMsg('bot',reply);
   }catch(err){
     thinking.remove();
-    chatAddMsg('bot','Error: '+err.message);
+    chatAddMsg('bot','No se ha podido conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.');
   }
   btn.disabled=false;
   input.focus();
