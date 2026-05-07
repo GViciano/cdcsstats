@@ -1,7 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Full historical context embedded at module level - loaded once by Vercel
-// Includes: 5249 goals + 3698 official matches (1922-2026)
 const FULL_CONTEXT = `BASE DE DATOS HISTÓRICA CD CASTELLÓN (1922-2026)
 Partidos oficiales: 3698 | Jugadores: 1314 | Goles: 5249
 
@@ -9195,14 +9193,7 @@ TODOS LOS PARTIDOS OFICIALES (temporada|fecha|rival|local/visit|GF|GC|resultado|
   2025-2026|2026-04-25|MÁLAGA CF|V|3|2|G|Segunda División|Liga
   2025-2026|2026-05-02|CÓRDOBA|L|1|2|P|Segunda División|Liga`;
 
-const SYSTEM = `Eres un experto en la historia del CD Castellón con acceso a su base de datos histórica completa desde 1922 hasta 2026. Tienes acceso a TODOS los goles marcados y TODOS los partidos oficiales del club. Responde siempre en español de forma directa y precisa. Los datos excluyen amistosos y Liga Consolación. GF/GC están desde la perspectiva del CD Castellón. Formato partidos: temporada|fecha|rival|L/V/N|GF|GC|G/E/P|categoría|competición.`;
-
-// Initialize model at module level so context is reused across warm invocations
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({
-  model: 'gemini-2.0-flash',
-  systemInstruction: SYSTEM + '\n\nDATOS HISTÓRICOS COMPLETOS:\n' + FULL_CONTEXT,
-});
+const SYSTEM_PROMPT = `Eres un experto en la historia del CD Castellón con acceso a su base de datos histórica completa desde 1922 hasta 2026. Tienes acceso a TODOS los goles marcados y TODOS los partidos oficiales del club. Responde siempre en español de forma directa y precisa. Los datos excluyen amistosos y Liga Consolación. GF/GC están desde la perspectiva del CD Castellón.`;
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -9227,12 +9218,20 @@ export default async function handler(req, res) {
   if (!messages?.length) return res.status(400).json({ error: 'No messages' });
 
   try {
-    const chat = model.startChat();
-    const result = await chat.sendMessage(messages[messages.length - 1].content);
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+    const question = messages[messages.length - 1].content;
+
+    const result = await model.generateContent([
+      { text: SYSTEM_PROMPT + '\n\nDATOS HISTÓRICOS:\n' + FULL_CONTEXT },
+      { text: question }
+    ]);
+
     const reply = result.response.text();
     return res.status(200).json({ reply });
   } catch (err) {
-    console.error('Gemini error:', err?.message);
+    console.error('Gemini error:', err?.status, err?.message, err?.errorDetails);
     return res.status(500).json({
       error: 'Error Gemini: ' + (err?.message || String(err))
     });
