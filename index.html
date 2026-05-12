@@ -7049,39 +7049,56 @@ async function openMatchPlayerStats(fotmobMatchId, playerName) {
   document.getElementById('fm-modal-body').innerHTML = '<div style="text-align:center;padding:30px;color:var(--gris-claro)">Cargando estadísticas del partido...</div>';
 
   try {
-    var r = await fotmobFetch('/api/matchDetails?matchId=' + fotmobMatchId);
+    var r = await fotmobFetch('/api/data/matchDetails?matchId=' + fotmobMatchId);
     var d = await r.json();
     if (d.error) throw new Error(d.error);
 
-    // Find player in lineup by name (fuzzy)
-    var playerStats = null, playerId = null;
-    var needle = playerName.toLowerCase().replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u');
-    var firstWord = needle.split(' ')[0];
-    var allPlayers = [];
-    if (d.content && d.content.lineup) {
-      (d.content.lineup.lineup || []).forEach(function(team) {
-        (team.players || []).forEach(function(row) {
-          (Array.isArray(row) ? row : [row]).forEach(function(p) { allPlayers.push(p); });
-        });
-      });
-    }
-    allPlayers.forEach(function(p) {
-      var pname = (p.name && p.name.usualName || p.name || '').toLowerCase()
-        .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u');
-      if (pname.includes(firstWord) || (needle.split(' ')[1] && pname.includes(needle.split(' ')[1]))) {
-        playerStats = p; playerId = p.id;
+    // Find player in playerStats by name (fuzzy match)
+    var norm = function(s){ return (s||'').toLowerCase()
+      .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i')
+      .replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').trim(); };
+    var needle = norm(playerName);
+    var words = needle.split(/\s+/);
+
+    var foundId = null, foundData = null;
+    var playerStatsMap = (d.content && d.content.playerStats) || {};
+    Object.keys(playerStatsMap).forEach(function(pid) {
+      var pl = playerStatsMap[pid];
+      var pnorm = norm(pl.name || '');
+      // Match if any word matches
+      var score = words.filter(function(w){ return w.length > 2 && pnorm.includes(w); }).length;
+      if (score > 0 && (!foundId || score > (foundData._score||0))) {
+        pl._score = score;
+        foundId = pid;
+        foundData = pl;
       }
     });
 
-    // Get shots for this player
+    // Also check lineup starters for the away team (Castellon = teamId 10279)
+    if (!foundId && d.content && d.content.lineup) {
+      var allStarters = (d.content.lineup.awayTeam && d.content.lineup.awayTeam.starters || [])
+        .concat(d.content.lineup.awayTeam && d.content.lineup.awayTeam.subs || []);
+      allStarters.forEach(function(pl) {
+        var pnorm = norm(pl.name || '');
+        var score = words.filter(function(w){ return w.length > 2 && pnorm.includes(w); }).length;
+        if (score > 0) { foundId = pl.id; }
+      });
+      if (foundId) foundData = playerStatsMap[foundId];
+    }
+
+    // Get shots for this player from shotmap
     var matchShots = [];
     if (d.content && d.content.shotmap && d.content.shotmap.shots) {
       matchShots = d.content.shotmap.shots.filter(function(s) {
-        return playerId ? String(s.playerId) === String(playerId) : false;
+        return foundId ? String(s.playerId) === String(foundId) : false;
       });
     }
+    // Also check playerStats.shotmap
+    if (foundData && foundData.shotmap && foundData.shotmap.length) {
+      matchShots = foundData.shotmap;
+    }
 
-    renderMatchPlayerModal(playerStats, matchShots, playerName, d);
+    renderMatchPlayerModal(foundData, matchShots, playerName, d);
   } catch(e) {
     document.getElementById('fm-modal-body').innerHTML = '<div style="text-align:center;padding:30px;color:var(--rojo-claro)">Error cargando datos: ' + e.message + '</div>';
   }
@@ -7189,65 +7206,154 @@ function switchFMTab(idx, el) {
 
 /* ── renderMatchPlayerModal ── */
 function renderMatchPlayerModal(pStats, shots, playerName, matchData) {
-  var s = (pStats && pStats.stats) || {};
+  // pStats is from content.playerStats[id] — extract top_stats section
+  var topStats = {};
+  if (pStats && pStats.stats) {
+    var topSection = pStats.stats.find(function(s){ return s.key === 'top_stats'; });
+    if (topSection) topStats = topSection.stats || {};
+  }
+
+  // Helper to get stat value
+  function sv(key) {
+    var s = topStats[key];
+    if (!s || !s.stat) return '—';
+    var v = s.stat.value;
+    if (v === null || v === undefined) return '—';
+    if (s.stat.type === 'fractionWithPercentage') {
+      var pct = s.stat.total > 0 ? Math.round(v/s.stat.total*100) : 0;
+      return v + '/' + s.stat.total + ' (' + pct + '%)';
+    }
+    if (s.stat.type === 'double') return parseFloat(v).toFixed(2);
+    return v;
+  }
+
+  var rating = sv('FotMob rating');
+  var ratingColor = rating !== '—' ? (parseFloat(rating) >= 7 ? '#4caf50' : parseFloat(rating) >= 6 ? '#e8b84b' : '#e04444') : 'var(--gris-claro)';
+  var isGK = pStats && pStats.isGoalkeeper;
 
   var html = '<div class="fm-tabs">'
-    + '<div class="fm-tab active" onclick="switchFMTab(0,this)">Estadísticas</div>'
+    + '<div class="fm-tab active" onclick="switchFMTab(0,this)">Stats partido</div>'
     + '<div class="fm-tab" onclick="switchFMTab(1,this)">Disparos</div>'
     + '</div>';
 
   // Stats tab
   html += '<div id="fm-tab-0">';
   if (pStats) {
-    var rows = [
-      ['Rating', pStats.ratingProps ? pStats.ratingProps.num : '—'],
-      ['Minutos', pStats.minutesPlayed || '—'],
-      ['Goles', pStats.goals || 0],
-      ['Asistencias', pStats.assists || 0],
-      ['Tiros totales', s.totalShots || '—'],
-      ['Tiros a puerta', s.shotsOnTarget || '—'],
-      ['xG', s.expectedGoals ? parseFloat(s.expectedGoals).toFixed(2) : '—'],
-      ['Pases completados', s.accuratePasses ? s.accuratePasses + (s.totalPasses ? '/'+s.totalPasses : '') : '—'],
-      ['Regates', s.successfulDribbles || '—'],
-      ['Duelos ganados', s.duelsWon ? s.duelsWon + (s.duelsTotal ? '/'+s.duelsTotal : '') : '—'],
-    ];
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">';
+    // Rating header
+    html += '<div style="text-align:center;padding:12px 0 8px">'
+      + '<div style="font-size:2rem;font-family:Oswald,sans-serif;color:' + ratingColor + '">' + rating + '</div>'
+      + '<div style="font-size:.7rem;color:var(--gris-claro)">Rating FotMob · ' + (sv('Minutes played')) + ' min</div>'
+      + '</div>';
+
+    var rows;
+    if (isGK) {
+      rows = [
+        ['Paradas', sv('Saves')],
+        ['Goles encajados', sv('Goals conceded')],
+        ['xGOT recibido', sv('xGOT faced')],
+        ['Goles evitados', sv('Goals prevented')],
+        ['Pases completados', sv('Accurate passes')],
+        ['Despejes', sv('Clearances')],
+      ];
+    } else {
+      rows = [
+        ['Goles', sv('Goals')],
+        ['Asistencias', sv('Assists')],
+        ['xG', sv('Expected goals (xG)')],
+        ['xA', sv('Expected assists (xA)')],
+        ['Tiros totales', sv('Total shots')],
+        ['Tiros a puerta', sv('Shots on target')],
+        ['Pases completados', sv('Accurate passes')],
+        ['Oportunidades creadas', sv('Chances created')],
+        ['Regates exitosos', sv('Successful dribbles')],
+        ['Acciones defensivas', sv('Defensive actions')],
+        ['Duelos ganados (suelo)', sv('Ground duels won')],
+        ['Duelos aéreos', sv('Aerial duels won')],
+        ['Faltas cometidas', sv('Fouls committed')],
+        ['Faltas recibidas', sv('Was fouled')],
+      ];
+    }
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">';
     rows.forEach(function(r) {
-      html += '<div style="background:rgba(255,255,255,.04);border-radius:3px;padding:8px 10px;display:flex;justify-content:space-between">'
-        + '<span style="font-size:.75rem;color:var(--gris-claro)">' + r[0] + '</span>'
-        + '<span style="font-family:Oswald,sans-serif;font-size:.85rem;color:var(--gualda)">' + r[1] + '</span>'
+      if (r[1] === '—') return;
+      html += '<div style="background:rgba(255,255,255,.04);border-radius:3px;padding:7px 10px;display:flex;justify-content:space-between;align-items:center">'
+        + '<span style="font-size:.7rem;color:var(--gris-claro)">' + r[0] + '</span>'
+        + '<span style="font-family:Oswald,sans-serif;font-size:.82rem;color:var(--gualda)">' + r[1] + '</span>'
         + '</div>';
     });
     html += '</div>';
+
+    // Fun facts
+    if (pStats.funFacts && pStats.funFacts.length) {
+      html += '<div style="margin-top:10px">';
+      pStats.funFacts.forEach(function(f) {
+        var icon = f.isPositive ? '⭐' : '⚠️';
+        html += '<div style="background:rgba(255,255,255,.04);border-radius:3px;padding:7px 10px;margin-bottom:4px;font-size:.75rem;color:var(--gris-claro)">'
+          + icon + ' ' + f.fallbackText + '</div>';
+      });
+      html += '</div>';
+    }
   } else {
-    html += '<div style="text-align:center;padding:20px;color:var(--gris-claro)">Stats no disponibles para este jugador en este partido</div>';
+    html += '<div style="text-align:center;padding:30px;color:var(--gris-claro)">Estadísticas no disponibles para este jugador</div>';
   }
   html += '</div>';
 
-  // Shots tab
+  // Shots tab — draw on a pitch SVG
   html += '<div id="fm-tab-1" style="display:none">';
   if (shots && shots.length) {
-    html += '<div style="font-size:.72rem;color:var(--gris-claro);text-align:center;margin-bottom:8px">Disparos en este partido</div>';
-    html += '<div class="fm-shotmap-pitch" style="min-height:180px">';
+    // SVG pitch — FotMob coords: x=0-105 (left to right attack), y=0-68 (top to bottom)
+    // We normalize: x/105*100%, y/68*100%
+    html += '<div style="font-size:.72rem;color:var(--gris-claro);text-align:center;margin-bottom:6px">Disparos en este partido (ataque →)</div>';
+    html += '<div style="position:relative;width:100%;padding-top:55%;background:#1a4020;border-radius:6px;border:1px solid rgba(255,255,255,.1);overflow:hidden;margin-bottom:10px">';
+    // Field lines
+    html += '<svg style="position:absolute;top:0;left:0;width:100%;height:100%" viewBox="0 0 105 68" preserveAspectRatio="none">'
+      // Outline
+      + '<rect x="0" y="0" width="105" height="68" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="0.5"/>'
+      // Centre line
+      + '<line x1="52.5" y1="0" x2="52.5" y2="68" stroke="rgba(255,255,255,.2)" stroke-width="0.5"/>'
+      // Centre circle
+      + '<circle cx="52.5" cy="34" r="9.15" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="0.5"/>'
+      // Right penalty box (attacking side for away team)
+      + '<rect x="83" y="13.84" width="22" height="40.32" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="0.5"/>'
+      // Right 6-yard box
+      + '<rect x="99" y="24.84" width="6" height="18.32" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="0.5"/>'
+      // Goal
+      + '<rect x="105" y="30.34" width="2" height="7.32" fill="rgba(255,255,255,.4)" stroke="none"/>';
+
     shots.forEach(function(s) {
-      var cl = s.eventType==='Goal' ? 'goal' : s.eventType==='AttemptSaved' ? 'saved' : s.eventType==='Miss' ? 'missed' : 'blocked';
-      html += '<div class="fm-shot-dot ' + cl + '" style="left:' + (s.x||50) + '%;top:' + (s.y||50) + '%" title="' + (s.eventType||'') + ' min:' + (s.min||'?') + ' xG:' + (s.expectedGoals ? parseFloat(s.expectedGoals).toFixed(2) : '—') + '"></div>';
+      var shotX = Math.max(0, Math.min(105, s.x || 52.5));
+      var shotY = Math.max(0, Math.min(68, s.y || 34));
+      var color = s.eventType==='Goal' ? '#4caf50' : s.eventType==='AttemptSaved' ? '#e8b84b' : s.eventType==='Miss' ? 'rgba(255,255,255,0.5)' : '#e04444';
+      var stroke = s.eventType==='Goal' ? '#fff' : 'rgba(255,255,255,.3)';
+      var r = s.expectedGoals ? Math.max(1.2, Math.min(3.5, parseFloat(s.expectedGoals)*6)) : 1.5;
+      html += '<circle cx="' + shotX + '" cy="' + shotY + '" r="' + r + '" fill="' + color + '" stroke="' + stroke + '" stroke-width="0.3" opacity="0.9"><title>' + (s.eventType||'') + ' min.' + (s.min||'?') + (s.minAdded?'+'+s.minAdded:'') + ' · xG ' + (s.expectedGoals ? parseFloat(s.expectedGoals).toFixed(2) : '-') + ' · ' + (s.shotType||'') + '</title></circle>';
+      if (s.eventType === 'Goal') {
+        html += '<text x="' + shotX + '" y="' + (shotY+0.5) + '" text-anchor="middle" font-size="2.5" fill="#fff">⚽</text>';
+      }
     });
-    html += '</div>';
-    html += '<div style="margin-top:10px">';
+    html += '</svg></div>';
+
+    // Shot list
     shots.forEach(function(s) {
-      var evType = (s.eventType||'');
-      var evMin = (s.min||'?');
-      var evXg = s.expectedGoals ? parseFloat(s.expectedGoals).toFixed(2) : '-';
-      html += '<div style="background:rgba(255,255,255,.04);border-radius:3px;padding:6px 10px;margin-bottom:4px;font-size:.75rem;display:flex;gap:12px">'
-        + '<span style="color:var(--gualda);font-family:Oswald,sans-serif">' + evMin + "'"  + '</span>'
-        + '<span style="color:var(--crema)">' + evType + '</span>'
-        + '<span style="color:var(--gris-claro)">xG: ' + evXg + '</span>'
+      var color = s.eventType==='Goal' ? '#4caf50' : s.eventType==='AttemptSaved' ? '#e8b84b' : s.eventType==='Miss' ? 'rgba(255,255,255,0.5)' : '#e04444';
+      var label = {'Goal':'GOL','AttemptSaved':'A puerta','Miss':'Fuera','BlockedShot':'Bloqueado'}[s.eventType] || s.eventType;
+      var minStr = s.min + (s.minAdded ? '+'+s.minAdded : '') + "'";
+      html += '<div style="display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.04);border-radius:3px;padding:6px 10px;margin-bottom:4px;font-size:.75rem">'
+        + '<span style="font-family:Oswald,sans-serif;color:var(--gualda);min-width:28px">' + minStr + '</span>'
+        + '<span style="color:' + color + ';font-weight:700;min-width:60px">' + label + '</span>'
+        + '<span style="color:var(--gris-claro)">xG: ' + (s.expectedGoals ? parseFloat(s.expectedGoals).toFixed(2) : '—') + '</span>'
+        + '<span style="color:var(--gris-claro)">' + (s.shotType||'') + '</span>'
+        + '<span style="color:var(--gris-claro);margin-left:auto">' + (s.situation||'') + '</span>'
         + '</div>';
     });
-    html += '</div>';
+
+    // Legend
+    var legend = [['#4caf50','Gol'],['#e8b84b','A puerta'],['rgba(255,255,255,0.5)','Fuera'],['#e04444','Bloqueado']];
+    html += '<div style="display:flex;gap:12px;justify-content:center;margin-top:8px">' + legend.map(function(l){
+      return '<span style="font-size:.68rem;color:var(--gris-claro);display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:' + l[0] + ';border:1px solid rgba(255,255,255,.3);display:inline-block"></span>' + l[1] + '</span>';
+    }).join('') + '</div>';
   } else {
-    html += '<div style="text-align:center;padding:30px;color:var(--gris-claro)">Sin disparos en este partido</div>';
+    html += '<div style="text-align:center;padding:30px;color:var(--gris-claro)">Sin disparos registrados en este partido</div>';
   }
   html += '</div>';
 
