@@ -526,8 +526,8 @@ body{background:var(--negro);color:var(--crema);font-family:"Lora",Georgia,serif
   <div id="hoy-content" style="max-width:860px;margin:0 auto;padding:0 14px"></div>
 </div>
 <div id="view-plantilla" class="view">
-  <div class="breadcrumb"><a onclick="navTo('plantilla')">Plantilla 2024-25</a></div>
-  <div class="section-title" style="margin-bottom:12px">Plantilla 2024-25 <span style="font-size:.7rem;color:var(--gris-claro);font-family:sans-serif;font-weight:400">datos via FotMob/Opta</span></div>
+  <div class="breadcrumb"><a onclick="navTo('plantilla')">Plantilla 2025-26</a></div>
+  <div class="section-title" style="margin-bottom:12px">Plantilla 2025-26 <span style="font-size:.7rem;color:var(--gris-claro);font-family:sans-serif;font-weight:400">datos via FotMob/Opta</span></div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;max-width:900px;margin-left:auto;margin-right:auto">
     <select id="plantilla-pos-filter" onchange="filterPlantilla()" style="background:var(--gris);border:1px solid rgba(255,255,255,.1);color:var(--crema);padding:6px 10px;border-radius:3px;font-size:.8rem;cursor:pointer">
       <option value="">Todas las posiciones</option>
@@ -562,7 +562,11 @@ if(typeof window!=="undefined"){window.pako={inflate:module.exports.inflate,infl
 
 function norm(s){if(!s)return"";return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();}
 
-function fmtDate(s){if(!s||s.length<10)return s||"–";var p=s.substring(0,10).split("-");return p.length===3?p[2]+"/"+p[1]+"/"+p[0]:s;}
+function fmtDate(s){if(!s)return"–";var clean=String(s).trim();if(!clean)return"–";if(clean.length===4&&/^\d{4}$/.test(clean))return clean;if(clean.length===7){var p2=clean.split("-");if(/^\d{4}-\d{2}$/.test(clean))return p2[1]+"/"+p2[0];if(/^\d{2}-\d{2}-\d{4}$/.test(clean+"xx"))return clean;}if(clean.length<10)return clean;// DD-MM-YYYY format
+if(/^\d{2}-\d{2}-\d{4}/.test(clean)){var p3=clean.substring(0,10).split("-");return p3[0]+"/"+p3[1]+"/"+p3[2];}// YYYY-MM-DD format
+var p=clean.substring(0,10).split("-");return p.length===3?p[2]+"/"+p[1]+"/"+p[0]:clean;}
+function normalizeDate(s){if(!s)return"";var clean=String(s).trim();if(!clean)return"";// Convert DD-MM-YYYY to YYYY-MM-DD
+if(/^\d{2}-\d{2}-\d{4}$/.test(clean)){var p=clean.split("-");return p[2]+"-"+p[1]+"-"+p[0];}return clean;}
 var RAW_P="";
 RAW_P+="H4sIAKMgA2oC/+y9y5LjRpau+yo0jRUluAMgwJqUeZAIJrJAIgSScVrRpkFWtbpPbpOUaZlSD862bdY52zXQQKZZW0962M/BFzsOXgB3x/ILACcJkm5dltUVgQBvwMd1+de//vdXaILxA/3H/+rP//y/v/pfX/35K7JIV+irr7/6V/r/737rRQ84pj/4l/fv6I9e3v/w6ecfPtP//f9++FT+AMV/9jz6P3+k//90NpqS1TrJsu0fS/qzfy9/lqzXCf3//40e4NH/oj/DX3/19/KRfnr/+ZcPnz/QX/793S/0B0UyT/MlyegPPtH/+fzDp395/y/lr999+hv937vjfvr4Yf///mv5gNmHv7/7sTz5p93z/5n+6OOfPv6J/uSn91/9eeztH+j504eP";
 RAW_P+="79+NPv76w6df3tHfffxYPnpGlnPy1f/5ev9nfzn8TRQe/ub9D1/9n+/L35ZvCveGIO/Bq9+Q2Yef3v/8bx+YN2T8Z6x6Q8ia/mxNsu2Xw7sS7N8VtH/g7P2/vZO9I/N3P78ze0N+qd6Pw+ukT3f3EOVLf/7w6ZcfPpXn+emrP0/om/Ru99HQn+w+od2/7z7T/zq+Oc/0HNM3ZEZfx/5EeH+ixQ//8r7FaZ4Kepp0Nc1Hs3yx/b/LZPpmfzq/0+le0mmyXCejVb7anybYn2b2w4/vfm73AhdkuUmy0Qsp6Es8vFlh57OReUEWm+V6f55xpxe3IMX0+Lqizs/k201SkMNnFvd4d4r19rdl8ro/0aTzieoLoPrMkNfp7ZmSIstXI5KlpLq4Ufvn9T39";
@@ -2910,7 +2914,7 @@ function selectPartido(idx){
     var ev="";for(var x=0;x<j.a;x++)ev+="<span class=\"cy\"></span>";for(var y=0;y<j.ro;y++)ev+="<span class=\"cr\"></span>";
     var pos=(j.d===98||j.d===99)?"Técnico":(j.p||"");
     var isCoach=(j.d===97||j.d===98||j.d===99);
-    return "<div class=\"player-row\" data-key=\""+encodeURIComponent(j.n)+"\" onclick=\""+(isCoach?"openCoach('"+encodeURIComponent(j.n)+"')":" openByKey(this,'partido')")+"\"><div class=\"player-dorsal\">"+(j.d||"")+"</div><div class=\"player-name\">"+cap(j.n)+(isCoach?"":"<button onclick=\"event.stopPropagation();openMatchPlayerFM(currentSeason,currentPartidoIdx,'"+encodeURIComponent(j.n)+"');\" style=\"background:none;border:none;cursor:pointer;font-size:.65rem;padding:0 2px;opacity:.5\" onmouseover=\"this.style.opacity=1\" onmouseout=\"this.style.opacity=.5\">🔍</button>")+"</div><div class=\"player-pos\">"+pos+"</div><div class=\"player-mins\">"+(j.m?j.m+"'":"–")+"</div><div class=\"player-events\">"+(j.g>0?"⚽".repeat(j.g):"–")+"</div><div class=\"player-events\">"+(j.as>0?"👟".repeat(j.as):"–")+"</div>"+"<div class=\\\"player-events\\\">"+(ev?""+ev:"–")+""+"</div></div>";}
+    return "<div class=\"player-row\" data-key=\""+encodeURIComponent(j.n)+"\" onclick=\""+(isCoach?"openCoach('"+encodeURIComponent(j.n)+"')":" openByKey(this,'partido')")+"\"><div class=\"player-dorsal\">"+(j.d||"")+"</div><div class=\"player-name\">"+cap(j.n)+(isCoach?"":currentSeason==="2025-2026"?"<button onclick=\"event.stopPropagation();openMatchPlayerFM(currentSeason,currentPartidoIdx,'"+encodeURIComponent(j.n)+"');\" style=\"background:none;border:none;cursor:pointer;font-size:.65rem;padding:0 2px;opacity:.5\" onmouseover=\"this.style.opacity=1\" onmouseout=\"this.style.opacity=.5\">🔍</button>":"")+"</div><div class=\"player-pos\">"+pos+"</div><div class=\"player-mins\">"+(j.m?j.m+"'":"–")+"</div><div class=\"player-events\">"+(j.g>0?"⚽".repeat(j.g):"–")+"</div><div class=\"player-events\">"+(j.as>0?"👟".repeat(j.as):"–")+"</div>"+"<div class=\\\"player-events\\\">"+(ev?""+ev:"–")+""+"</div></div>";}
   function lineupHtml(players,title,icon){if(!players.length)return"";var posOrder={Portero:0,Defensa:1,Medio:2,Delantero:3,Técnico:4};players=players.slice().sort(function(a,b){var pa=a.d>=97?99:(posOrder[a.p]!=null?posOrder[a.p]:5);var pb=b.d>=97?99:(posOrder[b.p]!=null?posOrder[b.p]:5);return pa-pb;});var rows="";for(var li=0;li<players.length;li++)rows+=pRow(players[li]);return"<div class=\"detail-section full\"><div class=\"ds-title\">"+icon+" "+title+" <span style=\"font-weight:300;font-size:.85em;opacity:.7\">— clic para ver ficha</span></div><div class=\"ds-body no-pad\"><div class=\"col-header\"><div>#</div><div>JUGADOR</div><div>POS</div><div>MIN</div><div>G</div><div>A</div><div>T</div></div>"+rows+"</div></div>";}
 
   var cronicasHtml="";
@@ -5141,7 +5145,7 @@ function renderHoy(dateStr){
   document.getElementById('hoy-title').textContent=dd+' de '+months[now.getMonth()];
   if(!DATA||!PLAYERS||!COACHES){setTimeout(renderHoy,300);return;}
 
-  var partidos=[],nacJug=[],nacEnt=[],debutJug=[],debutEnt=[];
+  var partidos=[],nacJug=[],nacEnt=[],debutJug=[],debutEnt=[],defJug=[],defEnt=[];
 
   Object.keys(DATA).sort().forEach(function(season){
     (DATA[season]||[]).forEach(function(p){
@@ -5149,17 +5153,23 @@ function renderHoy(dateStr){
     });
   });
   Object.values(PLAYERS).forEach(function(pl){
-    if(pl.fn&&pl.fn.slice(5)===mmdd) nacJug.push({year:pl.fn.slice(0,4),pl:pl});
-    if(pl.debut&&pl.debut.slice(5)===mmdd) debutJug.push({year:pl.debut.slice(0,4),pl:pl});
+    var fn2=normalizeDate(pl.fn),fd2=normalizeDate(pl.fd),deb2=normalizeDate(pl.debut);
+    if(fn2&&fn2.length>=8&&fn2.slice(5)===mmdd) nacJug.push({year:fn2.slice(0,4),pl:pl});
+    if(deb2&&deb2.length>=8&&deb2.slice(5)===mmdd) debutJug.push({year:deb2.slice(0,4),pl:pl});
+    if(fd2&&fd2.length>=8&&fd2.slice(5)===mmdd) defJug.push({year:fd2.slice(0,4),pl:pl});
   });
   nacJug.sort(function(a,b){return a.year-b.year;});
   debutJug.sort(function(a,b){return a.year-b.year;});
+  defJug.sort(function(a,b){return a.year-b.year;});
   Object.values(COACHES).forEach(function(co){
-    if(co.fn&&co.fn.slice(5)===mmdd) nacEnt.push({year:co.fn.slice(0,4),co:co});
-    if(co.debut&&co.debut.slice(5)===mmdd) debutEnt.push({year:co.debut.slice(0,4),co:co});
+    var fn2=normalizeDate(co.fn),fd2=normalizeDate(co.fd),deb2=normalizeDate(co.debut);
+    if(fn2&&fn2.length>=8&&fn2.slice(5)===mmdd) nacEnt.push({year:fn2.slice(0,4),co:co});
+    if(deb2&&deb2.length>=8&&deb2.slice(5)===mmdd) debutEnt.push({year:deb2.slice(0,4),co:co});
+    if(fd2&&fd2.length>=8&&fd2.slice(5)===mmdd) defEnt.push({year:fd2.slice(0,4),co:co});
   });
   nacEnt.sort(function(a,b){return a.year-b.year;});
   debutEnt.sort(function(a,b){return a.year-b.year;});
+  defEnt.sort(function(a,b){return a.year-b.year;});
 
   function sec(icon,title,items,emptyMsg){
     var h='<div class="hoy-section"><div class="hoy-section-title">'+icon+' '+title+'</div>';
@@ -5204,8 +5214,8 @@ function renderHoy(dateStr){
   // Nacimientos entrenadores
   var neRows=nacEnt.map(function(item){
     var co=item.co,age=now.getFullYear()-parseInt(item.year);
-    var fd=co.fd?'<span style="color:#e88"> \u2020 '+co.fd.slice(0,4)+'</span>':'';
-    return '<div class="hoy-item">'
+    var fd=co.fd?'<span style="color:#e88"> \u2020 '+normalizeDate(co.fd).slice(0,4)+'</span>':'';
+    return '<div class="hoy-item clickable" onclick="openCoach(\''+encodeURIComponent(co.id)+'\')">'
       +'<div class="hoy-year">'+item.year+'</div>'
       +'<div><div class="hoy-desc"><strong>'+co.nombre+'</strong>'+fd+'</div>'
       +'<div class="hoy-sub">'+(co.pais||'')+(co.pj?' \u00b7 '+co.pj+' partidos como t\u00e9cnico':'')
@@ -5228,13 +5238,35 @@ function renderHoy(dateStr){
   // Debuts entrenadores
   var deRows=debutEnt.map(function(item){
     var co=item.co;
-    return '<div class="hoy-item">'
+    return '<div class="hoy-item clickable" onclick="openCoach(\''+encodeURIComponent(co.id)+'\')">'
       +'<div class="hoy-year">'+item.year+'</div>'
       +'<div><div class="hoy-desc"><strong>'+co.nombre+'</strong></div>'
       +'<div class="hoy-sub">'+(co.pais||'')+(co.pj?' \u00b7 '+co.pj+' partidos como t\u00e9cnico':'')+'</div>'
       +'</div></div>';
   });
   html+=sec('&#11088;','Debuts \u2014 Entrenadores',deRows,'Ningún debut de entrenador en esta fecha');
+
+  // Fallecimiento jugadores
+  var fjRows=defJug.map(function(item){
+    var pl=item.pl,years=now.getFullYear()-parseInt(item.year);
+    return '<div class="hoy-item clickable" onclick="openJugador(\''+pl.id+'\')">'
+      +'<div class="hoy-year">'+item.year+'</div>'
+      +'<div><div class="hoy-desc">&#8224; <strong>'+pl.nombre+'</strong></div>'
+      +'<div class="hoy-sub">'+(pl.posicion||'')+(pl.pj?' \u00b7 '+pl.pj+' partidos':'')+' \u00b7 hace '+years+' a\u00f1os</div>'
+      +'</div></div>';
+  });
+  html+=sec('\u2720','Fallecimientos \u2014 Jugadores',fjRows,'Ningún jugador falleció en esta fecha');
+
+  // Fallecimiento entrenadores
+  var feRows=defEnt.map(function(item){
+    var co=item.co,years=now.getFullYear()-parseInt(item.year);
+    return '<div class="hoy-item clickable" onclick="openCoach(\''+encodeURIComponent(co.id)+'\')">'
+      +'<div class="hoy-year">'+item.year+'</div>'
+      +'<div><div class="hoy-desc">&#8224; <strong>'+co.nombre+'</strong></div>'
+      +'<div class="hoy-sub">'+(co.pais||'')+(co.pj?' \u00b7 '+co.pj+' partidos como t\u00e9cnico':'')+' \u00b7 hace '+years+' a\u00f1os</div>'
+      +'</div></div>';
+  });
+  html+=sec('\u2720','Fallecimientos \u2014 Entrenadores',feRows,'Ningún entrenador falleció en esta fecha');
 
   document.getElementById('hoy-content').innerHTML=html;
 }
@@ -5396,10 +5428,28 @@ function runSkills(question) {
 /* ── PLANTILLA / FOTMOB ── */
 var _plantillaData = null;
 var _plantillaLoaded = false;
-var FOTMOB_PROXY = '/api/fotmob';
+var FOTMOB_PROXY = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.fotmob.com/api/');
 var FM_TEAM_ID = '10279';
 var FM_LEAGUE_ID = '9122';
 var FM_SEASON_ID = '23755';
+
+async function fotmobFetch(url) {
+  // Try multiple CORS proxies in order
+  var proxies = [
+    'https://corsproxy.io/?' + encodeURIComponent(url),
+    'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
+    'https://thingproxy.freeboard.io/fetch/' + url,
+  ];
+  var lastErr;
+  for (var i = 0; i < proxies.length; i++) {
+    try {
+      var r = await fetch(proxies[i], {signal: AbortSignal.timeout(8000)});
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r;
+    } catch(e) { lastErr = e; }
+  }
+  throw new Error('No se puede conectar con FotMob. Para usar la Plantilla en local, sube el archivo a GitHub Pages o a un servidor web.');
+}
 
 async function loadPlantilla() {
   if (_plantillaLoaded) { renderPlantillaGrid(); return; }
@@ -5408,7 +5458,8 @@ async function loadPlantilla() {
   document.getElementById('plantilla-grid').style.display = 'none';
   try {
     // Get team squad + stats
-    var r = await fetch(FOTMOB_PROXY + '?endpoint=teams&id=' + FM_TEAM_ID);
+    var fotmobUrl = 'https://www.fotmob.com/api/teams?id=' + FM_TEAM_ID;
+    var r = await fotmobFetch(fotmobUrl);
     var d = await r.json();
     if (d.error) throw new Error(d.error);
 
@@ -5500,7 +5551,8 @@ async function openFMPlayer(playerId, playerName) {
   document.body.style.overflow = 'hidden';
 
   try {
-    var r = await fetch(FOTMOB_PROXY + '?endpoint=playerData&id=' + playerId);
+    var fotmobUrl2 = 'https://www.fotmob.com/api/playerData?id=' + playerId;
+    var r = await fotmobFetch(fotmobUrl2);
     var d = await r.json();
     if (d.error) throw new Error(d.error);
     renderFMPlayerModal(d, playerId);
@@ -5651,7 +5703,8 @@ async function openMatchPlayerStats(fotmobMatchId, playerId, playerName) {
   document.body.style.overflow = 'hidden';
 
   try {
-    var r = await fetch(FOTMOB_PROXY + '?endpoint=matchDetails&matchId=' + fotmobMatchId);
+    var fotmobUrl3 = 'https://www.fotmob.com/api/matchDetails?matchId=' + fotmobMatchId;
+    var r = await fotmobFetch(fotmobUrl3);
     var d = await r.json();
     if (d.error) throw new Error(d.error);
 
