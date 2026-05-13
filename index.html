@@ -7047,10 +7047,10 @@ async function openMatchPlayerFM(season, partidoIdx, playerNameEncoded) {
     return;
   }
 
-  await openMatchPlayerStats(p.fmid, playerName);
+  await openMatchPlayerStats(p.fmid, playerName, cap(p.l||'') + ' vs ' + cap(p.v||''));
 }
 
-async function openMatchPlayerStats(fotmobMatchId, playerName) {
+async function openMatchPlayerStats(fotmobMatchId, playerName, matchTitle) {
   var modal = document.getElementById('fm-player-modal');
   if (!modal) {
     modal = document.createElement('div');
@@ -7064,7 +7064,7 @@ async function openMatchPlayerStats(fotmobMatchId, playerName) {
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
   }
-  document.getElementById('fm-modal-name').textContent = playerName + ' — este partido';
+  document.getElementById('fm-modal-name').textContent = playerName + ' — ' + (matchTitle || fotmobMatchId);
   document.getElementById('fm-modal-body').innerHTML = '<div style="text-align:center;padding:30px;color:var(--gris-claro)">Cargando estadísticas del partido...</div>';
 
   try {
