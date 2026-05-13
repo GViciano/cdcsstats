@@ -7406,8 +7406,8 @@ function renderMatchPlayerModal(pStats, shots, playerName, matchData, heatmapDat
       points.push([parseFloat(m[1]), parseFloat(m[2])]);
     }
 
-    // Build density grid: 21 cols x 14 rows over 105x68 pitch
-    var COLS = 21, ROWS = 14;
+    // Build density grid: 35 cols x 23 rows over 105x68 pitch
+    var COLS = 35, ROWS = 23;
     var cellW = 105/COLS, cellH = 68/ROWS;
     var grid = [];
     var maxDensity = 0;
@@ -7462,6 +7462,10 @@ function renderMatchPlayerModal(pStats, shots, playerName, matchData, heatmapDat
       + '<rect x="105" y="30.34" width="2" height="7.32" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="0.4"/>'
       + '<circle cx="11" cy="34" r="0.5" fill="rgba(255,255,255,.35)"/>'
       + '<circle cx="94" cy="34" r="0.5" fill="rgba(255,255,255,.35)"/>'
+      // Attack direction arrow
+      + '<defs><marker id="arr" markerWidth="4" markerHeight="4" refX="3" refY="2" orient="auto"><path d="M0,0 L0,4 L4,2 z" fill="rgba(255,255,100,.7)"/></marker></defs>'
+      + '<line x1="42" y1="63" x2="62" y2="63" stroke="rgba(255,255,100,.7)" stroke-width="0.8" marker-end="url(#arr)"/>'
+      + '<text x="52" y="67.5" text-anchor="middle" font-size="2.2" fill="rgba(255,255,100,.6)" font-family="sans-serif">ataque</text>'
       + '</svg>';
 
     // Legend
