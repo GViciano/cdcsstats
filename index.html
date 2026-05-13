@@ -7338,65 +7338,104 @@ function renderMatchPlayerModal(pStats, shots, playerName, matchData, heatmapDat
   // Shots tab — draw on a pitch SVG
   html += '<div id="fm-tab-1" style="display:none">';
   if (shots && shots.length) {
-    html += '<div style="font-size:.72rem;color:var(--gris-claro);text-align:center;margin-bottom:6px">Haz clic en un disparo para ver detalle · ataque →</div>';
+    html += '<div style="font-size:.72rem;color:var(--gris-claro);text-align:center;margin-bottom:6px">Haz clic en un disparo para ver detalle</div>';
     html += '<div id="fm-shot-detail" style="display:none;background:rgba(255,255,255,.06);border-radius:4px;padding:8px 12px;margin-bottom:8px;font-size:.75rem"></div>';
 
-    // SVG pitch with clickable shots
-    html += '<div style="position:relative;width:100%;padding-top:55%;background:#1a4020;border-radius:6px;border:1px solid rgba(255,255,255,.1);overflow:hidden;margin-bottom:10px" id="fm-pitch-wrap">';
-    html += '<svg id="fm-pitch-svg" style="position:absolute;top:0;left:0;width:100%;height:100%" viewBox="0 0 105 68" preserveAspectRatio="none">'
-      + '<rect x="0" y="0" width="105" height="68" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="0.5"/>'
-      + '<line x1="52.5" y1="0" x2="52.5" y2="68" stroke="rgba(255,255,255,.2)" stroke-width="0.5"/>'
-      + '<circle cx="52.5" cy="34" r="9.15" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="0.5"/>'
-      + '<rect x="83" y="13.84" width="22" height="40.32" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="0.5"/>'
-      + '<rect x="99" y="24.84" width="6" height="18.32" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="0.5"/>'
-      + '<rect x="105" y="30.34" width="2" height="7.32" fill="rgba(255,255,255,.4)" stroke="none"/>'
-      + '<rect x="-2" y="30.34" width="2" height="7.32" fill="rgba(255,255,255,.2)" stroke="none"/>';
+    // Half-pitch vertical: FotMob coords x=0..105, y=0..68
+    // We show the attacking half: x=52.5..105, rotated 90° (portería abajo)
+    // Transform: SVG viewBox shows x:52.5-105 (width=52.5), y:0-68 (height=68)
+    // Rotate 90° CW: new_x = old_y, new_y = (52.5 - (old_x - 52.5)) = 105 - old_x
+    // So viewBox becomes 0 0 68 52.5 (width=68, height=52.5)
+    // Pitch lines in transformed coords:
+    //   Centre line (x=52.5): y=52.5 → horizontal line at bottom → new_y=52.5 = top
+    //   Actually let's just use a viewBox transform directly
 
-    // Store shots data for click handler
+    html += '<div style="width:100%;max-width:320px;margin:0 auto 10px">';
+    // viewBox: x from 52.5 to 105 = width 52.5, y from 0 to 68 = height 68
+    // Rotate 90° so portería is at bottom: use transform on the content
+    // Easier: just use viewBox "52.5 0 52.5 68" but rotate the whole SVG
+    html += '<svg id="fm-pitch-svg" viewBox="0 0 68 54" style="width:100%;height:auto;display:block;border-radius:6px;background:#1a4020" xmlns="http://www.w3.org/2000/svg">';
+
+    // We map FotMob coords to our vertical half-pitch SVG:
+    // FotMob: attack goes right (x increases). We show x=52.5..105, y=0..68
+    // In our SVG (68 wide, 54 tall):
+    //   svgX = y_fotmob  (0..68 → 0..68, fits width)
+    //   svgY = 105 - x_fotmob mapped to 0..52.5 → 54 units
+    //   svgY = (105 - x) / 52.5 * 54
+
+    // Field lines
+    // Top line (x=52.5 in fotmob → svgY=54): halfway line at bottom = centre
+    html += '<rect x="0" y="0" width="68" height="54" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="0.5"/>';
+    // Halfway line (top of half pitch) at svgY=54 — it's the border, already drawn
+
+    // Penalty area: x=83..105, y=13.84..54.16 → svgY=(105-83)/52.5*54=22.63 to 0, svgX=13.84..54.16
+    // svgY of x=83: (105-83)/52.5*54 = 22.63
+    // svgY of x=105: 0
+    // svgX of y=13.84: 13.84, y=54.16: 54.16
+    html += '<rect x="13.84" y="0" width="40.32" height="22.63" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.35)" stroke-width="0.5"/>';
+
+    // 6-yard box: x=99..105, y=24.84..43.16 → svgY=(105-99)/52.5*54=6.17 to 0, svgX=24.84..43.16
+    html += '<rect x="24.84" y="0" width="18.32" height="6.17" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.2)" stroke-width="0.4"/>';
+
+    // Penalty spot: x=94, y=34 → svgX=34, svgY=(105-94)/52.5*54=11.31
+    html += '<circle cx="34" cy="11.31" r="0.6" fill="rgba(255,255,255,.4)"/>';
+
+    // Penalty arc: centre at (34, 11.31), r=9.15 in pitch units, scaled
+    // Arc only outside penalty area (svgY > 22.63)
+    html += '<path d="M 24.5 22.63 A 9.15 11.31 0 0 0 43.5 22.63" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="0.5"/>';
+
+    // Goal: x=105, y=30.34..37.66 → svgY=0, svgX=30.34..37.66, depth goes below 0
+    html += '<rect x="30.34" y="-2" width="7.32" height="2.5" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="0.5"/>';
+    // Goal line posts
+    html += '<line x1="30.34" y1="-2" x2="30.34" y2="0" stroke="white" stroke-width="0.8"/>';
+    html += '<line x1="37.66" y1="-2" x2="37.66" y2="0" stroke="white" stroke-width="0.8"/>';
+    html += '<line x1="30.34" y1="-2" x2="37.66" y2="-2" stroke="white" stroke-width="0.8"/>';
+
+    // Centre line label
+    html += '<text x="2" y="53" font-size="2.5" fill="rgba(255,255,255,.3)" font-family="sans-serif">Centro</text>';
+    html += '<text x="34" y="-2.5" text-anchor="middle" font-size="2.2" fill="rgba(255,255,255,.4)" font-family="sans-serif">Portería</text>';
+
+    // Function to convert FotMob coords to SVG coords
+    // svgX = y_fm, svgY = (105 - x_fm) / 52.5 * 54
+    function fmToSvg(xFm, yFm) {
+      return [yFm, (105 - xFm) / 52.5 * 54];
+    }
+
     html += '<g id="fm-shots-g">';
     shots.forEach(function(s, idx) {
-      var shotX = Math.max(0, Math.min(105, s.x || 52.5));
-      var shotY = Math.max(0, Math.min(68, s.y || 34));
-      var color = s.eventType==='Goal' ? '#4caf50' : s.eventType==='AttemptSaved' ? '#e8b84b' : s.eventType==='Miss' ? 'rgba(255,255,255,0.5)' : '#e04444';
-      var rr = s.expectedGoals ? Math.max(1.5, Math.min(4, parseFloat(s.expectedGoals)*7)) : 2;
-      var minStr = s.min + (s.minAdded?'+'+s.minAdded:'') + "'";
+      var xFm = Math.max(0, Math.min(105, s.x || 70));
+      var yFm = Math.max(0, Math.min(68, s.y || 34));
+      var svgX = yFm;
+      var svgY = (105 - xFm) / 52.5 * 54;
+      svgY = Math.max(-1, Math.min(55, svgY));
 
-      // Draw trajectory line if we have blocked/goal position
-      var hasTarget = s.onGoalShot && s.isOnTarget;
-      if (hasTarget && s.eventType !== 'Miss') {
-        // Goal mouth is at x=105, y=30.34 to 37.66 (width 7.32)
-        // onGoalShot.x and y are relative positions in goal (0-2 x, 0-1 y)
-        var gx = 105;
-        var gy = 30.34 + (s.onGoalShot.y || 0.5) * 7.32;
-        html += '<line x1="' + shotX + '" y1="' + shotY + '" x2="' + gx + '" y2="' + gy + '" stroke="' + color + '" stroke-width="0.3" stroke-dasharray="1,1" opacity="0.4"/>';
-      }
-      if (s.isBlocked && s.blockedX && s.blockedY) {
-        html += '<line x1="' + shotX + '" y1="' + shotY + '" x2="' + Math.min(105,s.blockedX) + '" y2="' + Math.min(68,s.blockedY) + '" stroke="#e04444" stroke-width="0.3" stroke-dasharray="1,1" opacity="0.5"/>';
-        html += '<circle cx="' + Math.min(105,s.blockedX) + '" cy="' + Math.min(68,s.blockedY) + '" r="1" fill="#e04444" opacity="0.6"/>';
+      var color = s.eventType==='Goal' ? '#4caf50' : s.eventType==='AttemptSaved' ? '#e8b84b' : s.eventType==='Miss' ? 'rgba(255,255,255,0.6)' : '#e04444';
+      var rr = s.expectedGoals ? Math.max(1.8, Math.min(4.5, parseFloat(s.expectedGoals)*8)) : 2;
+
+      // Trajectory line toward goal
+      if (s.isOnTarget && s.onGoalShot) {
+        var tgX = 30.34 + (s.onGoalShot.x / 2) * 7.32;
+        html += '<line x1="' + svgX + '" y1="' + svgY + '" x2="' + tgX + '" y2="-0.5" stroke="' + color + '" stroke-width="0.4" stroke-dasharray="1.5,1" opacity="0.5"/>';
+      } else if (s.isBlocked && s.blockedX && s.blockedY) {
+        var bSvgX = s.blockedY;
+        var bSvgY = (105 - s.blockedX) / 52.5 * 54;
+        html += '<line x1="' + svgX + '" y1="' + svgY + '" x2="' + bSvgX + '" y2="' + bSvgY + '" stroke="#e04444" stroke-width="0.4" stroke-dasharray="1,1" opacity="0.5"/>';
+        html += '<circle cx="' + bSvgX + '" cy="' + bSvgY + '" r="1" fill="#e04444" opacity="0.6"/>';
       }
 
-      html += '<circle cx="' + shotX + '" cy="' + shotY + '" r="' + rr + '" fill="' + color + '" stroke="white" stroke-width="0.3" opacity="0.9" style="cursor:pointer" onclick="showShotDetail(' + idx + ')" data-idx="' + idx + '"/>';
+      html += '<circle cx="' + svgX + '" cy="' + svgY + '" r="' + rr + '" fill="' + color + '" stroke="white" stroke-width="0.35" opacity="0.92" style="cursor:pointer" onclick="showShotDetail(' + idx + ')" data-idx="' + idx + '"/>';
       if (s.eventType === 'Goal') {
-        html += '<text x="' + shotX + '" y="' + (shotY+0.8) + '" text-anchor="middle" font-size="2.5" fill="#fff" style="pointer-events:none">⚽</text>';
+        html += '<text x="' + svgX + '" y="' + (svgY + 1) + '" text-anchor="middle" font-size="3" fill="#fff" style="pointer-events:none">⚽</text>';
       }
     });
     html += '</g>';
-
-    // Goal mouth visualizer (right side)
-    html += '<g transform="translate(0,0)" id="fm-goal-mouth" style="display:none">'
-      + '<rect x="88" y="28" width="14" height="12" fill="rgba(0,0,0,0.5)" rx="0.5"/>'
-      + '<rect x="89" y="29" width="12" height="10" fill="none" stroke="white" stroke-width="0.3"/>'
-      + '<line x1="95" y1="29" x2="95" y2="39" stroke="rgba(255,255,255,.2)" stroke-width="0.2"/>'
-      + '<circle id="fm-goal-dot" cx="95" cy="34" r="1" fill="#4caf50" style="display:none"/>'
-      + '</g>';
-
     html += '</svg></div>';
 
-    // Store shot data as JSON in a hidden element
+    // Store shot data
     html += '<script type="application/json" id="fm-shots-data">' + JSON.stringify(shots) + '<\/script>';
 
     // Legend
-    var legend = [['#4caf50','Gol'],['#e8b84b','A puerta'],['rgba(255,255,255,0.5)','Fuera'],['#e04444','Bloqueado']];
+    var legend = [['#4caf50','Gol'],['#e8b84b','A puerta'],['rgba(255,255,255,0.6)','Fuera'],['#e04444','Bloqueado']];
     html += '<div style="display:flex;gap:12px;justify-content:center;margin-bottom:8px">' + legend.map(function(l){
       return '<span style="font-size:.68rem;color:var(--gris-claro);display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:' + l[0] + ';border:1px solid rgba(255,255,255,.3);display:inline-block"></span>' + l[1] + '</span>';
     }).join('') + '</div>';
@@ -7513,7 +7552,12 @@ function showShotDetail(idx) {
 
   // Highlight selected shot
   var circles = document.querySelectorAll('#fm-shots-g circle');
-  circles.forEach(function(c) { c.setAttribute('stroke-width', c.getAttribute('data-idx') == idx ? '0.8' : '0.3'); c.setAttribute('stroke', c.getAttribute('data-idx') == idx ? '#fff' : 'rgba(255,255,255,0.5)'); });
+  circles.forEach(function(c) {
+    var isSelected = c.getAttribute('data-idx') == idx;
+    c.setAttribute('stroke-width', isSelected ? '1' : '0.35');
+    c.setAttribute('stroke', isSelected ? '#fff' : 'rgba(255,255,255,0.5)');
+    c.setAttribute('opacity', isSelected ? '1' : '0.7');
+  });
 
   var label = {'Goal':'⚽ GOL','AttemptSaved':'🧤 Parada','Miss':'❌ Fuera','BlockedShot':'🛡️ Bloqueado'}[s.eventType] || s.eventType;
   var minStr = s.min + (s.minAdded?'+'+s.minAdded:'') + "'";
