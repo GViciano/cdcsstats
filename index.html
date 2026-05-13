@@ -7462,6 +7462,10 @@ function renderMatchPlayerModal(pStats, shots, playerName, matchData, heatmapDat
         var bSvgY = (105 - s.blockedX) / 52.5 * 54;
         html += '<line x1="' + svgX + '" y1="' + svgY + '" x2="' + bSvgX + '" y2="' + bSvgY + '" stroke="#e04444" stroke-width="0.4" stroke-dasharray="1,1" opacity="0.5"/>';
         html += '<circle cx="' + bSvgX + '" cy="' + bSvgY + '" r="1" fill="#e04444" opacity="0.6"/>';
+      } else if (s.eventType === 'Miss' && s.goalCrossedY !== undefined) {
+        // Miss: draw line toward where it crossed the goal line
+        var missX = s.goalCrossedY;
+        html += '<line x1="' + svgX + '" y1="' + svgY + '" x2="' + missX + '" y2="-0.5" stroke="rgba(255,255,255,0.35)" stroke-width="0.4" stroke-dasharray="1,1.5" opacity="0.6"/>';
       }
 
       html += '<circle cx="' + svgX + '" cy="' + svgY + '" r="' + rr + '" fill="' + color + '" stroke="white" stroke-width="0.35" opacity="0.92" style="cursor:pointer" onclick="showShotDetail(' + idx + ')" data-idx="' + idx + '"/>';
