@@ -5211,6 +5211,8 @@ function sortRivals(col){
 function showRivalMatches(encodedName,comp,res){
   var name=decodeURIComponent(encodedName);
   var cond=document.getElementById("rival-cond")?document.getElementById("rival-cond").value:"";
+  // Update URL with rival + filters
+  setHashWithFilters('rival/'+encodedName, {comp: comp||'', res: res||'', cond: cond});
   var allMatches=[];
   var ss=Object.keys(DATA);
   for(var si=0;si<ss.length;si++){
@@ -5565,26 +5567,28 @@ function readHash(){
     });
   }
   else if(type==="jugadores-view"){
+    if(filters.t){var sel4=document.getElementById('jug-temp');if(sel4)sel4.value=filters.t;}
+    if(filters.q){var inp3=document.getElementById('jug-search');if(inp3)inp3.value=filters.q;}
     navTo("jugadores-view");
-    requestAnimationFrame(function(){
-      if(filters.t){var sel=document.getElementById('jug-temp');if(sel)sel.value=filters.t;}
-      if(filters.q){var inp=document.getElementById('jug-search');if(inp)inp.value=filters.q;}
-      filterJugadores();
-    });
   }
   else if(type==="plantilla"){navTo("plantilla");}
   else if(type==="hoy"){navTo("hoy");}
   else if(type==="arbitros"){navTo("arbitros");}
   else if(type==="consulta"){navTo("consulta");}
   else if(type==="entrenador"&&parts[1]){if(COACHES){var ck=decodeURIComponent(parts[1].split('&')[0]);if(COACHES[ck])openCoach(encodeURIComponent(ck));}}
-  else if(type==="rival"&&parts[1])openRival(parts[1].split('&')[0]);
+  else if(type==="rival"&&parts[1]){
+    var rn=parts[1].split('&')[0];
+    openRival(rn);
+    if(filters.comp||filters.res){
+      requestAnimationFrame(function(){
+        showRivalMatches(rn, filters.comp||null, filters.res||null);
+      });
+    }
+  }
   else if(type==="rivales"){
+    if(filters.q){var inp=document.getElementById('rival-search');if(inp)inp.value=filters.q;}
+    if(filters.cond){var sel=document.getElementById('rival-cond');if(sel)sel.value=filters.cond;}
     navTo("rivales");
-    requestAnimationFrame(function(){
-      if(filters.q){var inp=document.getElementById('rival-search');if(inp)inp.value=filters.q;}
-      if(filters.cond){var sel=document.getElementById('rival-cond');if(sel)sel.value=filters.cond;}
-      filterRivales();
-    });
   }
 }
 
