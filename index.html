@@ -398,7 +398,35 @@ body{background:var(--negro);color:var(--crema);font-family:"Lora",Georgia,serif
 <div id="view-partidos" class="view"><div class="breadcrumb"><a onclick="navTo('temporadas')">Temporadas</a><span>&rsaquo;</span><span id="bc-temp"></span></div><div class="section-title" id="partidos-title"></div><div id="season-standings" style="display:none;margin:0 14px 12px;padding:14px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:4px;border-left:3px solid var(--gualda)"></div><div style="padding:0 14px 12px"><button class="season-tab-btn active" onclick="selectSeasonTab('partidos')" id="stab-partidos">Partidos</button><button class="season-tab-btn" onclick="selectSeasonTab('jugadores')" id="stab-jugadores">Jugadores</button><button class="season-tab-btn" onclick="selectSeasonTab('goles')" id="stab-goles">Aportación goles</button></div><div id="season-section-partidos"><div class="filter-bar" id="comp-filter"></div><div class="matches-list" id="matches-list"></div></div><div id="season-section-jugadores" style="display:none"><div class="filter-bar" id="season-jug-comp-filter"></div><div class="results-count" id="season-jug-count"></div><div class="table-wrapper"><table class="data-table" id="season-jug-table"><thead><tr><th class="left" onclick="sortSeasonJug('n')" style="cursor:pointer">Jugador</th><th onclick="sortSeasonJug('pj')" style="cursor:pointer">PJ</th><th onclick="sortSeasonJug('tit')" style="cursor:pointer">Tit</th><th onclick="sortSeasonJug('g')" style="cursor:pointer">G</th><th onclick="sortSeasonJug('a')" style="cursor:pointer">A</th><th onclick="sortSeasonJug('am')" style="cursor:pointer" title="Amarillas">🟨</th><th onclick="sortSeasonJug('ro')" style="cursor:pointer" title="Rojas">🟥</th><th onclick="sortSeasonJug('min')" style="cursor:pointer">Min</th></tr></thead><tbody id="season-jug-tbody"></tbody></table></div></div><div id="season-section-goles" style="display:none"><div class="filter-bar" id="gol-comp-filter" style="padding:10px 14px 0"></div><div class="results-count" id="season-gol-count"></div><div class="table-wrapper"><table class="data-table" id="season-gol-table"><thead><tr><th class="left" onclick="sortSeasonGol('n')" style="cursor:pointer">Jugador</th><th onclick="sortSeasonGol('g')" style="cursor:pointer">G</th><th onclick="sortSeasonGol('a')" style="cursor:pointer">A</th><th onclick="sortSeasonGol('ga')" style="cursor:pointer">G+A</th><th onclick="sortSeasonGol('min')" style="cursor:pointer">Min</th><th onclick="sortSeasonGol('p90')" style="cursor:pointer" title="Minutos por participación en gol">Min/GA</th></tr></thead><tbody id="season-gol-tbody"></tbody></table></div></div></div>
 <div id="view-partido" class="view"><div class="breadcrumb"><a onclick="navTo('temporadas')">Temporadas</a><span>&rsaquo;</span><a onclick="navTo('partidos')" id="bc-temp2"></a><span>&rsaquo;</span><span id="bc-partido">Partido</span></div><button id="btn-prev-partido" onclick="navPartido(-1)" title="Partido anterior" style="position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:100;display:none;width:44px;height:64px;background:rgba(20,20,20,.75);backdrop-filter:blur(6px);border:none;border-radius:0 6px 6px 0;color:rgba(240,234,216,.85);font-size:1.4rem;cursor:pointer;transition:background .2s,color .2s;padding:0;line-height:1" onmouseover="this.style.background='rgba(232,184,75,.25)';this.style.color='rgba(232,184,75,1)'" onmouseout="this.style.background='rgba(20,20,20,.75)';this.style.color='rgba(240,234,216,.85)'">&#8592;</button><button id="btn-next-partido" onclick="navPartido(1)" title="Partido siguiente" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:100;display:none;width:44px;height:64px;background:rgba(20,20,20,.75);backdrop-filter:blur(6px);border:none;border-radius:6px 0 0 6px;color:rgba(240,234,216,.85);font-size:1.4rem;cursor:pointer;transition:background .2s,color .2s;padding:0;line-height:1" onmouseover="this.style.background='rgba(232,184,75,.25)';this.style.color='rgba(232,184,75,1)'" onmouseout="this.style.background='rgba(20,20,20,.75)';this.style.color='rgba(240,234,216,.85)'">&#8594;</button><div id="partido-content"></div></div>
 <div id="view-jugador" class="view"><div class="breadcrumb" id="jugador-bc"></div><div id="jugador-content"></div></div>
-<div id="view-jugadores-view" class="view"><div class="section-title">Plantilla de Jugadores</div><div class="search-row"><div class="search-wrap"><input class="search-input" id="jug-search" placeholder="Buscar jugador…" oninput="filterJugadores();updateClear('jug-search')"><button class="search-clear" id="jug-search-clear" onclick="clearSearch('jug-search','filterJugadores')" title="Borrar">✕</button></div><select class="sel-input" id="jug-temp" onchange="filterJugadores()"><option value="">Todas las temporadas</option></select><div class="filter-bar" id="jug-cat-filter" style="margin-bottom:0;flex-wrap:wrap"></div><div id="jug-sep-1" style="display:flex;align-items:center"></div><div class="filter-bar" id="jug-comp-filter" style="margin-bottom:0;flex-wrap:wrap"></div><div id="jug-sep-2" style="display:flex;align-items:center"></div><div class="filter-bar" id="jug-pos-filter" style="margin-bottom:0;flex-wrap:wrap"></div></div><div class="results-count" id="jug-count"></div><div class="table-wrapper"><table class="data-table" id="jug-table"><thead><tr><th class="left" onclick="sortJug('id')" id="th-id">Clave <span id="si-id">↕</span></th><th class="left" onclick="sortJug('nombre')" id="th-nombre">Nombre <span id="si-nombre">↕</span></th><th onclick="sortJug('posicion')" id="th-posicion">Pos <span id="si-posicion">↕</span></th><th onclick="sortJug('_pj')" id="th-_pj">PJ <span id="si-_pj">↕</span></th><th onclick="sortJug('_goles')" id="th-_goles">Goles <span id="si-_goles">↕</span></th><th onclick="sortJug('_asist')" id="th-_asist">Asist <span id="si-_asist">↕</span></th><th onclick="sortJug('_am')" id="th-_am">🟨 <span id="si-_am">↕</span></th><th onclick="sortJug('_ro')" id="th-_ro">🟥 <span id="si-_ro">↕</span></th><th onclick="sortJug('_min')" id="th-_min">Min <span id="si-_min">↕</span></th></tr></thead><tbody id="jug-tbody"></tbody></table></div></div>
+<div id="view-jugadores-view" class="view"><div class="section-title" style="display:flex;align-items:center;justify-content:space-between">Plantilla de Jugadores<button class="filter-btn" onclick="navTo('datos-temporada')">📊 Datos por temporada</button></div><div class="search-row"><div class="search-wrap"><input class="search-input" id="jug-search" placeholder="Buscar jugador…" oninput="filterJugadores();updateClear('jug-search')"><button class="search-clear" id="jug-search-clear" onclick="clearSearch('jug-search','filterJugadores')" title="Borrar">✕</button></div><select class="sel-input" id="jug-temp" onchange="filterJugadores()"><option value="">Todas las temporadas</option></select><div class="filter-bar" id="jug-cat-filter" style="margin-bottom:0;flex-wrap:wrap"></div><div id="jug-sep-1" style="display:flex;align-items:center"></div><div class="filter-bar" id="jug-comp-filter" style="margin-bottom:0;flex-wrap:wrap"></div><div id="jug-sep-2" style="display:flex;align-items:center"></div><div class="filter-bar" id="jug-pos-filter" style="margin-bottom:0;flex-wrap:wrap"></div></div><div class="results-count" id="jug-count"></div><div class="table-wrapper"><table class="data-table" id="jug-table"><thead><tr><th class="left" onclick="sortJug('id')" id="th-id">Clave <span id="si-id">↕</span></th><th class="left" onclick="sortJug('nombre')" id="th-nombre">Nombre <span id="si-nombre">↕</span></th><th onclick="sortJug('posicion')" id="th-posicion">Pos <span id="si-posicion">↕</span></th><th onclick="sortJug('_pj')" id="th-_pj">PJ <span id="si-_pj">↕</span></th><th onclick="sortJug('_goles')" id="th-_goles">Goles <span id="si-_goles">↕</span></th><th onclick="sortJug('_asist')" id="th-_asist">Asist <span id="si-_asist">↕</span></th><th onclick="sortJug('_am')" id="th-_am">🟨 <span id="si-_am">↕</span></th><th onclick="sortJug('_ro')" id="th-_ro">🟥 <span id="si-_ro">↕</span></th><th onclick="sortJug('_min')" id="th-_min">Min <span id="si-_min">↕</span></th></tr></thead><tbody id="jug-tbody"></tbody></table></div></div>
+<div id="view-datos-temporada" class="view">
+  <div class="breadcrumb"><a onclick="navTo('jugadores-view')">Jugadores</a><span>›</span><span>Datos por temporada</span></div>
+  <div class="section-title">Datos por temporada</div>
+  <div class="search-row" style="flex-wrap:wrap;gap:6px">
+    <div class="search-wrap"><input class="search-input" id="dt-search" placeholder="Buscar jugador…" oninput="filterDatosTemp();updateClear('dt-search')"><button class="search-clear" id="dt-search-clear" onclick="clearSearch('dt-search','filterDatosTemp')" title="Borrar">✕</button></div>
+    <select class="sel-input" id="dt-season" onchange="filterDatosTemp()"><option value="">Todas las temporadas</option></select>
+    <select class="sel-input" id="dt-pos" onchange="filterDatosTemp()"><option value="">Todas las posiciones</option><option value="Portero">Portero</option><option value="Defensa">Defensa</option><option value="Medio">Medio</option><option value="Delantero">Delantero</option></select>
+  </div>
+  <div class="filter-bar" id="dt-comp-filter" style="margin-bottom:4px"></div>
+  <div class="results-count" id="dt-count"></div>
+  <div class="table-wrapper"><table class="data-table" id="dt-table">
+    <thead><tr>
+      <th class="left" onclick="dtSort('nombre')" title="Jugador">Jugador <span id="dt-s-nombre">↕</span></th>
+      <th class="left" onclick="dtSort('posicion')" title="Posición">Pos <span id="dt-s-posicion">↕</span></th>
+      <th class="left" onclick="dtSort('season')" title="Temporada">Temp <span id="dt-s-season">↕</span></th>
+      <th class="left" onclick="dtSort('comp')" style="display:none"></th>
+      <th onclick="dtSort('pj')" title="Partidos jugados">PJ <span id="dt-s-pj">↕</span></th>
+      <th onclick="dtSort('tit')" title="Partidos de titular">Tit <span id="dt-s-tit">↕</span></th>
+      <th onclick="dtSort('g')" title="Goles">G <span id="dt-s-g">↓</span></th>
+      <th onclick="dtSort('a')" title="Asistencias">A <span id="dt-s-a">↕</span></th>
+      <th onclick="dtSort('ga')" title="Goles + Asistencias">G+A <span id="dt-s-ga">↕</span></th>
+      <th onclick="dtSort('am')" title="Amarillas">🟨 <span id="dt-s-am">↕</span></th>
+      <th onclick="dtSort('ro')" title="Rojas">🟥 <span id="dt-s-ro">↕</span></th>
+      <th onclick="dtSort('min')" title="Minutos">Min <span id="dt-s-min">↕</span></th>
+    </tr></thead>
+    <tbody id="dt-tbody"></tbody>
+  </table></div>
+</div>
 <div id="view-entrenadores" class="view"><div class="section-title">Entrenadores</div><div class="search-row"><div class="search-wrap"><input class="search-input" id="coach-search" placeholder="Buscar entrenador…" oninput="filterCoaches();updateClear('coach-search')"><button class="search-clear" id="coach-search-clear" onclick="clearSearch('coach-search','filterCoaches')" title="Borrar">✕</button></div></div><div id="entrenadores-filter-row" style="display:flex;flex-wrap:wrap;gap:6px;padding:8px 14px 0;align-items:center"><div class="filter-bar" id="entrenadores-cat-filter" style="margin-bottom:0;flex-wrap:wrap"></div><div id="entrenadores-sep-1" style="display:flex;align-items:center"><span style="color:rgba(255,255,255,.2);padding:0 4px;font-size:.9rem">|</span></div><div class="filter-bar" id="entrenadores-comp-filter" style="margin-bottom:0;flex-wrap:wrap"></div></div><div class="results-count" id="coach-count"></div><div class="table-wrapper"><table class="data-table"><thead><tr><th class="left" onclick="sortCoaches('id')" id="sc-id-th">Clave <span id="sc-id">↕</span></th><th class="left" onclick="sortCoaches('nombre')">Entrenador <span id="sc-nombre">↕</span></th><th onclick="sortCoaches('pj')">PJ <span id="sc-pj">↕</span></th><th onclick="sortCoaches('pg')">G <span id="sc-pg">↕</span></th><th onclick="sortCoaches('pe')">E <span id="sc-pe">↕</span></th><th onclick="sortCoaches('pp')">P <span id="sc-pp">↕</span></th></tr></thead><tbody id="coach-tbody"></tbody></table></div></div>
 <div id="view-rivales" class="view"><div class="section-title">Buscar rival</div><div class="search-row"><div class="search-wrap"><input class="search-input" id="rival-search" placeholder="Nombre del equipo rival…" oninput="filterRivales();updateClear('rival-search')"><button class="search-clear" id="rival-search-clear" onclick="clearSearch('rival-search','filterRivales')" title="Borrar">✕</button></div><select class="sel-input" id="rival-cond" onchange="filterRivales()"><option value="">Todos</option><option value="local">Solo Local</option><option value="visitante">Solo Visitante</option><option value="otros">Otros</option></select></div><div id="rival-filter-row" style="display:flex;flex-wrap:wrap;gap:6px;padding:8px 14px 0;align-items:center"><div class="filter-bar" id="rival-cat-filter" style="margin-bottom:0;flex-wrap:wrap"></div><div style="display:flex;align-items:center"><span style="color:rgba(255,255,255,.2);padding:0 4px;font-size:.9rem">|</span></div><div class="filter-bar" id="rival-comp-filter-bar" style="margin-bottom:0;flex-wrap:wrap"></div></div><div class="results-count" id="rival-count"></div><div class="table-wrapper"><table class="data-table" id="rival-table"><thead><tr><th class="left" onclick="sortRivals('nombre')">Rival <span id="sr-nombre">↕</span></th><th onclick="sortRivals('pj')">PJ <span id="sr-pj">↕</span></th><th onclick="sortRivals('pg')">G <span id="sr-pg">↕</span></th><th onclick="sortRivals('pe')">E <span id="sr-pe">↕</span></th><th onclick="sortRivals('pp')">P <span id="sr-pp">↕</span></th><th onclick="sortRivals('gf')">GF <span id="sr-gf">↕</span></th><th onclick="sortRivals('gc')">GC <span id="sr-gc">↕</span></th></tr></thead><tbody id="rival-summary-tbody"></tbody></table></div></div><div id="rival-detail-section" style="display:none;margin-top:24px;max-width:860px;margin-left:auto;margin-right:auto"><div class="section-title" id="rival-detail-title">Partidos</div><div class="filter-bar" id="rival-comp-filter"></div><div class="matches-list" id="rival-matches-list"></div></div></div></div>
 <div id="view-historia" class="view">
@@ -3961,6 +3989,7 @@ function navTo(view){
   else if(view==="rivales"){renderCompToggle("rival-comp-filter-bar","toggleGlobalComp");filterRivales();}
   else if(view==="historia"){renderHistoria();setHash("historia");}
   else if(view==="consulta"){initChat();setHash("consulta");}
+  else if(view==="datos-temporada"){renderDatosTemporada();setHash("datos-temporada");}
   else if(view==="listado-temporadas"){renderListadoTemporadas();setHash("listado-temporadas");}
   else if(view==="plantilla"){loadPlantilla();setHash("plantilla");}
   else if(view==="hoy"){
@@ -4532,6 +4561,7 @@ function openJugador(key,from){
   var p=PLAYERS[key];if(!p){alert("Sin ficha: "+key);return;}
   var bc="";
   if(from==="partido"){bc="<a onclick=\"navTo('temporadas')\" >Temporadas</a><span>›</span><a onclick=\"navTo('partidos')\" >"+currentSeason+"</a><span>›</span><a onclick=\"showView('partido')\" >Partido</a><span>›</span><span>"+cap(p.nombre)+"</span>";}
+  else if(from==="datos-temporada"){bc="<a onclick=\"navTo('jugadores-view')\" >Jugadores</a><span>›</span><a onclick=\"navTo('datos-temporada')\">Datos por temporada</a><span>›</span><span>"+cap(p.nombre)+"</span>";}
   else{bc="<a onclick=\"navTo('jugadores-view')\" >Jugadores</a><span>›</span><span>"+cap(p.nombre)+"</span>";}
   document.getElementById("jugador-bc").innerHTML=bc;
 
@@ -5447,6 +5477,7 @@ function readHash(){
   else if(type==="partido"&&parts[1]&&parts[2]!==undefined){var s2=decodeURIComponent(parts[1]),i2=parseInt(parts[2]);if(DATA&&DATA[s2]&&DATA[s2][i2]){currentSeason=s2;document.getElementById("bc-temp").textContent=s2;document.getElementById("bc-temp2").textContent=s2;selectPartido(i2);}}
   else if(type==="jugador"&&parts[1]){var k=decodeURIComponent(parts[1]);if(PLAYERS&&PLAYERS[k])openJugador(k,"listado");}
   else if(type==="historia"){navTo("historia");}
+  else if(type==="datos-temporada"){navTo("datos-temporada");}
   else if(type==="listado-temporadas"){navTo("listado-temporadas");}
   else if(type==="plantilla"){navTo("plantilla");}
   else if(type==="hoy"){navTo("hoy");}
@@ -6431,6 +6462,155 @@ async function chatAsk(){
   input.focus();
 }
 
+/* ── DATOS POR TEMPORADA ── */
+var _dtBaseRows = null;
+var _dtSortCol = 'g';
+var _dtSortDir = -1;
+var _dtActiveComps = {};
+var _dtCompsInit = false;
+
+function renderDatosTemporada() {
+  if (!DATA || !PLAYERS) return;
+  if (!_dtBaseRows) {
+    var lookup = {};
+    Object.keys(DATA).forEach(function(season) {
+      lookup[season] = {};
+      (DATA[season] || []).forEach(function(match) {
+        var comp = match.c || 'Amistoso';
+        if (!lookup[season][comp]) lookup[season][comp] = {};
+        var titSet = {};
+        (match.t || []).forEach(function(p){ titSet[p.n] = true; });
+        var all = (match.t || []).concat(match.s || []);
+        all.forEach(function(p) {
+          var nm = p.n; if (!nm || p.m === 0) return;
+          if (!lookup[season][comp][nm]) lookup[season][comp][nm] = {pj:0,tit:0,g:0,a:0,am:0,ro:0,min:0};
+          var e = lookup[season][comp][nm];
+          e.pj++; if (titSet[nm]) e.tit++;
+          e.g += p.g||0; e.a += p.as||0; e.am += p.a||0; e.ro += p.ro||0; e.min += p.m||0;
+        });
+      });
+    });
+    _dtBaseRows = [];
+    Object.values(PLAYERS).forEach(function(jug) {
+      var nm = (jug.id||'').toUpperCase();
+      Object.keys(jug.temporadas||{}).forEach(function(season) {
+        if (!lookup[season]) return;
+        Object.keys(lookup[season]).forEach(function(comp) {
+          var entry = lookup[season][comp][nm];
+          if (!entry || entry.pj === 0) return;
+          _dtBaseRows.push({
+            nombre: jug.nombre || jug.id, posicion: jug.posicion || '',
+            season: season, comp: comp,
+            pj: entry.pj, tit: entry.tit, g: entry.g, a: entry.a,
+            am: entry.am, ro: entry.ro, min: entry.min, _jugId: jug.id
+          });
+        });
+      });
+    });
+  }
+  if (!_dtCompsInit) {
+    _dtCompsInit = true;
+    var COMP_ORDER = ['Liga','Copa','Promocion','Copa de la Liga','Copa Federacion','Final Campeones','Liga Consolacion','Amistoso'];
+    var availComps = [...new Set(_dtBaseRows.map(function(r){ return r.comp; }))];
+    COMP_ORDER.filter(function(c){ return availComps.indexOf(c) !== -1; })
+      .concat(availComps.filter(function(c){ return COMP_ORDER.indexOf(c) === -1; }))
+      .forEach(function(c){ _dtActiveComps[c] = (c === 'Liga'); });
+    var el = document.getElementById('dt-comp-filter');
+    if (el) el.innerHTML = Object.keys(_dtActiveComps).map(function(c) {
+      return '<button class="filter-btn' + (_dtActiveComps[c] ? ' active' : '') + '" onclick="toggleDtComp(\'' + c + '\',this)">' + c + '</button>';
+    }).join('');
+  }
+  var sel = document.getElementById('dt-season');
+  if (sel && sel.options.length === 1) {
+    var seasons = [...new Set(_dtBaseRows.map(function(r){ return r.season; }))].sort().reverse();
+    seasons.forEach(function(s){ var o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o); });
+  }
+  filterDatosTemp();
+}
+
+function toggleDtComp(comp, btn) {
+  _dtActiveComps[comp] = !_dtActiveComps[comp];
+  btn.classList.toggle('active', _dtActiveComps[comp]);
+  filterDatosTemp();
+}
+
+function filterDatosTemp() {
+  if (!_dtBaseRows) return;
+  var search = (document.getElementById('dt-search').value || '').toLowerCase();
+  var season = document.getElementById('dt-season').value;
+  var pos = document.getElementById('dt-pos').value;
+  var activeComps = Object.keys(_dtActiveComps).filter(function(c){ return _dtActiveComps[c]; });
+  var filtered = _dtBaseRows.filter(function(r) {
+    if (activeComps.length && activeComps.indexOf(r.comp) === -1) return false;
+    if (season && r.season !== season) return false;
+    if (pos && r.posicion !== pos) return false;
+    if (search && r.nombre.toLowerCase().indexOf(search) === -1) return false;
+    return true;
+  });
+  var aggMap = {};
+  filtered.forEach(function(r) {
+    var key = r._jugId + '|' + r.season;
+    if (!aggMap[key]) aggMap[key] = {nombre:r.nombre,posicion:r.posicion,season:r.season,_jugId:r._jugId,pj:0,tit:0,g:0,a:0,ga:0,am:0,ro:0,min:0};
+    var e = aggMap[key];
+    e.pj+=r.pj; e.tit+=r.tit; e.g+=r.g; e.a+=r.a; e.ga+=r.g+r.a; e.am+=r.am; e.ro+=r.ro; e.min+=r.min;
+  });
+  var rows = Object.values(aggMap);
+  rows.sort(function(a,b){
+    var va=a[_dtSortCol],vb=b[_dtSortCol];
+    if(typeof va==='string') return _dtSortDir*va.localeCompare(vb);
+    return _dtSortDir*((vb||0)-(va||0));
+  });
+  var POS_COL = {'Portero':'#4fc3f7','Defensa':'#81c784','Medio':'#ffb74d','Delantero':'#e57373'};
+  var dash = '<span style="color:rgba(255,255,255,.25)">—</span>';
+  document.getElementById('dt-count').textContent = rows.length + ' registros';
+  var MAX = 200;
+  var html = rows.slice(0, MAX).map(function(r) {
+    var posColor = POS_COL[r.posicion] || '#aaa';
+    var nameCell = '<td class="left"><span style="font-family:Oswald,sans-serif;font-size:.78rem;color:var(--gris-claro)">' + r._jugId + '</span>'
+      + '<span class="hide-mobile"> · <span style="font-size:.75rem">' + r.nombre + '</span></span></td>';
+    return '<tr onclick="openJugador(decodeURIComponent(\'' + encodeURIComponent(r._jugId) + '\'),\'datos-temporada\')" style="cursor:pointer">'
+      + nameCell
+      + '<td class="left" style="color:' + posColor + ';font-size:.72rem">' + r.posicion + '</td>'
+      + '<td class="left" style="font-family:Oswald,sans-serif;font-size:.78rem">' + r.season + '</td>'
+      + '<td>' + r.pj + '</td><td>' + r.tit + '</td>'
+      + '<td>' + (r.g > 0 ? '<b style="color:#4caf50">' + r.g + '</b>' : dash) + '</td>'
+      + '<td>' + (r.a > 0 ? r.a : dash) + '</td>'
+      + '<td>' + (r.ga > 0 ? r.ga : dash) + '</td>'
+      + '<td>' + (r.am > 0 ? r.am : dash) + '</td>'
+      + '<td>' + (r.ro > 0 ? r.ro : dash) + '</td>'
+      + '<td>' + (r.min ? r.min.toLocaleString() : '') + '</td>'
+      + '</tr>';
+  }).join('');
+  if (rows.length > MAX) html += '<tr><td colspan="11" style="text-align:center;color:var(--gris-claro);font-size:.75rem;padding:10px">Mostrando ' + MAX + ' de ' + rows.length + '. Usa los filtros para acotar.</td></tr>';
+  document.getElementById('dt-tbody').innerHTML = html;
+  ['nombre','posicion','season','pj','tit','g','a','ga','am','ro','min'].forEach(function(c) {
+    var el = document.getElementById('dt-s-' + c);
+    if (el) el.textContent = c === _dtSortCol ? (_dtSortDir === 1 ? '↑' : '↓') : '↕';
+  });
+}
+
+function dtSort(col) {
+  _dtSortDir = (_dtSortCol === col) ? _dtSortDir * -1 : -1;
+  _dtSortCol = col;
+  filterDatosTemp();
+}
+
+var LT_COMP_ORDER = ['Liga','Copa','Promocion','Copa de la Liga','Copa Federacion','Final Campeones','Liga Consolacion','Amistoso'];
+var LT_CAT_ORDER = ['1','2','2B','2 GRUPO B','1 RFEF','3','REGIONAL'];
+var LT_CAT_LABELS = {'1':'Primera','2':'Segunda','2B':'2ªB','2 GRUPO B':'2ªB (Gpo B)','1 RFEF':'1ª RFEF','3':'Tercera','REGIONAL':'Regional'};
+var _ltActiveComps = {};
+var _ltActiveCats = {};
+var _ltSortCol = 'season';
+var _ltSortDir = -1;
+var _ltFiltersInit = false;
+
+function _ltInitFilters(){
+  if(_ltFiltersInit) return;
+  _ltFiltersInit = true;
+  LT_COMP_ORDER.forEach(function(c){ _ltActiveComps[c] = c === 'Liga'; });
+  LT_CAT_ORDER.forEach(function(c){ _ltActiveCats[c] = true; });
+}
+
 function renderListadoTemporadas(){
   if(!DATA)return;
   _ltInitFilters();
@@ -6883,22 +7063,15 @@ var FM_TEAM_ID = '10279';
 var FM_LEAGUE_ID = '9122';
 var FM_SEASON_ID = '23755';
 
-async function fotmobFetch(url) {
-  // Try multiple CORS proxies in order
-  var proxies = [
-    'https://corsproxy.io/?' + encodeURIComponent(url),
-    'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
-    'https://thingproxy.freeboard.io/fetch/' + url,
-  ];
-  var lastErr;
-  for (var i = 0; i < proxies.length; i++) {
-    try {
-      var r = await fetch(proxies[i], {signal: AbortSignal.timeout(8000)});
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r;
-    } catch(e) { lastErr = e; }
-  }
-  throw new Error('No se puede conectar con FotMob. Para usar la Plantilla en local, sube el archivo a GitHub Pages o a un servidor web.');
+async function fotmobFetch(apiPath) {
+  // Use our Cloudflare worker which handles auth, tokens and cookies
+  var workerBase = 'https://futmob.guillermoviciano.workers.dev';
+  // apiPath can be a full URL or just the path
+  var path = apiPath.startsWith('http') ? apiPath.replace('https://www.fotmob.com', '') : apiPath;
+  var url = workerBase + path;
+  var r = await fetch(url);
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r;
 }
 
 async function loadPlantilla() {
@@ -7014,24 +7187,13 @@ async function openFMPlayer(playerId, playerName) {
 function openMatchPlayerFM(season, partidoIdx, playerName) {
   if (!DATA || !season || partidoIdx == null) return;
   var p = DATA[season] && DATA[season][partidoIdx];
-  if (!p) return;
-  // We need the FotMob match ID — try to find it from the date
-  // For now open player season stats
-  var playerInRoster = _plantillaData && _plantillaData.find(function(pl){
-    return pl.name && pl.name.toLowerCase().indexOf(playerName.toLowerCase().split(' ')[0]) >= 0;
-  });
-  if (playerInRoster) {
-    openFMPlayer(playerInRoster.id, playerInRoster.name);
-  } else {
-    // Try to load plantilla first then retry
-    if (!_plantillaLoaded) {
-      loadPlantilla().then(function(){
-        openMatchPlayerFM(season, partidoIdx, playerName);
-      });
-    } else {
-      alert('Jugador ' + playerName + ' no encontrado en plantilla FotMob actual');
-    }
+  if (!p || !p.fmid) {
+    alert('Este partido no tiene ID de FotMob asignado');
+    return;
   }
+  var decodedName = decodeURIComponent(playerName);
+  var matchTitle = cap(p.l || '') + ' vs ' + cap(p.v || '');
+  openMatchPlayerStats(p.fmid, decodedName, matchTitle);
 }
 
 function closeFMModal() {
