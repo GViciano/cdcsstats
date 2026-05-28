@@ -7300,6 +7300,73 @@ function switchFMTab(idx, el) {
   });
 }
 
+function showShotDetail(idx) {
+  var dataEl = document.getElementById('fm-shots-data');
+  if (!dataEl) return;
+  var shots = JSON.parse(dataEl.textContent);
+  var s = shots[idx];
+  if (!s) return;
+  var circles = document.querySelectorAll('#fm-shots-g circle');
+  circles.forEach(function(c) {
+    var sel = c.getAttribute('data-idx') == idx;
+    c.setAttribute('stroke-width', sel ? '1' : '0.35');
+    c.setAttribute('opacity', sel ? '1' : '0.7');
+  });
+  var label = {'Goal':'⚽ GOL','AttemptSaved':'🧤 Parada','Miss':'❌ Fuera','BlockedShot':'🛡️ Bloqueado'}[s.eventType] || s.eventType;
+  var minStr = s.min + (s.minAdded?'+'+s.minAdded:'') + "'";
+  var xg = s.expectedGoals ? parseFloat(s.expectedGoals).toFixed(2) : '—';
+  var xgot = s.expectedGoalsOnTarget && s.expectedGoalsOnTarget > 0 ? parseFloat(s.expectedGoalsOnTarget).toFixed(2) : '—';
+  var shotTypeES = {'LeftFoot':'Pie izquierdo','RightFoot':'Pie derecho','Head':'Cabeza','OtherBodyPart':'Otro'};
+  var situationES = {'RegularPlay':'Juego abierto','FastBreak':'Contragolpe','SetPiece':'Balón parado','FromCorner':'Córner','DirectFreekick':'Falta directa','Penalty':'Penalti'};
+  var detail = '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">'
+    + '<span style="font-family:Oswald,sans-serif;color:var(--gualda);font-size:1rem">' + minStr + '</span>'
+    + '<span style="font-weight:700;font-size:.9rem">' + label + '</span>'
+    + '<span style="color:var(--gris-claro)">xG: <b style="color:var(--crema)">' + xg + '</b></span>'
+    + '<span style="color:var(--gris-claro)">xGOT: <b style="color:var(--crema)">' + xgot + '</b></span>'
+    + (shotTypeES[s.shotType] ? '<span style="color:var(--gris-claro)">' + shotTypeES[s.shotType] + '</span>' : '')
+    + (situationES[s.situation] ? '<span style="color:var(--gris-claro)">' + situationES[s.situation] + '</span>' : '')
+    + (s.isFromInsideBox ? '<span style="color:#4caf50;font-size:.7rem">Dentro del área</span>' : '<span style="color:#e8b84b;font-size:.7rem">Fuera del área</span>')
+    + '</div>';
+  var hasGoalData = s.onGoalShot || (s.goalCrossedY !== null && s.goalCrossedY !== undefined);
+  if (hasGoalData) {
+    var dotColor = s.eventType==='Goal' ? '#4caf50' : s.isOnTarget ? '#e8b84b' : 'rgba(255,100,100,0.9)';
+    var gw=12, gh=8, gx0=44, gy0=10, dotX, dotY, isOutside=false;
+    if (s.isOnTarget && s.onGoalShot) {
+      dotX = gx0 + Math.max(0.3, Math.min(gw-0.3, (s.onGoalShot.x/2)*gw));
+      dotY = gy0 + Math.max(0.3, Math.min(gh-0.3, s.onGoalShot.y*gh));
+    } else {
+      var yRel = ((s.goalCrossedY||34) - 30.34) / 7.32;
+      var zRel = 1 - ((s.goalCrossedZ||1.2) / 2.44);
+      dotX = gx0 + yRel*gw; dotY = gy0 + zRel*gh;
+      isOutside = dotX<gx0 || dotX>gx0+gw || dotY<gy0 || dotY>gy0+gh;
+      dotX = Math.max(gx0-2.5, Math.min(gx0+gw+2.5, dotX));
+      dotY = Math.max(gy0-2.5, Math.min(gy0+gh+2.5, dotY));
+    }
+    var vx=isOutside?'37':'40', vw=isOutside?'26':'20', vy=isOutside?'5':'8', vh=isOutside?'20':'14';
+    detail += '<div style="margin-top:6px;font-size:.68rem;color:var(--gris-claro)">Posición en/hacia portería:</div>';
+    detail += '<div style="display:flex;justify-content:center"><svg viewBox="'+vx+' '+vy+' '+vw+' '+vh+'" style="width:180px;height:'+(isOutside?'130':'120')+'px;display:block;background:#0a2010;border-radius:3px">'
+      + (isOutside?'<rect x="'+(gx0-3)+'" y="'+(gy0-3)+'" width="'+(gw+6)+'" height="'+(gh+6)+'" fill="rgba(255,50,50,.05)"/>':'')
+      + '<rect x="'+gx0+'" y="'+gy0+'" width="'+gw+'" height="'+gh+'" fill="rgba(255,255,255,.04)"/>'
+      + '<line x1="'+(gx0+3)+'" y1="'+gy0+'" x2="'+(gx0+3)+'" y2="'+(gy0+gh)+'" stroke="rgba(255,255,255,.1)" stroke-width="0.2"/>'
+      + '<line x1="'+(gx0+6)+'" y1="'+gy0+'" x2="'+(gx0+6)+'" y2="'+(gy0+gh)+'" stroke="rgba(255,255,255,.1)" stroke-width="0.2"/>'
+      + '<line x1="'+(gx0+9)+'" y1="'+gy0+'" x2="'+(gx0+9)+'" y2="'+(gy0+gh)+'" stroke="rgba(255,255,255,.1)" stroke-width="0.2"/>'
+      + '<line x1="'+gx0+'" y1="'+(gy0+2.7)+'" x2="'+(gx0+gw)+'" y2="'+(gy0+2.7)+'" stroke="rgba(255,255,255,.1)" stroke-width="0.2"/>'
+      + '<line x1="'+gx0+'" y1="'+(gy0+5.3)+'" x2="'+(gx0+gw)+'" y2="'+(gy0+5.3)+'" stroke="rgba(255,255,255,.1)" stroke-width="0.2"/>'
+      + '<line x1="'+gx0+'" y1="'+gy0+'" x2="'+(gx0+gw)+'" y2="'+gy0+'" stroke="white" stroke-width="0.5"/>'
+      + '<line x1="'+gx0+'" y1="'+gy0+'" x2="'+gx0+'" y2="'+(gy0+gh)+'" stroke="white" stroke-width="0.5"/>'
+      + '<line x1="'+(gx0+gw)+'" y1="'+gy0+'" x2="'+(gx0+gw)+'" y2="'+(gy0+gh)+'" stroke="white" stroke-width="0.5"/>'
+      + '<line x1="'+(gx0-3)+'" y1="'+(gy0+gh)+'" x2="'+(gx0+gw+3)+'" y2="'+(gy0+gh)+'" stroke="#2a6a2a" stroke-width="0.8"/>'
+      + (isOutside
+        ? '<line x1="'+(dotX-0.7)+'" y1="'+(dotY-0.7)+'" x2="'+(dotX+0.7)+'" y2="'+(dotY+0.7)+'" stroke="'+dotColor+'" stroke-width="0.5"/><line x1="'+(dotX+0.7)+'" y1="'+(dotY-0.7)+'" x2="'+(dotX-0.7)+'" y2="'+(dotY+0.7)+'" stroke="'+dotColor+'" stroke-width="0.5"/>'
+        : '<circle cx="'+dotX+'" cy="'+dotY+'" r="1" fill="'+dotColor+'" stroke="white" stroke-width="0.25"/>'
+      )
+      + '</svg></div>'
+      + (isOutside ? '<div style="font-size:.65rem;color:rgba(255,100,100,.8);text-align:center;margin-top:2px">✕ Fuera de portería</div>' : '');
+  }
+  var detailEl = document.getElementById('fm-shot-detail');
+  if (detailEl) { detailEl.innerHTML = detail; detailEl.style.display = 'block'; }
+}
+
 /* ── Botón 🔍 en alineación de partido ── */
 async function openMatchPlayerStats(fotmobMatchId, playerId, playerName) {
   var modal = document.getElementById('fm-player-modal');
@@ -7324,88 +7391,232 @@ async function openMatchPlayerStats(fotmobMatchId, playerId, playerName) {
     var d = await r.json();
     if (d.error) throw new Error(d.error);
 
-    // Find player stats in match
-    var playerStats = null;
-    var allPlayers = (d.content && d.content.lineup ? 
-      (d.content.lineup.lineup || []).flatMap(function(t){ return (t.players || []).flat(); }) : []);
-    allPlayers.forEach(function(p) {
-      if (String(p.id) === String(playerId) || (p.name && p.name.toLowerCase().includes(playerName.toLowerCase().split(' ')[0].toLowerCase()))) {
-        playerStats = p;
+    // Normalize name for fuzzy matching
+    var norm = function(s){ return (s||'').toLowerCase()
+      .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i')
+      .replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').trim(); };
+    var needle = norm(playerName);
+    var words = needle.split(/\s+/).filter(function(w){ return w.length > 2; });
+
+    // Search in playerStats by name
+    var foundId = null, foundData = null;
+    var playerStatsMap = (d.content && d.content.playerStats) || {};
+    Object.keys(playerStatsMap).forEach(function(pid) {
+      var pl = playerStatsMap[pid];
+      var pnorm = norm(pl.name || '');
+      var score = words.filter(function(w){ return pnorm.includes(w); }).length;
+      if (score > 0 && (!foundData || score > (foundData._score||0))) {
+        pl._score = score;
+        foundId = pid;
+        foundData = pl;
       }
     });
 
-    // Get shotmap for this match filtered by player
+    // Get shots for this player
     var matchShots = [];
-    if (d.content && d.content.shotmap && d.content.shotmap.shots) {
-      matchShots = d.content.shotmap.shots.filter(function(s){ return String(s.playerId) === String(playerId); });
+    if (foundData && foundData.shotmap && foundData.shotmap.length) {
+      matchShots = foundData.shotmap;
+    } else if (d.content && d.content.shotmap && d.content.shotmap.shots && foundId) {
+      matchShots = d.content.shotmap.shots.filter(function(s){
+        return String(s.playerId) === String(foundId);
+      });
     }
 
-    renderMatchPlayerModal(playerStats, matchShots, playerName, d);
+    // Fetch heatmap using optaId
+    var heatmapData = null;
+    if (foundData && foundData.optaId) {
+      try {
+        var heatPath = '/api/data/heatmap/match/' + fotmobMatchId + '/heatmaps?heatmapUrl=https%3A%2F%2Fpub.fotmob.com%2Fprod%2Fdb%2Fapi%2Fheatmap%2Fmatch%2F' + fotmobMatchId + '&theme=light';
+        var hr = await fotmobFetch(heatPath);
+        var hd = await hr.json();
+        if (hd && hd.players) {
+          var playerKey = 'p' + foundData.optaId;
+          if (hd.players[playerKey]) {
+            heatmapData = { template: hd.template, circles: hd.players[playerKey] };
+          }
+        }
+      } catch(e2) { /* heatmap not available */ }
+    }
+
+    renderMatchPlayerModal(foundData, matchShots, playerName, d, heatmapData);
   } catch(e) {
     document.getElementById('fm-modal-body').innerHTML = '<div style="text-align:center;padding:30px;color:var(--rojo-claro)">Error: ' + e.message + '</div>';
   }
 }
 
-function renderMatchPlayerModal(pStats, shots, playerName, matchData) {
+function renderMatchPlayerModal(pStats, shots, playerName, matchData, heatmapData) {
   var s = (pStats && pStats.stats) || {};
 
+  var tabs = ['Stats', 'Disparos', 'Mapa calor'];
   var html = '<div class="fm-tabs">'
-    + '<div class="fm-tab active" onclick="switchFMTab(0,this)">Estadísticas</div>'
-    + '<div class="fm-tab" onclick="switchFMTab(1,this)">Disparos</div>'
+    + tabs.map(function(t,i){
+        return '<div class="fm-tab' + (i===0?' active':'') + '" onclick="switchFMTab(' + i + ',this)">' + t + '</div>';
+      }).join('')
     + '</div>';
 
-  // Stats tab
+  // Tab 0: Stats
   html += '<div id="fm-tab-0">';
   if (pStats) {
-    var rows = [
-      ['Rating', pStats.ratingProps ? pStats.ratingProps.num : '—'],
-      ['Minutos', pStats.minutesPlayed || '—'],
-      ['Goles', pStats.goals || 0],
-      ['Asistencias', pStats.assists || 0],
-      ['Tiros totales', s.totalShots || '—'],
-      ['Tiros a puerta', s.shotsOnTarget || '—'],
-      ['xG', s.expectedGoals ? parseFloat(s.expectedGoals).toFixed(2) : '—'],
-      ['Pases completados', s.accuratePasses ? s.accuratePasses + (s.totalPasses ? '/'+s.totalPasses : '') : '—'],
-      ['Regates', s.successfulDribbles || '—'],
-      ['Duelos ganados', s.duelsWon ? s.duelsWon + (s.duelsTotal ? '/'+s.duelsTotal : '') : '—'],
+    // Extract stats from sections
+    var sv = function(key) {
+      var val = '—';
+      (pStats.stats || []).forEach(function(section) {
+        var st = section.stats || {};
+        Object.keys(st).forEach(function(k) {
+          if (k === key) {
+            var s = st[k].stat;
+            if (s.type === 'fractionWithPercentage') val = s.value + '/' + s.total;
+            else val = s.value !== undefined ? s.value : '—';
+          }
+        });
+      });
+      return val === undefined || val === null ? '—' : String(val);
+    };
+
+    // Rating
+    var ratingVal = sv('FotMob rating');
+    var ratingNum = parseFloat(ratingVal);
+    if (!isNaN(ratingNum)) {
+      var rColor = ratingNum >= 7 ? '#4caf50' : ratingNum >= 6 ? '#e8b84b' : '#e57373';
+      html += '<div style="text-align:center;margin:10px 0 14px">'
+        + '<span style="font-family:Oswald,sans-serif;font-size:2.2rem;color:' + rColor + '">' + ratingVal + '</span>'
+        + '<div style="font-size:.7rem;color:var(--gris-claro)">Rating FotMob</div></div>';
+    }
+
+    var rows = pStats.isGoalkeeper ? [
+      ['Minutos', sv('Minutes played')],
+      ['Paradas', sv('Saves')],
+      ['Goles encajados', sv('Goals conceded')],
+      ['xG encajado', sv('Expected goals conceded')],
+      ['Porterías a cero', sv('Clean sheet')],
+      ['Pases completados', sv('Accurate passes')],
+      ['Toques', sv('Touches')],
+    ] : [
+      ['Minutos', sv('Minutes played')],
+      ['Goles', sv('Goals')],
+      ['Asistencias', sv('Assists')],
+      ['xG', sv('Expected goals (xG)')],
+      ['xA', sv('Expected assists (xA)')],
+      ['Tiros totales', sv('Total shots')],
+      ['Tiros a puerta', sv('Shots on target')],
+      ['Toques', sv('Touches')],
+      ['Toques área rival', sv('Touches in opposition box')],
+      ['Pases completados', sv('Accurate passes')],
+      ['Oportunidades creadas', sv('Chances created')],
+      ['Regates exitosos', sv('Successful dribbles')],
+      ['Acciones defensivas', sv('Defensive actions')],
+      ['Duelos aéreos', sv('Aerial duels won')],
+      ['Faltas cometidas', sv('Fouls committed')],
+      ['Faltas recibidas', sv('Was fouled')],
     ];
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">';
+
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">';
     rows.forEach(function(r) {
-      html += '<div style="background:rgba(255,255,255,.04);border-radius:3px;padding:8px 10px;display:flex;justify-content:space-between">'
-        + '<span style="font-size:.75rem;color:var(--gris-claro)">' + r[0] + '</span>'
-        + '<span style="font-family:Oswald,sans-serif;font-size:.85rem;color:var(--gualda)">' + r[1] + '</span>'
+      if (r[1] === '—') return;
+      html += '<div style="background:rgba(255,255,255,.04);border-radius:3px;padding:7px 10px;display:flex;justify-content:space-between;align-items:center">'
+        + '<span style="font-size:.7rem;color:var(--gris-claro)">' + r[0] + '</span>'
+        + '<span style="font-family:Oswald,sans-serif;font-size:.82rem;color:var(--gualda)">' + r[1] + '</span>'
         + '</div>';
     });
     html += '</div>';
+
+    // Fun facts
+    if (pStats.funFacts && pStats.funFacts.length) {
+      html += '<div style="margin-top:10px">';
+      pStats.funFacts.forEach(function(f) {
+        html += '<div style="background:rgba(255,255,255,.04);border-radius:3px;padding:7px 10px;margin-bottom:4px;font-size:.75rem;color:var(--gris-claro)">'
+          + (f.isPositive ? '⭐' : '⚠️') + ' ' + (f.fallbackText || '') + '</div>';
+      });
+      html += '</div>';
+    }
   } else {
     html += '<div style="text-align:center;padding:20px;color:var(--gris-claro)">Stats no disponibles para este jugador en este partido</div>';
   }
   html += '</div>';
 
-  // Shots tab
+  // Tab 1: Shots
   html += '<div id="fm-tab-1" style="display:none">';
   if (shots && shots.length) {
-    html += '<div style="font-size:.72rem;color:var(--gris-claro);text-align:center;margin-bottom:8px">Disparos en este partido</div>';
-    html += '<div class="fm-shotmap-pitch" style="min-height:180px">';
-    shots.forEach(function(s) {
-      var cl = s.eventType==='Goal' ? 'goal' : s.eventType==='AttemptSaved' ? 'saved' : s.eventType==='Miss' ? 'missed' : 'blocked';
-      html += '<div class="fm-shot-dot ' + cl + '" style="left:' + (s.x||50) + '%;top:' + (s.y||50) + '%" title="' + (s.eventType||'') + ' min:' + (s.min||'?') + ' xG:' + (s.expectedGoals ? parseFloat(s.expectedGoals).toFixed(2) : '—') + '"></div>';
+    html += '<div style="font-size:.72rem;color:var(--gris-claro);text-align:center;margin-bottom:6px">Haz clic en un disparo para ver detalle</div>';
+    html += '<div id="fm-shot-detail" style="display:none;background:rgba(255,255,255,.06);border-radius:4px;padding:8px 12px;margin-bottom:8px;font-size:.75rem"></div>';
+    html += '<div style="width:100%;max-width:320px;margin:0 auto 10px">';
+    html += '<svg id="fm-pitch-svg" viewBox="0 0 68 54" style="width:100%;height:auto;display:block;border-radius:6px;background:#1a4020" xmlns="http://www.w3.org/2000/svg">';
+    html += '<rect x="0" y="0" width="68" height="54" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="0.5"/>';
+    html += '<rect x="13.84" y="0" width="40.32" height="22.63" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.35)" stroke-width="0.5"/>';
+    html += '<rect x="24.84" y="0" width="18.32" height="6.17" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.2)" stroke-width="0.4"/>';
+    html += '<circle cx="34" cy="11.31" r="0.6" fill="rgba(255,255,255,.4)"/>';
+    html += '<path d="M 24.5 22.63 A 9.15 11.31 0 0 0 43.5 22.63" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="0.5"/>';
+    html += '<rect x="30.34" y="-2" width="7.32" height="2.5" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="0.5"/>';
+    html += '<line x1="30.34" y1="-2" x2="30.34" y2="0" stroke="white" stroke-width="0.8"/>';
+    html += '<line x1="37.66" y1="-2" x2="37.66" y2="0" stroke="white" stroke-width="0.8"/>';
+    html += '<line x1="30.34" y1="-2" x2="37.66" y2="-2" stroke="white" stroke-width="0.8"/>';
+    html += '<text x="2" y="53" font-size="2.5" fill="rgba(255,255,255,.3)" font-family="sans-serif">Centro</text>';
+    html += '<g id="fm-shots-g">';
+    shots.forEach(function(s, idx) {
+      var xFm = Math.max(0, Math.min(105, s.x || 70));
+      var yFm = Math.max(0, Math.min(68, s.y || 34));
+      var svgX = yFm;
+      var svgY = Math.max(-1, Math.min(55, (105 - xFm) / 52.5 * 54));
+      var color = s.eventType==='Goal' ? '#4caf50' : s.eventType==='AttemptSaved' ? '#e8b84b' : s.eventType==='Miss' ? 'rgba(255,255,255,0.6)' : '#e04444';
+      var rr = s.expectedGoals ? Math.max(1.8, Math.min(4.5, parseFloat(s.expectedGoals)*8)) : 2;
+      if (s.isOnTarget && s.onGoalShot) {
+        var tgX = 30.34 + (s.onGoalShot.x / 2) * 7.32;
+        html += '<line x1="' + svgX + '" y1="' + svgY + '" x2="' + tgX + '" y2="-0.5" stroke="' + color + '" stroke-width="0.4" stroke-dasharray="1.5,1" opacity="0.5"/>';
+      } else if (s.isBlocked && s.blockedX && s.blockedY) {
+        var bSvgX = s.blockedY, bSvgY = (105 - s.blockedX) / 52.5 * 54;
+        html += '<line x1="' + svgX + '" y1="' + svgY + '" x2="' + bSvgX + '" y2="' + bSvgY + '" stroke="#e04444" stroke-width="0.4" stroke-dasharray="1,1" opacity="0.5"/>';
+      } else if (s.eventType === 'Miss' && s.goalCrossedY !== undefined) {
+        html += '<line x1="' + svgX + '" y1="' + svgY + '" x2="' + s.goalCrossedY + '" y2="-0.5" stroke="rgba(255,255,255,0.35)" stroke-width="0.4" stroke-dasharray="1,1.5" opacity="0.6"/>';
+      }
+      html += '<circle cx="' + svgX + '" cy="' + svgY + '" r="' + rr + '" fill="' + color + '" stroke="white" stroke-width="0.35" opacity="0.92" style="cursor:pointer" onclick="showShotDetail(' + idx + ')" data-idx="' + idx + '"/>';
+      if (s.eventType === 'Goal') html += '<text x="' + svgX + '" y="' + (svgY+1) + '" text-anchor="middle" font-size="3" fill="#fff" style="pointer-events:none">⚽</text>';
     });
-    html += '</div>';
-    html += '<div style="margin-top:10px">';
-    shots.forEach(function(s) {
-      var evType = (s.eventType||'');
-      var evMin = (s.min||'?');
-      var evXg = s.expectedGoals ? parseFloat(s.expectedGoals).toFixed(2) : '-';
-      html += '<div style="background:rgba(255,255,255,.04);border-radius:3px;padding:6px 10px;margin-bottom:4px;font-size:.75rem;display:flex;gap:12px">'
-        + '<span style="color:var(--gualda);font-family:Oswald,sans-serif">' + evMin + "'"  + '</span>'
-        + '<span style="color:var(--crema)">' + evType + '</span>'
-        + '<span style="color:var(--gris-claro)">xG: ' + evXg + '</span>'
-        + '</div>';
-    });
-    html += '</div>';
+    html += '</g></svg></div>';
+    html += '<script type="application/json" id="fm-shots-data">' + JSON.stringify(shots) + '<\/script>';
+    var legend = [['#4caf50','Gol'],['#e8b84b','A puerta'],['rgba(255,255,255,0.6)','Fuera'],['#e04444','Bloqueado']];
+    html += '<div style="display:flex;gap:12px;justify-content:center;margin-bottom:8px">' + legend.map(function(l){
+      return '<span style="font-size:.68rem;color:var(--gris-claro);display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:' + l[0] + ';border:1px solid rgba(255,255,255,.3);display:inline-block"></span>' + l[1] + '</span>';
+    }).join('') + '</div>';
   } else {
-    html += '<div style="text-align:center;padding:30px;color:var(--gris-claro)">Sin disparos en este partido</div>';
+    html += '<div style="text-align:center;padding:30px;color:var(--gris-claro)">Sin disparos registrados en este partido</div>';
+  }
+  html += '</div>';
+
+  // Tab 2: Heatmap
+  html += '<div id="fm-tab-2" style="display:none">';
+  if (heatmapData && heatmapData.circles) {
+    html += '<div style="font-size:.72rem;color:var(--gris-claro);text-align:center;margin-bottom:6px">Mapa de calor — posiciones durante el partido</div>';
+    var circlesStr = Array.isArray(heatmapData.circles) ? heatmapData.circles.join('') : Object.values(heatmapData.circles).join('');
+    var points = [], re = /cx="([0-9.]+)"\s*cy="([0-9.]+)"/g, m2;
+    while ((m2 = re.exec(circlesStr)) !== null) points.push([parseFloat(m2[1]), parseFloat(m2[2])]);
+    var COLS=42, ROWS=28, cellW=105/COLS, cellH=68/ROWS, grid=[], maxD=0;
+    for (var row=0;row<ROWS;row++) for (var col=0;col<COLS;col++) {
+      var cx2=(col+0.5)*cellW, cy2=(row+0.5)*cellH, density=0;
+      for (var pi=0;pi<points.length;pi++) { var dx=points[pi][0]-cx2,dy=points[pi][1]-cy2,dist=Math.sqrt(dx*dx+dy*dy); if(dist<7) density+=Math.max(0,1-dist/7); }
+      grid.push({col:col,row:row,density:density}); if(density>maxD) maxD=density;
+    }
+    var heatSvg = '<svg viewBox="0 0 105 68" style="width:100%;height:auto;display:block;border-radius:6px" xmlns="http://www.w3.org/2000/svg"><rect width="105" height="68" fill="#1a4020"/><g>';
+    grid.forEach(function(cell) {
+      if (!cell.density || maxD===0) return;
+      var t=cell.density/maxD;
+      var g2=Math.round(t<0.5?255:255*(1-(t-0.5)*2));
+      heatSvg += '<rect x="'+(cell.col*cellW)+'" y="'+(cell.row*cellH)+'" width="'+cellW+'" height="'+cellH+'" fill="rgb(255,'+g2+',0)" opacity="'+Math.min(0.85,t*0.9+0.05).toFixed(2)+'"/>';
+    });
+    heatSvg += '</g><rect width="105" height="68" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="0.5"/>'
+      + '<line x1="52.5" y1="0" x2="52.5" y2="68" stroke="rgba(255,255,255,.3)" stroke-width="0.5"/>'
+      + '<circle cx="52.5" cy="34" r="9.15" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="0.5"/>'
+      + '<rect x="0" y="13.84" width="22" height="40.32" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="0.5"/>'
+      + '<rect x="83" y="13.84" width="22" height="40.32" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="0.5"/>'
+      + '<rect x="-2" y="30.34" width="2" height="7.32" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="0.4"/>'
+      + '<rect x="105" y="30.34" width="2" height="7.32" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="0.4"/>'
+      + '<defs><marker id="hm-arr" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0,0 L0,5 L5,2.5 z" fill="rgba(255,230,0,.85)"/></marker></defs>'
+      + '<line x1="38" y1="64.5" x2="60" y2="64.5" stroke="rgba(255,230,0,.85)" stroke-width="1" marker-end="url(#hm-arr)"/>'
+      + '<text x="49" y="67.8" text-anchor="middle" font-size="2.5" fill="rgba(255,230,0,.7)" font-family="sans-serif" font-weight="bold">ATAQUE</text>'
+      + '</svg>';
+    html += heatSvg;
+    html += '<div style="display:flex;align-items:center;gap:6px;margin-top:6px;justify-content:center"><span style="font-size:.65rem;color:var(--gris-claro)">Menos</span><div style="width:80px;height:8px;border-radius:3px;background:linear-gradient(to right,#ffff00,#ff8800,#ff0000)"></div><span style="font-size:.65rem;color:var(--gris-claro)">Más</span></div>';
+  } else {
+    html += '<div style="text-align:center;padding:30px;color:var(--gris-claro)">Mapa de calor no disponible para este partido</div>';
   }
   html += '</div>';
 
