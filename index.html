@@ -4398,7 +4398,7 @@ function selectPartido(idx){
     var pos=(j.d===98||j.d===99)?"Técnico":(j.p||"");
     var isCoach=(j.d===97||j.d===98||j.d===99);
     return "<div class=\"player-row\" data-key=\""+encodeURIComponent(j.n)+"\" onclick=\""+(isCoach?"openCoach('"+encodeURIComponent(j.n)+"')":" openByKey(this,'partido')")+"\"><div class=\"player-dorsal\">"+(j.d||"")+"</div><div class=\"player-name\">"+cap(j.n)+(isCoach?"":currentSeason==="2025-2026"?"<button onclick=\"event.stopPropagation();openMatchPlayerFM(currentSeason,currentPartidoIdx,'"+encodeURIComponent(j.n)+"');\" style=\"background:none;border:none;cursor:pointer;font-size:.65rem;padding:0 2px;opacity:.5\" onmouseover=\"this.style.opacity=1\" onmouseout=\"this.style.opacity=.5\">🔍</button>":"")+"</div><div class=\"player-pos\">"+pos+"</div><div class=\"player-mins\">"+(j.m?j.m+"'":"–")+"</div><div class=\"player-events\">"+(j.g>0?"⚽".repeat(j.g):"–")+"</div><div class=\"player-events\">"+(j.as>0?"👟".repeat(j.as):"–")+"</div>"+"<div class=\\\"player-events\\\">"+(ev?""+ev:"–")+""+"</div></div>";}
-  function lineupHtml(players,title,icon){if(!players.length)return"";var posOrder={Portero:0,Defensa:1,Medio:2,Delantero:3,Técnico:4};players=players.slice().sort(function(a,b){var pa=a.d>=97?99:(posOrder[a.p]!=null?posOrder[a.p]:5);var pb=b.d>=97?99:(posOrder[b.p]!=null?posOrder[b.p]:5);return pa-pb;});var rows="";for(var li=0;li<players.length;li++)rows+=pRow(players[li]);return"<div class=\"detail-section full\"><div class=\"ds-title\">"+icon+" "+title+" <span style=\"font-weight:300;font-size:.85em;opacity:.7\">— clic para ver ficha</span></div><div class=\"ds-body no-pad\"><div class=\"col-header\"><div>#</div><div>JUGADOR</div><div>POS</div><div>MIN</div><div>G</div><div>A</div><div>T</div></div>"+rows+"</div></div>";}
+  function lineupHtml(players,title,icon,sortByMins){if(!players.length)return"";var posOrder={Portero:0,Defensa:1,Medio:2,Delantero:3,Técnico:4};players=players.slice().sort(function(a,b){if(sortByMins){return (b.m||0)-(a.m||0);}var pa=a.d>=97?99:(posOrder[a.p]!=null?posOrder[a.p]:5);var pb=b.d>=97?99:(posOrder[b.p]!=null?posOrder[b.p]:5);return pa-pb;});var rows="";for(var li=0;li<players.length;li++)rows+=pRow(players[li]);return"<div class=\"detail-section full\"><div class=\"ds-title\">"+icon+" "+title+" <span style=\"font-weight:300;font-size:.85em;opacity:.7\">— clic para ver ficha</span></div><div class=\"ds-body no-pad\"><div class=\"col-header\"><div>#</div><div>JUGADOR</div><div>POS</div><div>MIN</div><div>G</div><div>A</div><div>T</div></div>"+rows+"</div></div>";}
 
   var cronicasHtml="";
   if(ADJUNTOS&&currentSeason&&ADJUNTOS[currentSeason]&&ADJUNTOS[currentSeason][p.j]){
@@ -4420,7 +4420,7 @@ function selectPartido(idx){
     "<div class=\"partido-header\"><div class=\"partido-header-inner\"><div class=\"partido-meta\"><span class=\"meta-tag\">"+currentSeason+"</span><span class=\"meta-tag\">J. "+p.j+"</span><span class=\"meta-tag\">"+(p.c||"")+"</span>"+(p.cat?"<span class=\"meta-tag\">"+p.cat+"</span>":"")+(p.f?"<span class=\"meta-tag\">"+fmtDate(p.f)+"</span>":"")+"<span class=\"meta-tag res-badge "+rc(p.r)+"\">"+(p.r||"")+"</span></div><div class=\"partido-marcador\"><div class=\"equipo-nombre local"+(isL?" castellon":"")+"\" >"+cap(p.l)+"</div><div class=\"marcador-score\">"+score+"</div><div class=\"equipo-nombre visitante"+(!isL?" castellon":"")+"\" >"+cap(p.v)+"</div></div></div></div>"
     +"<div class=\"detail-grid\"><div class=\"detail-section full\"><div class=\"ds-title\">⚽ Goles</div>"+goalsHtml+"</div><div class=\"detail-section\"><div class=\"ds-title\">🟨🟥 Tarjetas</div><div class=\"ds-body\">"+tarjHtml+"</div></div>"+cronicasHtml+"</div>"
     +lineupHtml(tits,"Once Inicial","👕")
-    +lineupHtml(sups,"Suplentes / Cambios","🔄");
+    +lineupHtml(sups,"Suplentes / Cambios","🔄",true);
   showView("partido");
   window.scrollTo(0,0);
   // Dia/hora/campo/asistencia to meta; árbitro BELOW marcador
@@ -7584,8 +7584,15 @@ function renderMatchPlayerModal(pStats, shots, playerName, matchData, heatmapDat
     html += '<div style="font-size:.72rem;color:var(--gris-claro);text-align:center;margin-bottom:6px">Haz clic en un disparo para ver detalle</div>';
     html += '<div id="fm-shot-detail" style="display:none;background:rgba(255,255,255,.06);border-radius:4px;padding:8px 12px;margin-bottom:8px;font-size:.75rem"></div>';
     // Determine if Castellón is home or away to orient shots correctly
-    var castellonIsHome = d.general && d.general.homeTeam &&
-      String(d.general.homeTeam.id) === String(castellonTeamId);
+    // Determine Castellón teamId from matchData
+    var castellonTeamId2 = null;
+    if (matchData && matchData.general) {
+      var home2 = matchData.general.homeTeam, away2 = matchData.general.awayTeam;
+      if (home2 && (home2.name||'').toLowerCase().includes('castell')) castellonTeamId2 = home2.id;
+      else if (away2 && (away2.name||'').toLowerCase().includes('castell')) castellonTeamId2 = away2.id;
+    }
+    var castellonIsHome = matchData && matchData.general && matchData.general.homeTeam &&
+      castellonTeamId2 && String(matchData.general.homeTeam.id) === String(castellonTeamId2);
     // FotMob coords: home team attacks toward x=105 in 2nd half
     // Shots are stored from the perspective of each team attacking right (x→105)
     // If Castellón is away, their shots may be mirrored (x from 0 direction)
