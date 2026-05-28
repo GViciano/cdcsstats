@@ -7197,7 +7197,7 @@ function openMatchPlayerFM(season, partidoIdx, playerName) {
   }
   var decodedName = decodeURIComponent(playerName);
   var matchTitle = cap(p.l || '') + ' vs ' + cap(p.v || '');
-  openMatchPlayerStats(p.fmid, decodedName, matchTitle);
+  openMatchPlayerStats(p.fmid, matchTitle, decodedName);
 }
 
 function closeFMModal() {
@@ -7368,7 +7368,7 @@ function showShotDetail(idx) {
 }
 
 /* ── Botón 🔍 en alineación de partido ── */
-async function openMatchPlayerStats(fotmobMatchId, playerId, playerName) {
+async function openMatchPlayerStats(fotmobMatchId, matchTitle, playerName) {
   var modal = document.getElementById('fm-player-modal');
   if (!modal) {
     modal = document.createElement('div');
