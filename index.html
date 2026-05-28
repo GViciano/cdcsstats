@@ -7391,26 +7391,55 @@ async function openMatchPlayerStats(fotmobMatchId, playerId, playerName) {
     var d = await r.json();
     if (d.error) throw new Error(d.error);
 
-    // Normalize name for fuzzy matching
+    // Build a map: normalized local name → fotmob player data
+    // Also build reverse map from fotmob names to catch mismatches
     var norm = function(s){ return (s||'').toLowerCase()
       .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i')
-      .replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').trim(); };
-    var needle = norm(playerName);
-    var words = needle.split(/\s+/).filter(function(w){ return w.length > 2; });
+      .replace(/[óòö]/g,'o').replace(/[úùü]/g,'u')
+      .replace(/[ñ]/g,'n').replace(/[^a-z0-9\s]/g,'').trim(); };
 
-    // Search in playerStats by name
-    var foundId = null, foundData = null;
+    var needle = norm(playerName);
+    var needleWords = needle.split(/\s+/).filter(function(w){ return w.length > 2; });
+
+    // Get Castellón team ID from matchDetails
+    var castellonTeamId = null;
+    if (d.general && d.general.homeTeam && d.general.awayTeam) {
+      var home = d.general.homeTeam, away = d.general.awayTeam;
+      if ((home.name||'').toLowerCase().includes('castell')) castellonTeamId = home.id;
+      else if ((away.name||'').toLowerCase().includes('castell')) castellonTeamId = away.id;
+    }
+
+    // Search in playerStats - only among Castellón players if we know the team
+    var foundId = null, foundData = null, bestScore = 0;
     var playerStatsMap = (d.content && d.content.playerStats) || {};
     Object.keys(playerStatsMap).forEach(function(pid) {
       var pl = playerStatsMap[pid];
+      // Filter by team if known
+      if (castellonTeamId && pl.teamId && String(pl.teamId) !== String(castellonTeamId)) return;
       var pnorm = norm(pl.name || '');
-      var score = words.filter(function(w){ return pnorm.includes(w); }).length;
-      if (score > 0 && (!foundData || score > (foundData._score||0))) {
-        pl._score = score;
+      var pWords = pnorm.split(/\s+/).filter(function(w){ return w.length > 2; });
+      var score = needleWords.filter(function(w){ return pnorm.includes(w); }).length * 2
+                + pWords.filter(function(w){ return needle.includes(w); }).length;
+      if (score > bestScore) {
+        bestScore = score;
         foundId = pid;
         foundData = pl;
       }
     });
+
+    // If still no match, try last name only (handles "BRIGNANI" → "Fabrizio Brignani")
+    if (!foundData || bestScore < 2) {
+      var lastName = needleWords[needleWords.length - 1];
+      Object.keys(playerStatsMap).forEach(function(pid) {
+        var pl = playerStatsMap[pid];
+        if (castellonTeamId && pl.teamId && String(pl.teamId) !== String(castellonTeamId)) return;
+        var pnorm = norm(pl.name || '');
+        if (lastName && pnorm.includes(lastName)) {
+          foundId = pid;
+          foundData = pl;
+        }
+      });
+    }
 
     // Get shots for this player
     var matchShots = [];
