@@ -7319,7 +7319,7 @@ async function openMatchPlayerStats(fotmobMatchId, playerId, playerName) {
   document.body.style.overflow = 'hidden';
 
   try {
-    var fotmobUrl3 = 'https://www.fotmob.com/api/matchDetails?matchId=' + fotmobMatchId;
+    var fotmobUrl3 = 'https://www.fotmob.com/api/data/matchDetails?matchId=' + fotmobMatchId;
     var r = await fotmobFetch(fotmobUrl3);
     var d = await r.json();
     if (d.error) throw new Error(d.error);
