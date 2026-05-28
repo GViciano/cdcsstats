@@ -7382,7 +7382,7 @@ async function openMatchPlayerStats(fotmobMatchId, matchTitle, playerName) {
       + '</div><div class="fm-modal-body" id="fm-modal-body"><div style="text-align:center;padding:30px;color:var(--gris-claro)">Cargando...</div></div></div>';
     document.body.appendChild(modal);
   }
-  document.getElementById('fm-modal-name').textContent = playerName + ' — este partido';
+  document.getElementById('fm-modal-name').textContent = playerName + ' — ' + (matchTitle || 'partido');
   document.getElementById('fm-modal-body').innerHTML = '<div style="text-align:center;padding:30px;color:var(--gris-claro)">Cargando estadísticas del partido...</div>';
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
