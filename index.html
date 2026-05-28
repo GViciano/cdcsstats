@@ -7441,6 +7441,10 @@ async function openMatchPlayerStats(fotmobMatchId, playerId, playerName) {
       });
     }
 
+    // Debug: log what we found
+    console.log('[Lupa] playerName:', playerName, '| needle:', needle, '| castellonTeamId:', castellonTeamId, '| bestScore:', bestScore, '| found:', foundData ? foundData.name : 'NONE');
+    console.log('[Lupa] all Castellon players:', Object.values(playerStatsMap).filter(function(p){ return !castellonTeamId || String(p.teamId)===String(castellonTeamId); }).map(function(p){ return p.name; }));
+
     // Get shots for this player
     var matchShots = [];
     if (foundData && foundData.shotmap && foundData.shotmap.length) {
