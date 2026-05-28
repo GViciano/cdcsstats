@@ -7303,7 +7303,9 @@ function switchFMTab(idx, el) {
 function showShotDetail(idx) {
   var dataEl = document.getElementById('fm-shots-data');
   if (!dataEl) return;
-  var shots = JSON.parse(dataEl.textContent);
+  var parsed = JSON.parse(dataEl.textContent);
+  var shots = parsed.shots || parsed; // backwards compat
+  var isHome = parsed.isHome !== undefined ? parsed.isHome : true;
   var s = shots[idx];
   if (!s) return;
   var circles = document.querySelectorAll('#fm-shots-g circle');
@@ -7332,7 +7334,9 @@ function showShotDetail(idx) {
     var dotColor = s.eventType==='Goal' ? '#4caf50' : s.isOnTarget ? '#e8b84b' : 'rgba(255,100,100,0.9)';
     var gw=12, gh=8, gx0=44, gy0=10, dotX, dotY, isOutside=false;
     if (s.isOnTarget && s.onGoalShot) {
-      dotX = gx0 + Math.max(0.3, Math.min(gw-0.3, (s.onGoalShot.x/2)*gw));
+      // For away team, mirror the goal mouth x coordinate
+      var gsX = isHome ? s.onGoalShot.x : (2 - s.onGoalShot.x);
+      dotX = gx0 + Math.max(0.3, Math.min(gw-0.3, (gsX/2)*gw));
       dotY = gy0 + Math.max(0.3, Math.min(gh-0.3, s.onGoalShot.y*gh));
     } else {
       var yRel = ((s.goalCrossedY||34) - 30.34) / 7.32;
@@ -7579,7 +7583,13 @@ function renderMatchPlayerModal(pStats, shots, playerName, matchData, heatmapDat
   if (shots && shots.length) {
     html += '<div style="font-size:.72rem;color:var(--gris-claro);text-align:center;margin-bottom:6px">Haz clic en un disparo para ver detalle</div>';
     html += '<div id="fm-shot-detail" style="display:none;background:rgba(255,255,255,.06);border-radius:4px;padding:8px 12px;margin-bottom:8px;font-size:.75rem"></div>';
-    html += '<div style="width:100%;max-width:320px;margin:0 auto 10px">';
+    // Determine if Castellón is home or away to orient shots correctly
+    var castellonIsHome = d.general && d.general.homeTeam &&
+      String(d.general.homeTeam.id) === String(castellonTeamId);
+    // FotMob coords: home team attacks toward x=105 in 2nd half
+    // Shots are stored from the perspective of each team attacking right (x→105)
+    // If Castellón is away, their shots may be mirrored (x from 0 direction)
+    // We always want to show Castellón attacking upward (toward portería at top of SVG)
     html += '<svg id="fm-pitch-svg" viewBox="0 0 68 54" style="width:100%;height:auto;display:block;border-radius:6px;background:#1a4020" xmlns="http://www.w3.org/2000/svg">';
     html += '<rect x="0" y="0" width="68" height="54" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="0.5"/>';
     html += '<rect x="13.84" y="0" width="40.32" height="22.63" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.35)" stroke-width="0.5"/>';
@@ -7595,6 +7605,12 @@ function renderMatchPlayerModal(pStats, shots, playerName, matchData, heatmapDat
     shots.forEach(function(s, idx) {
       var xFm = Math.max(0, Math.min(105, s.x || 70));
       var yFm = Math.max(0, Math.min(68, s.y || 34));
+      // If Castellón is away, FotMob coords are from away perspective (attacking x→0)
+      // Flip so portería always appears at top of our SVG
+      if (!castellonIsHome) {
+        xFm = 105 - xFm;
+        yFm = 68 - yFm;
+      }
       var svgX = yFm;
       var svgY = Math.max(-1, Math.min(55, (105 - xFm) / 52.5 * 54));
       var color = s.eventType==='Goal' ? '#4caf50' : s.eventType==='AttemptSaved' ? '#e8b84b' : s.eventType==='Miss' ? 'rgba(255,255,255,0.6)' : '#e04444';
@@ -7612,7 +7628,7 @@ function renderMatchPlayerModal(pStats, shots, playerName, matchData, heatmapDat
       if (s.eventType === 'Goal') html += '<text x="' + svgX + '" y="' + (svgY+1) + '" text-anchor="middle" font-size="3" fill="#fff" style="pointer-events:none">⚽</text>';
     });
     html += '</g></svg></div>';
-    html += '<script type="application/json" id="fm-shots-data">' + JSON.stringify(shots) + '<\/script>';
+    html += '<script type="application/json" id="fm-shots-data">' + JSON.stringify({shots: shots, isHome: castellonIsHome}) + '<\/script>';
     var legend = [['#4caf50','Gol'],['#e8b84b','A puerta'],['rgba(255,255,255,0.6)','Fuera'],['#e04444','Bloqueado']];
     html += '<div style="display:flex;gap:12px;justify-content:center;margin-bottom:8px">' + legend.map(function(l){
       return '<span style="font-size:.68rem;color:var(--gris-claro);display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:' + l[0] + ';border:1px solid rgba(255,255,255,.3);display:inline-block"></span>' + l[1] + '</span>';
