@@ -7614,7 +7614,7 @@ function renderMatchPlayerModal(pStats, shots, playerName, matchData, heatmapDat
       var svgX = 68 - yFm;  // mirror Y axis: FotMob y=0 is left, we want it on right
       var svgY = Math.max(-1, Math.min(55, (105 - xFm) / 52.5 * 54));
       var color = s.eventType==='Goal' ? '#4caf50' : s.eventType==='AttemptSaved' ? '#e8b84b' : s.eventType==='Miss' ? 'rgba(255,255,255,0.6)' : '#e04444';
-      var rr = s.expectedGoals ? Math.max(1.8, Math.min(4.5, parseFloat(s.expectedGoals)*8)) : 2;
+      var rr = s.expectedGoals ? Math.max(0.8, Math.min(3.5, parseFloat(s.expectedGoals)*6)) : 1.5;
       if (s.isOnTarget && s.onGoalShot) {
         var tgX = 30.34 + (1 - s.onGoalShot.x / 2) * 7.32;  // mirror x in goal mouth too
         html += '<line x1="' + svgX + '" y1="' + svgY + '" x2="' + tgX + '" y2="-0.5" stroke="' + color + '" stroke-width="0.4" stroke-dasharray="1.5,1" opacity="0.5"/>';
